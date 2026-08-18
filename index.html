@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FIRE Estimator</title>
+<title>FIRE Planner</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23a35c3a'/%3E%3Crect x='3' y='14' width='4.5' height='7' rx='1' fill='white'/%3E%3Crect x='10' y='9' width='4.5' height='12' rx='1' fill='white'/%3E%3Crect x='17' y='3' width='4.5' height='18' rx='1' fill='white'/%3E%3C/svg%3E">
 <style>
   :root{
     --navy:#0f1a2e;
@@ -390,46 +391,55 @@
   }
   .info-panel.open{display:block;}
 
-  .mobile-nav{display:none;}
+  .mobile-tabbar{display:none;}
 
   @media (max-width:900px){
     .sidebar{display:none;}
-    .mobile-nav{
-      display:block;position:sticky;top:0;z-index:30;
-      background:var(--navy);padding:10px 16px;
+    .mobile-tabbar{
+      display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;
+      background:var(--navy);border-top:1px solid rgba(255,255,255,.08);
+      padding:6px 2px calc(6px + env(safe-area-inset-bottom));
     }
-    .mobile-nav select{
-      width:100%;padding:9px 12px;border-radius:8px;border:none;
-      background:#1f2c46;color:#fff;font-size:13.5px;font-weight:700;font-family:inherit;
+    .mobile-tabbar button{
+      flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+      background:none;border:none;color:#8d97a8;font-family:inherit;
+      padding:6px 2px;cursor:pointer;border-radius:8px;
     }
+    .mobile-tabbar button .tab-dot{font-size:16px;line-height:1;}
+    .mobile-tabbar button .tab-label{font-size:10px;font-weight:600;}
+    .mobile-tabbar button.active{color:#fff;}
+    .mobile-tabbar button.active .tab-dot{color:var(--rust);}
+    .main{padding-bottom:76px;}
     .stats{grid-template-columns:repeat(2,1fr);}
     .form-grid{grid-template-columns:1fr;}
-    .main{padding:20px;}
+    .main{padding-left:20px;padding-right:20px;padding-top:20px;}
     .compare-row{flex-wrap:wrap;}
     .compare-val, .compare-row .clabel{width:auto;}
   }
 </style>
 </head>
 <body>
-<div class="mobile-nav">
-  <select id="mobileNavSelect">
-    <option value="#overview">◆ Overview</option>
-    <option value="#household">▤ Household &amp; Goal</option>
-    <option value="#wealth">◈ Sources of Wealth</option>
-    <option value="#expenses">▥ Monthly Expenses</option>
-    <option value="#events">✦ Life Events &amp; Income</option>
-    <option value="#sensitivity">≈ Sensitivity</option>
-    <option value="#runway">➝ Growth &amp; Runway</option>
-    <option value="#projection">▲ Projection</option>
-  </select>
-</div>
+<nav class="mobile-tabbar" id="mobileTabbar" aria-label="Section navigation">
+  <button data-tab="overview"><span class="tab-dot">◆</span><span class="tab-label">Overview</span></button>
+  <button data-tab="household"><span class="tab-dot">▤</span><span class="tab-label">Household</span></button>
+  <button data-tab="wealth"><span class="tab-dot">◈</span><span class="tab-label">Wealth</span></button>
+  <button data-tab="events"><span class="tab-dot">✦</span><span class="tab-label">Events</span></button>
+  <button data-tab="runway"><span class="tab-dot">➝</span><span class="tab-label">Growth</span></button>
+  <button data-tab="projection"><span class="tab-dot">▲</span><span class="tab-label">Table</span></button>
+</nav>
 
 <aside class="sidebar">
   <div class="brand">
-    <div class="brand-icon">🔥</div>
+    <div class="brand-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="14" width="4.5" height="7" rx="1" fill="white"/>
+        <rect x="10" y="9" width="4.5" height="12" rx="1" fill="white"/>
+        <rect x="17" y="3" width="4.5" height="18" rx="1" fill="white"/>
+      </svg>
+    </div>
     <div class="brand-text">
-      <div class="name">FIRE Estimator <span>v2</span></div>
-      <div class="sub">Retirement readiness</div>
+      <div class="name">FIRE Planner</div>
+      <div class="sub">Financial Independence, Retire Early</div>
     </div>
   </div>
   <nav class="nav">
@@ -2777,7 +2787,7 @@ async function exportToExcel(){
     }
 
     const wb = new ExcelJS.Workbook();
-    wb.creator = 'FIRE Estimator';
+    wb.creator = 'FIRE Planner';
     wb.created = new Date();
 
     const symbolLabel = currency === 'USD' ? 'USD ($)' : 'THB (฿)';
@@ -2917,7 +2927,7 @@ $('importFile').addEventListener('change', (e)=>{
       applyState(data);
       $('autosaveNote').textContent = 'Loaded data from file.';
     }catch(err){
-      $('autosaveNote').textContent = "Couldn't read that file — is it a FIRE Estimator export?";
+      $('autosaveNote').textContent = "Couldn't read that file — is it a FIRE Planner export?";
     }
   };
   reader.readAsText(file);
@@ -2989,22 +2999,102 @@ if (!loadLocal()){
   recalc();
 }
 
-// scroll spy (desktop sidebar + mobile dropdown)
+// scroll spy (desktop sidebar only — unaffected by mobile changes below)
 const navLinks = document.querySelectorAll('.nav a');
 const sections = [...navLinks].map(a => document.querySelector(a.getAttribute('href')));
-const mobileNavSelect = $('mobileNavSelect');
 
 window.addEventListener('scroll', ()=>{
   let current = sections[0];
   sections.forEach(s => { if (s && window.scrollY >= s.offsetTop - 80) current = s; });
   navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+current.id));
-  if (mobileNavSelect && current) mobileNavSelect.value = '#'+current.id;
 });
 
-mobileNavSelect.addEventListener('change', ()=>{
-  const target = document.querySelector(mobileNavSelect.value);
-  if (target) target.scrollIntoView({ behavior:'smooth' });
+// ---------- Mobile bottom tab bar ----------
+// Desktop is untouched by any of this — all 8 sections stay visible in normal document
+// flow there. On mobile, sections are grouped into 6 real tabs (not a "More" overflow):
+// Monthly Expenses lives under the Household tab, Sensitivity lives under Growth & Runway,
+// since both are small inputs that only exist to feed the section next to them anyway.
+const MOBILE_BREAKPOINT = 900;
+const mobileTabGroups = {
+  overview: ['overview'],
+  household: ['household', 'expenses'],
+  wealth: ['wealth'],
+  events: ['events'],
+  runway: ['runway', 'sensitivity'],
+  projection: ['projection'],
+};
+const sectionToTab = {};
+Object.entries(mobileTabGroups).forEach(([tab, ids]) => ids.forEach(id => { sectionToTab[id] = tab; }));
+
+let currentMobileTab = 'overview';
+
+function isMobileView(){
+  return window.innerWidth <= MOBILE_BREAKPOINT;
+}
+
+function applyMobileVisibility(){
+  if (isMobileView()){
+    Object.entries(mobileTabGroups).forEach(([tab, ids]) => {
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = (tab === currentMobileTab) ? '' : 'none';
+      });
+    });
+  } else {
+    // Desktop: always show everything, exactly as before
+    Object.values(mobileTabGroups).flat().forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = '';
+    });
+  }
+}
+
+function setMobileTabbarActive(){
+  document.querySelectorAll('#mobileTabbar button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === currentMobileTab);
+  });
+}
+
+function showMobileTab(tab, opts){
+  if (!mobileTabGroups[tab]) return;
+  currentMobileTab = tab;
+  applyMobileVisibility();
+  setMobileTabbarActive();
+  if (!opts || !opts.skipScroll) window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+// Jump to a specific section from anywhere (Getting Started checklist, cross-links, etc.) —
+// switches to the right tab first, then scrolls to that exact section within it, since a
+// tab can contain two grouped sections (e.g. Household + Monthly Expenses together).
+function mobileGoToSection(sectionId){
+  const tab = sectionToTab[sectionId];
+  if (!tab) return false;
+  const wasAlreadyOnTab = currentMobileTab === tab;
+  showMobileTab(tab, { skipScroll: true });
+  requestAnimationFrame(() => {
+    const el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: wasAlreadyOnTab ? 'smooth' : 'auto', block: 'start' });
+  });
+  return true;
+}
+
+document.querySelectorAll('#mobileTabbar button').forEach(btn => {
+  btn.addEventListener('click', () => showMobileTab(btn.dataset.tab));
 });
+
+// Every internal "#section" link (sidebar, Getting Started, cross-links like
+// "Edit in Sources of Wealth") routes through the tab system on mobile automatically —
+// no need to special-case each one individually.
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href^="#"]');
+  if (!link || !isMobileView()) return;
+  const id = link.getAttribute('href').slice(1);
+  if (mobileGoToSection(id)) e.preventDefault();
+});
+
+window.addEventListener('resize', applyMobileVisibility);
+applyMobileVisibility();
+setMobileTabbarActive();
 </script>
 </body>
 </html>
