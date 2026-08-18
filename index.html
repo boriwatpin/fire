@@ -497,6 +497,28 @@
         </div>
       </div>
     </div>
+
+    <div id="stagedIncomeOverlay" class="modal-overlay" style="display:none;">
+      <div class="modal-card" style="max-width:560px;">
+        <h3>Multiple income periods</h3>
+        <p>Instead of one income that grows at a constant rate, define up to 5 periods — e.g. ฿1.2M for 10 years, then ฿1.8M for 20 years. Ages are filled in automatically, back to back starting from your current age, so periods can't overlap or leave gaps.</p>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;margin-bottom:16px;">
+          <input type="checkbox" id="useStagedIncomeToggle" style="width:15px;height:15px;accent-color:var(--rust);">
+          Use these periods instead of the constant growth rate
+        </label>
+        <div class="recur-head-row" style="grid-template-columns:1fr 150px 130px 34px;">
+          <div>Period</div><div>Amount / year</div><div>Years</div><div></div>
+        </div>
+        <div id="stagedIncomeList"></div>
+        <button class="btn ghost" id="addIncomePeriodBtn" style="margin-top:8px;">+ Add period</button>
+        <div style="margin-top:16px;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:700;" id="stagedIncomeTotal"></div>
+        <div class="modal-actions" style="margin-top:16px;">
+          <button class="btn ghost" id="stagedIncomeCancelBtn">Cancel</button>
+          <button class="btn" id="stagedIncomeApplyBtn">Apply</button>
+        </div>
+      </div>
+    </div>
+
     <div class="fx-note" id="autosaveNote" style="margin:-10px 0 12px 2px;"></div>
     <div class="fx-note" style="margin:-2px 0 18px 2px;">📌 Amounts are in today's dollars. Investments grow at real rates; expenses rise with inflation each year.</div>
 
@@ -616,10 +638,11 @@
             <input type="number" id="currentAge" value="35">
           </div>
           <div class="field">
-            <label>Household annual income from work</label>
+            <label>Household annual income from work<button class="link-btn" id="openStagedIncomeBtn" style="margin-left:8px;padding:0;">Advanced: multiple income periods</button></label>
             <div class="input-wrap has-prefix"><span class="prefix curSym">฿</span><input type="text" inputmode="decimal" id="annualIncome" data-amount="1"></div>
+            <div class="desc" id="stagedIncomeStatus" style="display:none;"></div>
           </div>
-          <div class="field">
+          <div class="field" id="incomeGrowthRateField">
             <label>Annual income growth rate</label>
             <div class="input-wrap has-suffix"><input type="number" step="0.1" id="incomeGrowthRate" value="2.0"><span class="suffix">%</span></div>
             <div class="desc">Raises over time — used to project your Savings Rate forward to your retirement age.</div>
@@ -1395,6 +1418,169 @@ const expenseItemsList = makeRecurringList({
   labelPlaceholder: 'e.g., Medical care',
 });
 
+// ---------- Staged (multi-period) income — optional alternative to constant growth rate ----------
+let incomePeriods = [];       // committed state: [{ id, amount, years }]
+let useStagedIncome = false;  // committed state
+let draftIncomePeriods = [];  // working copy while the modal is open
+let draftUseStagedIncome = false;
+let stagedIncomeIdSeq = 1;
+const MAX_INCOME_PERIODS = 5;
+
+function incomeSpanYears(){
+  const currentAge = +$('currentAge').value || 0;
+  const targetAge = +$('targetAge').value || 0;
+  return Math.max(0, targetAge - currentAge);
+}
+
+function computeIncomePeriodAges(periods){
+  const currentAge = +$('currentAge').value || 0;
+  let cursor = currentAge;
+  return periods.map(p => {
+    const startAge = cursor;
+    const endAge = cursor + (p.years || 0);
+    cursor = endAge;
+    return { ...p, startAge, endAge };
+  });
+}
+
+function renderStagedIncomeModal(){
+  const withAges = computeIncomePeriodAges(draftIncomePeriods);
+  const list = $('stagedIncomeList');
+  list.innerHTML = withAges.map((p, i) => `
+    <div class="recur-row" data-id="${p.id}" style="grid-template-columns:1fr 150px 130px 34px;">
+      <div>
+        <div style="font-weight:700;font-size:13px;">Period ${i+1}</div>
+        <div style="font-size:11.5px;color:var(--muted-2);">${p.years > 0 ? `Covers ages ${p.startAge}–${p.endAge}` : 'Enter years below'}</div>
+      </div>
+      <div class="input-wrap has-prefix"><span class="prefix curSym">${currency==='USD'?'$':'฿'}</span><input type="text" inputmode="decimal" class="staged-amount" value="${p.amount ? formatStatic(toDisplay(p.amount)) : ''}"></div>
+      <input type="number" class="staged-years" value="${p.years || ''}" min="1" placeholder="Years">
+      <button class="del-btn" title="Remove">×</button>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.recur-row').forEach(row => {
+    const id = +row.dataset.id;
+    const p = draftIncomePeriods.find(x => x.id === id);
+
+    const amountInput = row.querySelector('.staged-amount');
+    amountInput.addEventListener('input', () => {
+      commafyInput(amountInput);
+      p.amount = toBase(parseNum(amountInput.value));
+      updateStagedIncomeTotal();
+    });
+
+    row.querySelector('.staged-years').addEventListener('input', (e) => {
+      p.years = Math.max(0, +e.target.value || 0);
+      renderStagedIncomeModal();
+    });
+
+    row.querySelector('.del-btn').addEventListener('click', () => {
+      draftIncomePeriods = draftIncomePeriods.filter(x => x.id !== id);
+      renderStagedIncomeModal();
+    });
+  });
+
+  $('addIncomePeriodBtn').style.display = draftIncomePeriods.length >= MAX_INCOME_PERIODS ? 'none' : 'inline-flex';
+  updateStagedIncomeTotal();
+}
+
+function stagedIncomeIsValid(){
+  const span = incomeSpanYears();
+  const total = draftIncomePeriods.reduce((s,p) => s + (p.years || 0), 0);
+  return draftIncomePeriods.length > 0 && total === span && span > 0;
+}
+
+function updateStagedIncomeTotal(){
+  const span = incomeSpanYears();
+  const total = draftIncomePeriods.reduce((s,p) => s + (p.years || 0), 0);
+  const box = $('stagedIncomeTotal');
+  const applyBtn = $('stagedIncomeApplyBtn');
+  const needsValidation = draftUseStagedIncome;
+
+  if (!needsValidation){
+    box.style.background = '#f2f5f9';
+    box.style.color = 'var(--muted)';
+    box.textContent = `${total} of ${span} years defined — turn on the checkbox above to use these periods.`;
+    applyBtn.disabled = false;
+    applyBtn.style.opacity = '1';
+    return;
+  }
+
+  if (total === span && span > 0 && draftIncomePeriods.length > 0){
+    box.style.background = 'var(--green-bg)';
+    box.style.color = 'var(--green)';
+    box.textContent = `✓ ${total} of ${span} years defined — matches your plan exactly.`;
+    applyBtn.disabled = false;
+    applyBtn.style.opacity = '1';
+  } else {
+    box.style.background = 'var(--red-bg)';
+    box.style.color = 'var(--red)';
+    const diff = span - total;
+    const instruction = span === 0
+      ? 'Set a target retirement age greater than your current age first.'
+      : diff > 0
+        ? `Add ${diff} more year${diff===1?'':'s'} across your periods to reach ${span}.`
+        : `Remove ${Math.abs(diff)} year${Math.abs(diff)===1?'':'s'} — periods currently add up to more than your ${span}-year span.`;
+    box.textContent = `⚠ ${total} of ${span} years defined — periods must add up to exactly ${span} years (age ${+$('currentAge').value||0} to ${+$('targetAge').value||0}). ${instruction}`;
+    applyBtn.disabled = true;
+    applyBtn.style.opacity = '0.5';
+  }
+}
+
+function openStagedIncomeModal(){
+  draftIncomePeriods = incomePeriods.map(p => ({...p}));
+  draftUseStagedIncome = useStagedIncome;
+  $('useStagedIncomeToggle').checked = draftUseStagedIncome;
+  if (draftIncomePeriods.length === 0){
+    draftIncomePeriods.push({ id: stagedIncomeIdSeq++, amount: 0, years: incomeSpanYears() || 10 });
+  }
+  renderStagedIncomeModal();
+  $('stagedIncomeOverlay').style.display = 'flex';
+}
+
+function closeStagedIncomeModal(){
+  $('stagedIncomeOverlay').style.display = 'none';
+}
+
+function updateStagedIncomeStatusBadge(){
+  const el = $('stagedIncomeStatus');
+  const growthField = $('incomeGrowthRateField');
+  if (useStagedIncome && incomePeriods.length > 0){
+    const withAges = computeIncomePeriodAges(incomePeriods);
+    el.style.display = 'block';
+    el.textContent = `Using ${incomePeriods.length} staged income period${incomePeriods.length===1?'':'s'} (age ${withAges[0].startAge}–${withAges[withAges.length-1].endAge}) instead of a constant growth rate.`;
+    growthField.style.opacity = '0.5';
+    growthField.querySelector('input').disabled = true;
+  } else {
+    el.style.display = 'none';
+    growthField.style.opacity = '1';
+    growthField.querySelector('input').disabled = false;
+  }
+}
+
+$('openStagedIncomeBtn').addEventListener('click', openStagedIncomeModal);
+$('addIncomePeriodBtn').addEventListener('click', () => {
+  if (draftIncomePeriods.length >= MAX_INCOME_PERIODS) return;
+  draftIncomePeriods.push({ id: stagedIncomeIdSeq++, amount: 0, years: 0 });
+  renderStagedIncomeModal();
+});
+$('useStagedIncomeToggle').addEventListener('change', (e) => {
+  draftUseStagedIncome = e.target.checked;
+  updateStagedIncomeTotal();
+});
+$('stagedIncomeCancelBtn').addEventListener('click', closeStagedIncomeModal);
+$('stagedIncomeOverlay').addEventListener('click', (e) => {
+  if (e.target === $('stagedIncomeOverlay')) closeStagedIncomeModal();
+});
+$('stagedIncomeApplyBtn').addEventListener('click', () => {
+  if (draftUseStagedIncome && !stagedIncomeIsValid()) return; // blocked — error already shown live
+  incomePeriods = draftIncomePeriods.filter(p => p.years > 0).map(p => ({...p}));
+  useStagedIncome = draftUseStagedIncome && incomePeriods.length > 0;
+  updateStagedIncomeStatusBadge();
+  closeStagedIncomeModal();
+  recalc();
+});
+
 function renderWealthComposition(thailandAmt, usaAmt, sgAmt, thailandRate, usaRate, sgRate){
   const total = thailandAmt + usaAmt + sgAmt;
   const segs = [
@@ -1558,6 +1744,7 @@ function computeMaxAffordableExtraSpend(projInputs, sensitivity){
 }
 
 function recalc(){
+  updateStagedIncomeStatusBadge();
   const currentAge = +$('currentAge').value || 0;
   const targetAge = +$('targetAge').value || 0;
   const withdrawalRate = (+$('withdrawalRate').value || 0) / 100;
@@ -1671,7 +1858,7 @@ function recalc(){
   renderPlannerSummary({
     minRetireAge, targetAge, annualIncome: S.annualIncome, incomeGrowthRate, annualSavings, savingsGrowth,
     targetPortfolio, expectedRows: expected.rows, conservativeRows: conservative.rows, depletedAge, planUntilAge,
-    annualExpenses, maxExtraSpend,
+    annualExpenses, maxExtraSpend, useStagedIncome, incomePeriods,
   });
 
   const retireRow = expected.rows.find(r => r.age === targetAge) || expected.rows[expected.rows.length - 1];
@@ -1727,14 +1914,29 @@ function renderTable(rows){
 
 function renderPlannerSummary(p){
   const { minRetireAge, targetAge, annualIncome, incomeGrowthRate, annualSavings, savingsGrowth,
-          targetPortfolio, expectedRows, conservativeRows, depletedAge, planUntilAge, annualExpenses, maxExtraSpend } = p;
+          targetPortfolio, expectedRows, conservativeRows, depletedAge, planUntilAge, annualExpenses, maxExtraSpend,
+          useStagedIncome, incomePeriods } = p;
 
   // Savings Rate projected to retirement age — both Income and Savings grow at their own
   // rate between now and then, so this reflects the rate you'll actually be at when it matters,
   // not just today's snapshot (this is the whole point of having an income growth rate at all).
+  // If staged income periods are active, use whichever period actually covers your retirement
+  // age instead of compounding a flat growth rate — that's the point of defining them.
   const currentAge = expectedRows.length ? expectedRows[0].age : targetAge;
   const yearsToRetirement = Math.max(0, targetAge - currentAge);
-  const projectedIncome = annualIncome * Math.pow(1 + (incomeGrowthRate||0), yearsToRetirement);
+  let projectedIncome;
+  if (useStagedIncome && incomePeriods && incomePeriods.length > 0){
+    let cursor = currentAge;
+    let matchedPeriod = incomePeriods[incomePeriods.length - 1];
+    for (const period of incomePeriods){
+      const startAge = cursor, endAge = cursor + (period.years || 0);
+      if (targetAge >= startAge && targetAge < endAge){ matchedPeriod = period; break; }
+      cursor = endAge;
+    }
+    projectedIncome = matchedPeriod.amount;
+  } else {
+    projectedIncome = annualIncome * Math.pow(1 + (incomeGrowthRate||0), yearsToRetirement);
+  }
   const projectedSavings = annualSavings * Math.pow(1 + (savingsGrowth||0), yearsToRetirement);
   const savingsRatePct = projectedIncome > 0 ? (projectedSavings / projectedIncome * 100) : 0;
 
@@ -2655,6 +2857,7 @@ function collectState(){
     lifeEvents: lifeEvents.map(e => ({ category:e.category, label:e.label, amount:e.amount, age:e.age })),
     additionalIncome: additionalIncomeItems.map(it => ({ label:it.label, amount:it.amount, startAge:it.startAge, duration:it.duration })),
     additionalExpenses: additionalExpenseItems.map(it => ({ label:it.label, amount:it.amount, startAge:it.startAge, duration:it.duration })),
+    useStagedIncome, incomePeriods: incomePeriods.map(p => ({ amount:p.amount, years:p.years })),
   };
 }
 
@@ -2676,6 +2879,7 @@ function blankState(){
     lifeEvents: [],
     additionalIncome: [],
     additionalExpenses: [],
+    useStagedIncome: false, incomePeriods: [],
   };
 }
 
@@ -2717,6 +2921,8 @@ function applyState(data){
   if (data.additionalExpenses){
     additionalExpenseItems = data.additionalExpenses.map(it => ({ id: recurIdSeq++, label:it.label||'', amount:it.amount||0, startAge:it.startAge||currentAgeFallback(), duration:it.duration||10 }));
   }
+  incomePeriods = (data.incomePeriods || []).map(p => ({ id: stagedIncomeIdSeq++, amount:p.amount||0, years:p.years||0 }));
+  useStagedIncome = !!data.useStagedIncome && incomePeriods.length > 0;
 
   renderAmountInputs();
   renderFixedWealthInputs();
