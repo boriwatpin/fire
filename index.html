@@ -110,6 +110,7 @@
     background:var(--card);border:1px solid var(--border);border-radius:12px;
     padding:12px 18px;margin-bottom:18px;box-shadow:var(--shadow);
   }
+  .currency-bar-row1{display:flex;align-items:center;gap:16px;}
   .seg{display:flex;background:#f0f2f6;border-radius:9px;padding:3px;}
   .seg button{
     border:none;background:transparent;padding:6px 14px;border-radius:7px;
@@ -212,6 +213,18 @@
   .table-scroll table{margin:0;}
   .table-scroll thead th{position:sticky;top:0;z-index:1;}
 
+  /* Sticky first column (Age) on the 9-column projection table — sideways scroll for the
+     rest is unavoidable on a narrow screen, but losing sight of which row you're on isn't. */
+  .table-compact thead th:first-child, .table-compact tbody td:first-child{
+    position:sticky;left:0;z-index:2;box-shadow:2px 0 4px rgba(0,0,0,0.05);
+  }
+  .table-compact thead th:first-child{background:#f9fafb;z-index:3;}
+  .table-compact tbody td:first-child{background:#fff;}
+  .table-compact tbody tr.hl td:first-child{background:#fbf5ef;}
+  .table-compact tbody tr.gift td:first-child{background:#fdf2ee;}
+  .table-compact tbody tr.retiring td:first-child{background:#fbf8f4;}
+  .mobile-scroll-hint{display:none;}
+
   /* MIX BARS */
   .mix-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
   .mix-row .mlabel{width:70px;font-size:13px;font-weight:600;flex-shrink:0;}
@@ -251,10 +264,12 @@
   .modal-overlay{
     position:fixed;inset:0;background:rgba(15,26,46,0.55);
     display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;
+    overflow-y:auto;
   }
   .modal-card{
     background:#fff;border-radius:14px;padding:24px 26px;max-width:420px;width:100%;
     box-shadow:0 20px 50px rgba(0,0,0,0.25);
+    max-height:calc(100vh - 40px);overflow-y:auto;
   }
   .modal-card h3{margin:0 0 10px 0;font-size:17px;color:var(--text);}
   .modal-card p{margin:0 0 20px 0;font-size:13.5px;line-height:1.6;color:var(--muted);}
@@ -303,7 +318,7 @@
   }
   .new-cat-popover .confirm{background:var(--navy);color:#fff;}
   .new-cat-popover .cancel{background:#f0f2f6;color:var(--muted);}
-  @media (max-width:800px){
+  @media (max-width:900px){
     .event-row{grid-template-columns:1fr;gap:8px;padding:14px 0;}
     .event-row .del-btn{justify-self:end;}
   }
@@ -323,7 +338,7 @@
     width:34px;height:34px;border-radius:8px;
   }
   .recur-row .del-btn:hover{background:var(--red-bg);color:var(--red);}
-  @media (max-width:800px){
+  @media (max-width:900px){
     .recur-head-row{display:none;}
     .recur-row{grid-template-columns:1fr;gap:8px;padding:14px 0;}
     .recur-row .del-btn{justify-self:end;}
@@ -345,7 +360,7 @@
     display:flex;width:100%;height:22px;border-radius:8px;overflow:hidden;background:#f0f2f6;margin-top:8px;
   }
   .wealth-bar .seg{height:100%;transition:width .2s;}
-  @media (max-width:800px){
+  @media (max-width:900px){
     .wealth-head-row{display:none;}
     .wealth-row{grid-template-columns:1fr;gap:8px;}
   }
@@ -393,6 +408,8 @@
 
   .mobile-tabbar{display:none;}
 
+  .currency-actions{display:flex;gap:8px;margin-left:auto;}
+
   @media (max-width:900px){
     .sidebar{display:none;}
     .mobile-tabbar{
@@ -412,9 +429,30 @@
     .main{padding-bottom:76px;}
     .stats{grid-template-columns:repeat(2,1fr);}
     .form-grid{grid-template-columns:1fr;}
-    .main{padding-left:20px;padding-right:20px;padding-top:20px;}
+    .main{padding-left:16px;padding-right:16px;padding-top:16px;}
     .compare-row{flex-wrap:wrap;}
     .compare-val, .compare-row .clabel{width:auto;}
+
+    /* Currency bar: was generic flex-wrap, crammed 4 unrelated element groups together.
+       Deliberate stacked layout instead — toggle+FX rate on one row, note below,
+       then a full-width evenly-split action row instead of buttons wrapping unpredictably. */
+    .currency-bar{flex-direction:column;align-items:stretch;gap:10px;padding:14px 16px;}
+    .currency-bar-row1{gap:10px;}
+    .fx-field{flex:1;min-width:0;}
+    .fx-field input{flex:1;min-width:0;width:auto;}
+    .currency-actions{margin-left:0;width:100%;}
+    .currency-actions .btn{flex:1;font-size:12px;padding:9px 4px;justify-content:center;}
+    .mobile-scroll-hint{
+      display:block;font-size:11px;color:var(--muted-2);text-align:center;
+      margin-bottom:8px;font-weight:600;
+    }
+
+    /* Touch targets — 19px info buttons and 34px delete buttons are below Apple's ~44px
+       comfortable minimum. Visual size grows modestly; exact 44px would look oversized
+       next to inline text, but this meaningfully reduces mis-taps on a real device. */
+    .info-btn{width:26px;height:26px;font-size:13px;}
+    .event-row .del-btn, .recur-row .del-btn{width:40px;height:40px;font-size:19px;}
+    input[type=checkbox]{width:19px!important;height:19px!important;}
   }
 </style>
 </head>
@@ -469,17 +507,19 @@
     </div>
 
     <div class="currency-bar">
-      <div class="seg">
-        <button id="curTHB" class="active" onclick="setCurrency('THB')">฿ THB</button>
-        <button id="curUSD" onclick="setCurrency('USD')">$ USD</button>
-      </div>
-      <div class="fx-field">
-        <span>1 USD =</span>
-        <input type="number" id="fxRateInput" value="33" step="0.01">
-        <span>THB</span>
+      <div class="currency-bar-row1">
+        <div class="seg">
+          <button id="curTHB" class="active" onclick="setCurrency('THB')">฿ THB</button>
+          <button id="curUSD" onclick="setCurrency('USD')">$ USD</button>
+        </div>
+        <div class="fx-field">
+          <span>1 USD =</span>
+          <input type="number" id="fxRateInput" value="33" step="0.01">
+          <span>THB</span>
+        </div>
       </div>
       <div class="fx-note">All figures are stored in THB. Toggle currency to view your own USD conversion — everything recalculates instantly.</div>
-      <div style="display:flex;gap:8px;margin-left:auto;">
+      <div class="currency-actions">
         <button class="btn ghost" id="exportBtn">⬇ Save data</button>
         <button class="btn ghost" id="importBtn">⬆ Load data</button>
         <input type="file" id="importFile" accept="application/json" style="display:none;">
@@ -868,6 +908,7 @@
         <button class="btn" id="exportExcelBtn">⬇ Export to Excel</button>
         <span class="fx-note" id="exportExcelNote" style="margin:0;">Exports every year from your current age through your Plan-until age, with every tracked field broken into its own column (per-country balances, inflation cost, cumulative contributions vs. growth, and more) — first click loads a small formatting library (needs internet once).</span>
       </div>
+      <div class="mobile-scroll-hint">← Swipe sideways to see all columns; Age stays pinned →</div>
       <div class="table-scroll">
         <table class="table-compact">
           <thead>
@@ -2122,12 +2163,20 @@ $('runwaySvg').addEventListener('mouseleave', onRunwayLeave);
 
 function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn, targetAge, depletedAgeIn, planUntilAge){
   const svg = $('runwaySvg');
-  const W = 1000, H = 370;
-  const padL = 92, padR = 20, padT = 16;
-  const mainH = 210, gap = 26, subH = 78, padB = 34;
+  // On mobile, a 1000-unit-wide viewBox squeezed into a ~350px-wide phone screen scales
+  // everything down to ~35% — before, this made text/bars comically small (or, with
+  // preserveAspectRatio="none", distorted). A viewBox close to the actual device width keeps
+  // the render scale near 1:1, so the same font-size numbers stay legible on both.
+  const M = isMobileView();
+  const W = M ? 380 : 1000, H = M ? 372 : 370;
+  const padL = M ? 54 : 92, padR = M ? 10 : 20, padT = 16;
+  const mainH = M ? 220 : 210, gap = M ? 20 : 26, subH = M ? 82 : 78, padB = M ? 28 : 34;
   const mainY0 = padT, mainY1 = padT + mainH;
   const subY0 = mainY1 + gap, subMid = subY0 + subH/2, subY1 = subY0 + subH;
   const plotW = W - padL - padR;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('height', H);
+  const yLabel = v => M ? fmtCompact(v) : fmtMoney(v);
 
   // ---- Age-range window: lets you focus on a shorter span instead of the full plan ----
   const currentAge = fullRowsIn.length ? fullRowsIn[0].age : 0;
@@ -2281,7 +2330,7 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
   for (let t=0;t<=ticks;t++){
     const v = useLog ? Math.pow(10, logMin + (logSpan * t / ticks)) : (maxVal / ticks * t);
     const yy = yAt(v).toFixed(1);
-    ylabels += `<text x="${padL-10}" y="${(+yy+4)}" text-anchor="end" font-size="10.5" fill="#8b94a3">${fmtMoney(v)}</text>
+    ylabels += `<text x="${padL-10}" y="${(+yy+4)}" text-anchor="end" font-size="10.5" fill="#8b94a3">${yLabel(v)}</text>
       <line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#eef0f4" stroke-width="1"></line>`;
   }
 
@@ -2326,7 +2375,7 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
     <text x="${padL-10}" y="${(subY1-2).toFixed(1)}" text-anchor="end" font-size="9.5" fill="#8b94a3">Spend</text>`;
 
   let xlabels = '';
-  const labelEvery = Math.max(1, Math.ceil(n/12));
+  const labelEvery = Math.max(1, Math.ceil(n/(M?6:12)));
   rows.forEach((r,i)=>{
     if (i % labelEvery === 0 || i === n-1){
       xlabels += `<text x="${xAt(i).toFixed(1)}" y="${subY1+16}" text-anchor="middle" font-size="10.5" fill="#8b94a3">${r.age}</text>`;
@@ -2379,12 +2428,16 @@ let appendixGrowthHoverState = null;
 
 function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   const svg = $('appendixGrowthSvg');
-  const W = 1000, H = 480;
-  const padL = 100, padR = 24, padT = 20, padB = 40;
-  const mainH = 280, gap = 26, subH = 90;
+  const M = isMobileView();
+  const W = M ? 380 : 1000, H = M ? 388 : 480;
+  const padL = M ? 54 : 100, padR = M ? 10 : 24, padT = M ? 18 : 20, padB = M ? 26 : 40;
+  const mainH = M ? 230 : 280, gap = M ? 18 : 26, subH = M ? 90 : 90;
   const mainY0 = padT, mainY1 = padT + mainH;
   const subY0 = mainY1 + gap, subY1 = subY0 + subH;
   const plotW = W - padL - padR;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('height', H);
+  const yLabel = v => M ? fmtCompact(v) : fmtMoney(v);
 
   // ---- Age-range window, same pattern as the main Growth & Runway chart ----
   const currentAge = fullRowsIn.length ? fullRowsIn[0].age : 0;
@@ -2489,7 +2542,7 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
       const yGiftBottom = yAt(r.end + withdrawOffset);
       const removedH = Math.max(1, yGiftBottom - yBefore);
       bars += `<rect x="${(cx-barW/2).toFixed(1)}" y="${yBefore.toFixed(1)}" width="${barW.toFixed(1)}" height="${removedH.toFixed(1)}" fill="#c0392b" fill-opacity="0.75" rx="1"></rect>`;
-      eventLabels.push({ x: cx, y: yBefore - 8, text: `−${fmtMoney(r.gift)}` });
+      eventLabels.push({ x: cx, y: yBefore - 8, text: `−${yLabel(r.gift)}` });
     }
   });
   const giftLegend = $('appendixGrowthGiftLegend');
@@ -2505,7 +2558,7 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   // Target line + label rendered AFTER bars (below, in draw order) so it's never obscured
   // by a tall bar reaching up near the target — this used to sit behind the bars.
   const targetY = yAt(targetPortfolio).toFixed(1);
-  const targetLabelText = `Target ${fmtMoney(targetPortfolio)}`;
+  const targetLabelText = `Target ${yLabel(targetPortfolio)}`;
   const targetLabelW = targetLabelText.length * 6.2 + 10;
   const targetLine = `<line x1="${padL}" y1="${targetY}" x2="${W-padR}" y2="${targetY}" stroke="#111" stroke-opacity="0.32" stroke-width="1.5" stroke-dasharray="6,4"></line>
     <rect x="${(W-padR-targetLabelW).toFixed(1)}" y="${(+targetY-20).toFixed(1)}" width="${targetLabelW.toFixed(1)}" height="16" fill="#f2f5f9" fill-opacity="0.9" rx="3"></rect>
@@ -2516,7 +2569,7 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   for (let t=0; t<=ticks; t++){
     const v = useLog ? Math.pow(10, logMin + (logSpan * t / ticks)) : (maxVal / ticks * t);
     const yy = yAt(v).toFixed(1);
-    ylabels += `<text x="${padL-12}" y="${(+yy+4)}" text-anchor="end" font-size="11" fill="#8b94a3">${fmtMoney(v)}</text>
+    ylabels += `<text x="${padL-12}" y="${(+yy+4)}" text-anchor="end" font-size="11" fill="#8b94a3">${yLabel(v)}</text>
       <line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#eef0f4" stroke-width="1"></line>`;
   }
 
@@ -2540,7 +2593,7 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   for (let t=0; t<=subTicks; t++){
     const v = maxWithdraw / subTicks * t;
     const yy = subYAt(v).toFixed(1);
-    const labelText = v === 0 ? fmtMoney(0) : '-' + fmtMoney(v);
+    const labelText = v === 0 ? yLabel(0) : '-' + yLabel(v);
     subYlabels += `<text x="${padL-12}" y="${(+yy+4)}" text-anchor="end" font-size="10.5" fill="#8b94a3">${labelText}</text>
       <line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#eef0f4" stroke-width="1"></line>`;
   }
@@ -2548,7 +2601,7 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   const retireLineSub = retireIdx >= 0 ? `<line x1="${xAt(retireIdx).toFixed(1)}" y1="${subY0}" x2="${xAt(retireIdx).toFixed(1)}" y2="${subY1}" stroke="#111" stroke-opacity="0.2" stroke-width="1.2" stroke-dasharray="4,3"></line>` : '';
 
   let xlabels = '';
-  const labelEvery = Math.max(1, Math.ceil(n/14));
+  const labelEvery = Math.max(1, Math.ceil(n/(M?6:14)));
   rows.forEach((r,i) => {
     if (i % labelEvery === 0 || i === n-1){
       xlabels += `<text x="${xAt(i).toFixed(1)}" y="${subY1+18}" text-anchor="middle" font-size="11" fill="#8b94a3">${r.age}</text>`;
@@ -2689,10 +2742,14 @@ let appendixHoverState = null;
 
 function renderAppendixChart(rows){
   const svg = $('appendixSvg');
-  const W = 1000, H = 420;
-  const padL = 100, padR = 24, padT = 20, padB = 40;
+  const M = isMobileView();
+  const W = M ? 380 : 1000, H = M ? 340 : 420;
+  const padL = M ? 54 : 100, padR = M ? 10 : 24, padT = M ? 18 : 20, padB = M ? 28 : 40;
   const plotW = W - padL - padR, plotH = H - padT - padB;
   const mid = padT + plotH/2;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('height', H);
+  const yLabel = v => M ? fmtCompact(v) : fmtMoney(v);
 
   const n = rows.length;
   const xAt = i => padL + (n <= 1 ? 0 : (i/(n-1)) * plotW);
@@ -2729,10 +2786,10 @@ function renderAppendixChart(rows){
   for (let t=0; t<=ticks; t++){
     const v = maxFlow / ticks * t;
     const yUp = upY(v).toFixed(1), yDown = downY(v).toFixed(1);
-    ylabels += `<text x="${padL-12}" y="${(+yUp+4)}" text-anchor="end" font-size="11" fill="#8b94a3">${fmtMoney(v)}</text>
+    ylabels += `<text x="${padL-12}" y="${(+yUp+4)}" text-anchor="end" font-size="11" fill="#8b94a3">${yLabel(v)}</text>
       <line x1="${padL}" y1="${yUp}" x2="${W-padR}" y2="${yUp}" stroke="#eef0f4" stroke-width="1"></line>`;
     if (t > 0){
-      ylabels += `<text x="${padL-12}" y="${(+yDown+4)}" text-anchor="end" font-size="11" fill="#8b94a3">${fmtMoney(v)}</text>
+      ylabels += `<text x="${padL-12}" y="${(+yDown+4)}" text-anchor="end" font-size="11" fill="#8b94a3">${yLabel(v)}</text>
         <line x1="${padL}" y1="${yDown}" x2="${W-padR}" y2="${yDown}" stroke="#eef0f4" stroke-width="1"></line>`;
     }
   }
@@ -2740,7 +2797,7 @@ function renderAppendixChart(rows){
     <text x="${padL-12}" y="${(mid+4).toFixed(1)}" text-anchor="end" font-size="11" fill="#6b7686" font-weight="700">฿0</text>`;
 
   let xlabels = '';
-  const labelEvery = Math.max(1, Math.ceil(n/14));
+  const labelEvery = Math.max(1, Math.ceil(n/(M?6:14)));
   rows.forEach((r,i) => {
     if (i % labelEvery === 0 || i === n-1){
       xlabels += `<text x="${xAt(i).toFixed(1)}" y="${H-padB+18}" text-anchor="middle" font-size="11" fill="#8b94a3">${r.age}</text>`;
@@ -3190,31 +3247,6 @@ try {
   setGettingStartedVisibility(localStorage.getItem(GS_KEY) === '1');
 } catch(e){}
 
-// ---------- init ----------
-renderAmountInputs();
-renderFixedWealthInputs();
-buildAccordion();
-renderEvents();
-incomeList.render();
-expenseItemsList.render();
-normalizeSavingsAlloc();
-initInfoToggles();
-if (!loadLocal()){
-  recalc();
-} else {
-  recalc();
-}
-
-// scroll spy (desktop sidebar only — unaffected by mobile changes below)
-const navLinks = document.querySelectorAll('.nav a');
-const sections = [...navLinks].map(a => document.querySelector(a.getAttribute('href')));
-
-window.addEventListener('scroll', ()=>{
-  let current = sections[0];
-  sections.forEach(s => { if (s && window.scrollY >= s.offsetTop - 80) current = s; });
-  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+current.id));
-});
-
 // ---------- Mobile bottom tab bar ----------
 // Desktop is untouched by any of this — all 8 sections stay visible in normal document
 // flow there. On mobile, sections are grouped into 6 real tabs (not a "More" overflow):
@@ -3301,6 +3333,31 @@ document.addEventListener('click', (e) => {
 window.addEventListener('resize', applyMobileVisibility);
 applyMobileVisibility();
 setMobileTabbarActive();
+// ---------- init ----------
+renderAmountInputs();
+renderFixedWealthInputs();
+buildAccordion();
+renderEvents();
+incomeList.render();
+expenseItemsList.render();
+normalizeSavingsAlloc();
+initInfoToggles();
+if (!loadLocal()){
+  recalc();
+} else {
+  recalc();
+}
+
+// scroll spy (desktop sidebar only — unaffected by mobile changes below)
+const navLinks = document.querySelectorAll('.nav a');
+const sections = [...navLinks].map(a => document.querySelector(a.getAttribute('href')));
+
+window.addEventListener('scroll', ()=>{
+  let current = sections[0];
+  sections.forEach(s => { if (s && window.scrollY >= s.offsetTop - 80) current = s; });
+  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+current.id));
+});
+
 </script>
 </body>
 </html>
