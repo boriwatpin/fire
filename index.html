@@ -444,8 +444,10 @@
     .stats{grid-template-columns:repeat(2,1fr);}
     .form-grid{grid-template-columns:1fr;}
     .main{padding-left:16px;padding-right:16px;padding-top:calc(16px + env(safe-area-inset-top));}
-    .compare-row{flex-wrap:wrap;}
-    .compare-val, .compare-row .clabel{width:auto;}
+    .compare-row{flex-direction:column;align-items:stretch;gap:6px;margin-bottom:20px;}
+    .compare-row .clabel{width:auto;font-size:14px;}
+    .compare-track{width:100%;}
+    .compare-val{width:auto;text-align:left;font-size:14.5px;}
 
     /* Currency bar: was generic flex-wrap, crammed 4 unrelated element groups together.
        Deliberate stacked layout instead — toggle+FX rate on one row, note below,
@@ -497,8 +499,6 @@
     .fx-field{font-size:14px;}
     .fx-note{font-size:13px;}
     .legend{font-size:13.5px;}
-    .compare-row .clabel{font-size:14px;}
-    .compare-val{font-size:14.5px;}
     .insight{font-size:14px;}
     .readonly-summary a{font-size:13px;}
     .exp-line{font-size:14px;}
