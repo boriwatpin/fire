@@ -385,6 +385,9 @@
   }
   .readonly-summary a{font-size:12px;font-weight:700;color:var(--rust-dark);white-space:nowrap;}
   .readonly-summary a:hover{text-decoration:underline;}
+  .value-inline{font-weight:700;}
+  .value-inline.green{color:var(--green);}
+  .value-inline.red{color:var(--red);}
 
   .steps-list{display:flex;flex-direction:column;gap:2px;}
   .step-row{
@@ -656,7 +659,7 @@
         <div class="steps-list">
           <a class="step-row" href="#household">
             <span class="step-num">1</span>
-            <span class="step-text"><b>Household &amp; Goal</b> — your age, income, expenses, savings, and target retirement age</span>
+            <span class="step-text"><b>Household &amp; Goal</b> — your age, income, expenses (savings is computed automatically), and target retirement age</span>
           </a>
           <a class="step-row" href="#wealth">
             <span class="step-num">2</span>
@@ -696,7 +699,7 @@
         <h2>Retirement Summary<button class="info-btn" data-target="info-summary" aria-expanded="false">?</button></h2>
         <div class="hint">A planner's read on the plan, in relative terms</div>
       </div>
-      <div class="info-panel" id="info-summary">Everything here is a percentage or a year count on purpose — no dollar figures — so it reads the same whether the numbers behind it are small or large. <b>Savings Rate</b> is projected to your target retirement age using your income and savings growth rates, not just today's snapshot. <b>Target Achievement</b> compares your projected balance at retirement to what you actually need. <b>Retirement Years Funded</b> and <b>Extra Spending Capacity</b> both come straight from the same projection engine that drives the chart and table below, so they'll always agree with what you see there.</div>
+      <div class="info-panel" id="info-summary">Everything here is a percentage or a year count on purpose — no dollar figures — so it reads the same whether the numbers behind it are small or large. <b>Savings Rate</b> is projected to your target retirement age using your income growth rate and expense inflation rate, not just today's snapshot — savings is simply whatever gap is left between the two once each has grown. <b>Target Achievement</b> compares your projected balance at retirement to what you actually need. <b>Retirement Years Funded</b> and <b>Extra Spending Capacity</b> both come straight from the same projection engine that drives the chart and table below, so they'll always agree with what you see there.</div>
 
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap;">
         <div id="readinessBadge" class="readiness-badge" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0;background:var(--muted-2);">—</div>
@@ -729,7 +732,7 @@
       <div class="stat-card">
         <div class="label">Additional Needed</div>
         <div class="value" id="statAdditional">—</div>
-        <div class="sub">beyond current savings</div>
+        <div class="sub">beyond current portfolio</div>
       </div>
       <div class="stat-card">
         <div class="label">Annual Spend Supported</div>
@@ -762,14 +765,15 @@
             <input type="number" id="currentAge" value="35">
           </div>
           <div class="field">
-            <label>Household annual income from work<button class="link-btn" id="openStagedIncomeBtn" style="margin-left:8px;padding:0;">Advanced: multiple income periods</button></label>
+            <label>Household annual income from work (after tax)<button class="link-btn" id="openStagedIncomeBtn" style="margin-left:8px;padding:0;">Advanced: multiple income periods</button></label>
             <div class="input-wrap has-prefix"><span class="prefix curSym">฿</span><input type="text" inputmode="decimal" id="annualIncome" data-amount="1"></div>
+            <div class="desc">Take-home pay, not gross — this is what actually becomes savings once expenses are paid, so pre-tax income would overstate how much you're really able to invest.</div>
             <div class="desc" id="stagedIncomeStatus" style="display:none;"></div>
           </div>
           <div class="field" id="incomeGrowthRateField">
             <label>Annual income growth rate</label>
             <div class="input-wrap has-suffix"><input type="number" step="0.1" id="incomeGrowthRate" value="2.0"><span class="suffix">%</span></div>
-            <div class="desc">Raises over time — used to project your Savings Rate forward to your retirement age.</div>
+            <div class="desc">Raises over time — grows your income (and therefore your savings) every year in the projection, not just today's snapshot.</div>
           </div>
           <div class="field">
             <label>Household annual expenses</label>
@@ -782,12 +786,11 @@
             <div class="desc">How much your cost of living rises each year, compounded annually.</div>
           </div>
           <div class="field">
-            <label>Household annual savings</label>
-            <div class="input-wrap has-prefix"><span class="prefix curSym">฿</span><input type="text" inputmode="decimal" id="annualSavings" data-amount="1"></div>
-          </div>
-          <div class="field">
-            <label>Annual savings growth rate</label>
-            <div class="input-wrap has-suffix"><input type="number" step="0.001" id="savingsGrowth" value="0.5"><span class="suffix">%</span></div>
+            <label>Estimated annual savings</label>
+            <div class="readonly-summary">
+              <span id="impliedSavingsDisplay" class="value-inline">—</span>
+            </div>
+            <div class="desc">Income minus expenses, computed automatically — not a separate input. Grows or shrinks on its own as income and expenses each grow at their own rate above.</div>
           </div>
           <div class="field">
             <label>Current investment portfolio</label>
@@ -1004,7 +1007,7 @@
         </table>
       </div>
       <div class="foot-note" style="margin-top:0;margin-bottom:6px;">
-        <b>Math check, every row:</b> working years: End = Begin + Return + Savings − Expenses (± Additional Income/Expenses). Retirement years: End = Begin + Return − Withdrawal (± Life Events), where Withdrawal = Expenses × Retirement Ratio, adjusted for Additional Income/Expenses. "Income In" combines Savings and any active Additional Income; "Outflow" is Expenses pre-retirement or Withdrawal after. Expenses already include your inflation assumption, compounded annually.
+        <b>Math check, every row:</b> working years: End = Begin + Return + Income − Expenses (± Additional Income/Expenses) — this net figure is your savings for the year, computed automatically rather than entered by hand. Retirement years: End = Begin + Return − Withdrawal (± Life Events), where Withdrawal = Expenses × Retirement Ratio, adjusted for Additional Income/Expenses. "Income In" shows your work income plus any active Additional Income; "Outflow" is Expenses pre-retirement or Withdrawal after. Both Income and Expenses grow at their own independent rate, and Expenses already include your inflation assumption, compounded annually.
       </div>
       <div class="foot-note">
         This is an educational estimator, not personalized financial advice. Market returns are uncertain and every investment carries risk — actual outcomes will differ. For guidance specific to your situation, consult a licensed financial advisor. FX rate is user-supplied and for reference only, not a live market rate.
@@ -1189,10 +1192,9 @@ $('fxRateInput').addEventListener('input', ()=>{
 const S = {
   annualIncome: 1650000,
   annualExpenses: 1221000,
-  annualSavings: 594000,
   wealthThailand: 3300000,
 };
-const amountFields = ['annualIncome','annualExpenses','annualSavings','wealthThailand'];
+const amountFields = ['annualIncome','annualExpenses','wealthThailand'];
 
 // USA / Singapore are always entered in USD, independent of the currency toggle.
 const wealthFixedUSD = { wealthUSA: 0, wealthSG: 0 };
@@ -1755,7 +1757,7 @@ $('sensitivitySlider').addEventListener('input', ()=>{
 });
 
 // ---------- Other live-recalc inputs ----------
-['currentAge','targetAge','withdrawalRate','retirementRatio','savingsGrowth','planUntilAge','inflationRate','incomeGrowthRate']
+['currentAge','targetAge','withdrawalRate','retirementRatio','planUntilAge','inflationRate','incomeGrowthRate']
  .forEach(id => $(id).addEventListener('input', recalc));
 $('showBandToggle').addEventListener('change', recalc);
 $('chartWindowSlider').addEventListener('input', () => {
@@ -1763,10 +1765,27 @@ $('chartWindowSlider').addEventListener('input', () => {
   recalc();
 });
 
+// Income at a given age — shared by the projection engine and the Retirement Summary stats,
+// so they can never disagree. Staged periods stack back-to-back from currentAge; outside any
+// defined period (or if staged income isn't active), falls back to constant compounding growth.
+function incomeAtAge(age, currentAge, annualIncome, incomeGrowthRate, useStagedIncome, incomePeriods){
+  if (useStagedIncome && incomePeriods && incomePeriods.length > 0){
+    let cursor = currentAge;
+    for (const period of incomePeriods){
+      const startAge = cursor, endAge = cursor + (period.years || 0);
+      if (age >= startAge && age < endAge) return period.amount;
+      cursor = endAge;
+    }
+    return incomePeriods[incomePeriods.length - 1].amount;
+  }
+  return annualIncome * Math.pow(1 + (incomeGrowthRate || 0), Math.max(0, age - currentAge));
+}
+
 function computeFullProjection(p, sensOverride, extraSpend){
   extraSpend = extraSpend || 0;
   const { currentAge, targetAge, retirementRatio,
-          annualExpenses, annualSavings, savingsGrowth, inflationRate,
+          annualIncome, incomeGrowthRate, useStagedIncome, incomePeriods,
+          annualExpenses, inflationRate,
           thailandRate, usaRate, sgRate, thailandAmt, usaAmt, sgAmt,
           allocThailand, allocUSA, allocSG, targetPortfolio, planUntilAge } = p;
   const sensFn = typeof sensOverride === 'function' ? sensOverride : (() => sensOverride);
@@ -1786,6 +1805,7 @@ function computeFullProjection(p, sensOverride, extraSpend){
     const inflationFactor = Math.pow(1+inflationRate, y);
     const expensesThisYear = annualExpenses * inflationFactor;
     const inflationCost = expensesThisYear - annualExpenses;
+    const incomeThisYear = retiring ? 0 : incomeAtAge(age, currentAge, annualIncome, incomeGrowthRate, useStagedIncome, incomePeriods);
 
     // Recurring additional income / expenses active this specific year (time-limited)
     const incomeExtra = additionalIncomeItems
@@ -1802,11 +1822,12 @@ function computeFullProjection(p, sensOverride, extraSpend){
     let tEnd = ftBal+tRet, uEnd = fuBal+uRet, sEnd = fsBal+sRet;
     let save = 0, withdrawal = 0, outflow = 0;
     if (!retiring){
-      save = annualSavings * Math.pow(1+savingsGrowth, y);
+      // Savings is no longer a manual input — it's simply what's left of Income after
+      // Expenses, plus any active Additional Income/Expenses. Both Income and Expenses
+      // grow at their own independent rate, so the gap between them (i.e. savings) can
+      // widen or narrow over time on its own, rather than needing its own growth rate.
+      save = (incomeThisYear + incomeExtra) - (expensesThisYear + expenseExtra);
       tEnd += save*allocThailand; uEnd += save*allocUSA; sEnd += save*allocSG;
-      // Expenses are deducted every year now, working or retired — offset by any active
-      // additional income, increased by any active additional expenses.
-      outflow = expensesThisYear - incomeExtra + expenseExtra;
     } else {
       withdrawal = expensesThisYear*retirementRatio - incomeExtra + expenseExtra + extraSpend*inflationFactor;
       outflow = withdrawal;
@@ -1830,7 +1851,7 @@ function computeFullProjection(p, sensOverride, extraSpend){
 
     const met = end >= targetPortfolio;
     fullRows.push({
-      age, year:y, begin, ret, save, withdrawal, outflow, incomeExtra, expenseExtra,
+      age, year:y, begin, ret, save, withdrawal, outflow, income:incomeThisYear, incomeExtra, expenseExtra,
       expenses:expensesThisYear, inflationCost, gift:eventTotal, eventDetails:eventsThisYear,
       end, met, retiring, totalBeforeEvents,
       breakdown: { thailand:tEnd, usa:uEnd, singapore:sEnd },
@@ -1874,14 +1895,21 @@ function recalc(){
   const targetAge = +$('targetAge').value || 0;
   const withdrawalRate = (+$('withdrawalRate').value || 0) / 100;
   const retirementRatio = (+$('retirementRatio').value || 0) / 100;
-  const savingsGrowth = (+$('savingsGrowth').value || 0) / 100;
   const incomeGrowthRate = (+$('incomeGrowthRate').value || 0) / 100;
   const sensitivity = (parseFloat($('sensitivitySlider').value) || 0) / 100;
   const inflationRate = (+$('inflationRate').value || 0) / 100;
   const planUntilAge = Math.max(currentAge, +$('planUntilAge').value || 95);
 
   const annualExpenses = S.annualExpenses;
-  const annualSavings = S.annualSavings;
+  const annualIncome = S.annualIncome;
+  // Savings is derived, not entered — today's implied figure, shown read-only so it's
+  // never a mystery what the projection is actually using as its starting point.
+  const impliedAnnualSavings = annualIncome - annualExpenses;
+  const savingsEl = $('impliedSavingsDisplay');
+  if (savingsEl){
+    savingsEl.textContent = formatStatic(toDisplay(impliedAnnualSavings)).replace(/^/, currency==='USD'?'$':'฿');
+    savingsEl.className = 'value-inline ' + (impliedAnnualSavings >= 0 ? 'green' : 'red');
+  }
 
   const thailandRate = (+$('wealthThailandRate').value || 0) / 100;
   const usaRate = (+$('wealthUSARate').value || 0) / 100;
@@ -1914,7 +1942,8 @@ function recalc(){
   // wide around that, so the chart and summary can show a range rather than one guess.
   const projInputs = {
     currentAge, targetAge, retirementRatio,
-    annualExpenses, annualSavings, savingsGrowth, inflationRate,
+    annualIncome, incomeGrowthRate, useStagedIncome, incomePeriods,
+    annualExpenses, inflationRate,
     thailandRate, usaRate, sgRate, thailandAmt, usaAmt, sgAmt,
     allocThailand, allocUSA, allocSG, targetPortfolio, planUntilAge,
   };
@@ -1978,10 +2007,10 @@ function recalc(){
   renderTable(fullRows);
   renderAppendixGrowthChart(fullRows, targetPortfolio, planUntilAge);
   renderAppendixChart(fullRows);
-  renderCompareChart(annualExpenses, annualSavings, currentPortfolio);
+  renderCompareChart(annualExpenses, impliedAnnualSavings, currentPortfolio);
   renderRetirementChart(expected.rows, conservative.rows, optimistic.rows, targetAge, depletedAge, planUntilAge);
   renderPlannerSummary({
-    minRetireAge, targetAge, annualIncome: S.annualIncome, incomeGrowthRate, annualSavings, savingsGrowth,
+    minRetireAge, targetAge, annualIncome, incomeGrowthRate, inflationRate,
     targetPortfolio, expectedRows: expected.rows, conservativeRows: conservative.rows, depletedAge, planUntilAge,
     annualExpenses, maxExtraSpend, useStagedIncome, incomePeriods,
   });
@@ -2003,22 +2032,26 @@ function renderTable(rows){
       ? r.eventDetails.map(e => `${e.category}${e.label ? ' — '+e.label : ''}: ${fmtMoney(e.amount)}`).join(' | ')
       : '';
 
-    // Income In = Savings (pre-retirement) + any active Additional Income, whichever phase
-    const incomeIn = (r.save > 0 ? r.save : 0) + (r.incomeExtra > 0 ? r.incomeExtra : 0);
+    // Income In = your work income (0 once retired) + any active Additional Income, every year
+    const incomeIn = r.income + (r.incomeExtra > 0 ? r.incomeExtra : 0);
     const incomeParts = [];
-    if (r.save > 0) incomeParts.push(`Savings: ${fmtMoney(r.save)}`);
+    if (r.income > 0) incomeParts.push(`Income: ${fmtMoney(r.income)}`);
     if (r.incomeExtra > 0) incomeParts.push(`Additional Income: ${fmtMoney(r.incomeExtra)}`);
     const incomeTitle = incomeParts.join(' | ');
 
-    // Outflow = Expenses (pre-retirement, net of additional income/expense) or Withdrawal (retirement)
+    // Outflow = full Expenses every working year, or Withdrawal once retired — shown for
+    // transparency even though, internally, working-year Expenses are netted directly
+    // against Income into a single "save" figure rather than subtracted separately.
+    const outflowDisplay = r.retiring ? r.withdrawal : (r.expenses + (r.expenseExtra > 0 ? r.expenseExtra : 0));
     const outflowParts = [];
     if (r.retiring){
       outflowParts.push(`Expenses × Retirement Ratio: ${fmtMoney(r.expenses)}`);
-    } else if (r.expenses > 0){
-      outflowParts.push(`Expenses: ${fmtMoney(r.expenses)}`);
+      if (r.expenseExtra > 0) outflowParts.push(`Additional Expense: ${fmtMoney(r.expenseExtra)}`);
+      if (r.incomeExtra > 0) outflowParts.push(`Less Additional Income: ${fmtMoney(r.incomeExtra)}`);
+    } else {
+      if (r.expenses > 0) outflowParts.push(`Expenses: ${fmtMoney(r.expenses)}`);
+      if (r.expenseExtra > 0) outflowParts.push(`Additional Expense: ${fmtMoney(r.expenseExtra)}`);
     }
-    if (r.expenseExtra > 0) outflowParts.push(`Additional Expense: ${fmtMoney(r.expenseExtra)}`);
-    if (r.incomeExtra > 0) outflowParts.push(`Less Additional Income: ${fmtMoney(r.incomeExtra)}`);
     const outflowTitle = outflowParts.join(' | ');
 
     return `
@@ -2028,7 +2061,7 @@ function renderTable(rows){
       <td>${fmtMoney(r.begin)}</td>
       <td>${fmtMoney(r.ret)}</td>
       <td ${incomeTitle ? `title="${incomeTitle.replace(/"/g,'&quot;')}"` : ''}>${incomeIn > 0 ? fmtMoney(incomeIn) : '–'}</td>
-      <td ${outflowTitle ? `title="${outflowTitle.replace(/"/g,'&quot;')}"` : ''}>${r.outflow ? (r.outflow>0?'-':'+')+fmtMoney(Math.abs(r.outflow)) : '–'}</td>
+      <td ${outflowTitle ? `title="${outflowTitle.replace(/"/g,'&quot;')}"` : ''}>${outflowDisplay ? '-'+fmtMoney(Math.abs(outflowDisplay)) : '–'}</td>
       <td ${detail ? `title="${detail.replace(/"/g,'&quot;')}"` : ''}>${r.gift>0 ? '-'+fmtMoney(r.gift) : '–'}</td>
       <td><b>${fmtMoney(r.end)}</b></td>
       <td><span class="pill ${r.met?'yes':'no'}">${r.met?'Yes':'No'}</span></td>
@@ -2038,31 +2071,18 @@ function renderTable(rows){
 }
 
 function renderPlannerSummary(p){
-  const { minRetireAge, targetAge, annualIncome, incomeGrowthRate, annualSavings, savingsGrowth,
+  const { minRetireAge, targetAge, annualIncome, incomeGrowthRate, inflationRate,
           targetPortfolio, expectedRows, conservativeRows, depletedAge, planUntilAge, annualExpenses, maxExtraSpend,
           useStagedIncome, incomePeriods } = p;
 
-  // Savings Rate projected to retirement age — both Income and Savings grow at their own
-  // rate between now and then, so this reflects the rate you'll actually be at when it matters,
-  // not just today's snapshot (this is the whole point of having an income growth rate at all).
-  // If staged income periods are active, use whichever period actually covers your retirement
-  // age instead of compounding a flat growth rate — that's the point of defining them.
+  // Savings Rate projected to retirement age — Income and Expenses each grow at their own
+  // rate between now and then, and Savings is simply whatever gap is left between them,
+  // so this reflects the rate you'll actually be at when it matters, not just today's snapshot.
   const currentAge = expectedRows.length ? expectedRows[0].age : targetAge;
   const yearsToRetirement = Math.max(0, targetAge - currentAge);
-  let projectedIncome;
-  if (useStagedIncome && incomePeriods && incomePeriods.length > 0){
-    let cursor = currentAge;
-    let matchedPeriod = incomePeriods[incomePeriods.length - 1];
-    for (const period of incomePeriods){
-      const startAge = cursor, endAge = cursor + (period.years || 0);
-      if (targetAge >= startAge && targetAge < endAge){ matchedPeriod = period; break; }
-      cursor = endAge;
-    }
-    projectedIncome = matchedPeriod.amount;
-  } else {
-    projectedIncome = annualIncome * Math.pow(1 + (incomeGrowthRate||0), yearsToRetirement);
-  }
-  const projectedSavings = annualSavings * Math.pow(1 + (savingsGrowth||0), yearsToRetirement);
+  const projectedIncome = incomeAtAge(targetAge, currentAge, annualIncome, incomeGrowthRate, useStagedIncome, incomePeriods);
+  const projectedExpenses = annualExpenses * Math.pow(1 + (inflationRate||0), yearsToRetirement);
+  const projectedSavings = projectedIncome - projectedExpenses;
   const savingsRatePct = projectedIncome > 0 ? (projectedSavings / projectedIncome * 100) : 0;
 
   const expRow = expectedRows.find(r => r.age === targetAge) || expectedRows[expectedRows.length - 1];
@@ -2078,7 +2098,7 @@ function renderPlannerSummary(p){
   // Additional annual spending the plan could absorb (as % of current expenses) and still last the full horizon
   const extraSpendPct = annualExpenses > 0 ? (maxExtraSpend / annualExpenses * 100) : 0;
   const spendNote = depletedAge !== null
-    ? `the plan does not currently fund the full retirement horizon even at today's spending level, so there is no additional capacity — consider increasing savings or reducing planned expenses before adding discretionary spending`
+    ? `the plan does not currently fund the full retirement horizon even at today's spending level, so there is no additional capacity — consider increasing income, reducing expenses, or lowering planned retirement spending before adding discretionary spending`
     : `there is room for roughly ${extraSpendPct.toFixed(0)}% in additional annual spending, on top of currently modeled expenses, before the plan would be expected to run out by the end of the planning horizon`;
 
   let timingPhrase;
@@ -2980,7 +3000,7 @@ $('appendixSvg').addEventListener('mouseleave', onAppendixLeave);
 
 // ---------- Save / load (localStorage autosave + JSON export/import) ----------
 const STORAGE_KEY = 'fireEstimatorV4';
-const idFields = ['currentAge','targetAge','withdrawalRate','retirementRatio','savingsGrowth',
+const idFields = ['currentAge','targetAge','withdrawalRate','retirementRatio',
   'sensitivitySlider','wealthThailandRate','wealthUSARate','wealthSGRate','planUntilAge',
   'savingsAllocThailand','savingsAllocUSA','savingsAllocSG','inflationRate','incomeGrowthRate'];
 function collectState(){
@@ -3012,7 +3032,7 @@ function blankState(){
     currency: 'THB',
     fxRate: 33,
     fields: zeroFields,
-    amounts: { annualIncome: 0, annualExpenses: 0, annualSavings: 0, wealthThailand: 0 },
+    amounts: { annualIncome: 0, annualExpenses: 0, wealthThailand: 0 },
     fixedUSD: { wealthUSA: 0, wealthSG: 0 },
     expenses: expenseCategories.map(c => ({ name: c.name, items: c.items.map(() => 0) })),
     eventCategories: ['Home','Car','Medical Care','Inheritance / Gift','Education','Other'],
@@ -3159,7 +3179,6 @@ async function exportToExcel(){
       ['Retirement expenses ratio (%)', +$('retirementRatio').value],
       ['Annual expense inflation rate (%)', +$('inflationRate').value],
       ['Annual income growth rate (%)', +$('incomeGrowthRate').value],
-      ['Annual savings growth rate (%)', +$('savingsGrowth').value],
       ['Sensitivity applied (%)', +$('sensitivitySlider').value],
       ['Thailand growth rate (%)', +$('wealthThailandRate').value],
       ['USA growth rate (%)', +$('wealthUSARate').value],
@@ -3179,7 +3198,7 @@ async function exportToExcel(){
     // since the whole point of this export is cross-checking the math by hand.
     const sheet = wb.addWorksheet('Year-by-Year Projection');
     const headers = [
-      'Age','Year','Phase','Begin Balance','Return','Savings','Additional Income',
+      'Age','Year','Phase','Begin Balance','Return','Income','Net Savings','Additional Income',
       'Expenses (incl. Inflation)','Inflation Cost','Additional Expense','Withdrawal',
       'Life Events Total','Life Event Detail',
       'Thailand Balance','USA Balance','Singapore Balance','End Balance',
@@ -3193,7 +3212,7 @@ async function exportToExcel(){
     });
     sheet.views = [{ state: 'frozen', ySplit: 1, xSplit: 3 }];
 
-    const moneyCols = [4,5,6,7,8,9,10,11,12,14,15,16,17,18,19];
+    const moneyCols = [4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20];
     lastFullRows.forEach(r => {
       const eventDetail = (r.eventDetails && r.eventDetails.length)
         ? r.eventDetails.map(e => `${e.category}${e.label ? ' — '+e.label : ''}: ${fmtMoney(e.amount)}`).join('; ')
@@ -3204,7 +3223,8 @@ async function exportToExcel(){
         r.retiring ? 'Retired' : 'Working',
         toDisplay(r.begin),
         toDisplay(r.ret),
-        r.save > 0 ? toDisplay(r.save) : null,
+        r.income > 0 ? toDisplay(r.income) : null,
+        !r.retiring ? toDisplay(r.save) : null,
         r.incomeExtra > 0 ? toDisplay(r.incomeExtra) : null,
         toDisplay(r.expenses),
         r.inflationCost > 0 ? toDisplay(r.inflationCost) : null,
@@ -3224,7 +3244,7 @@ async function exportToExcel(){
       row.getCell(1).alignment = { horizontal: 'center' };
       row.getCell(2).alignment = { horizontal: 'center' };
       row.getCell(3).alignment = { horizontal: 'center' };
-      const metCell = row.getCell(20);
+      const metCell = row.getCell(21);
       metCell.alignment = { horizontal: 'center' };
       metCell.font = { bold: true, color: { argb: r.met ? 'FF2F7D4F' : 'FFC0392B' } };
       if (r.gift > 0){
@@ -3236,10 +3256,10 @@ async function exportToExcel(){
     sheet.getColumn(1).width = 7;
     sheet.getColumn(2).width = 7;
     sheet.getColumn(3).width = 10;
-    for (let c = 4; c <= 12; c++) sheet.getColumn(c).width = 16;
-    sheet.getColumn(13).width = 34;
-    for (let c = 14; c <= 19; c++) sheet.getColumn(c).width = 16;
-    sheet.getColumn(20).width = 12;
+    for (let c = 4; c <= 13; c++) sheet.getColumn(c).width = 16;
+    sheet.getColumn(14).width = 34;
+    for (let c = 15; c <= 20; c++) sheet.getColumn(c).width = 16;
+    sheet.getColumn(21).width = 12;
 
     const buffer = await wb.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
