@@ -28,7 +28,7 @@
     --shadow: 0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.06);
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;overflow-x:hidden;}
+  html,body{margin:0;padding:0;}
   body{
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
     background:var(--bg);
@@ -92,7 +92,7 @@
   }
 
   /* MAIN */
-  .main{flex:1;padding:32px 40px 60px 40px;max-width:1180px;}
+  .main{flex:1;padding:32px 40px 60px 40px;max-width:1180px;overflow-x:hidden;}
   .page-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:14px;}
   h1{font-size:26px;margin:0 0 6px 0;letter-spacing:-0.02em;}
   .page-head p{margin:0;color:var(--muted);font-size:14.5px;}
@@ -276,6 +276,18 @@
   .modal-card p{margin:0 0 20px 0;font-size:13.5px;line-height:1.6;color:var(--muted);}
   .modal-card p b{color:var(--red);}
   .modal-actions{display:flex;justify-content:flex-end;gap:10px;}
+  .staged-toggle-label{font-size:13px;}
+  .staged-total-box{font-size:13px;}
+  .readiness-badge{font-size:24px;}
+  .readiness-eyebrow{font-size:11px;}
+  .readiness-label{font-size:16px;}
+  .readiness-intro{font-size:12.5px;}
+  .planner-narrative{font-size:14.5px;}
+  .slider-range-labels{font-size:12px;}
+  .toggle-checkbox-label{font-size:13px;}
+  .scale-badge{font-size:12px;}
+  .period-title{font-size:13px;}
+  .period-subtitle{font-size:11.5px;}
 
   .foot-note{font-size:11.5px;color:var(--muted-2);margin-top:18px;line-height:1.6;}
 
@@ -466,8 +478,10 @@
       font-size:16px;
     }
 
-    /* Font sizes tuned for a monitor read comfortably on a phone held closer to the eye —
-       a consistent bump across body/label/caption text, not just a few isolated spots. */
+    /* Font sizes tuned for a phone held closer to the eye — a thorough pass this time,
+       not just the handful of spots noticed first. Table-compact needed its OWN explicit
+       override below since its class-based selectors are more specific than a bare
+       `table{}` rule and were silently winning over the first attempt at this. */
     .card-head h2{font-size:17.5px;}
     .card-head .hint{font-size:13.5px;}
     .field .desc{font-size:12.5px;}
@@ -478,6 +492,33 @@
     .modal-card p{font-size:14.5px;}
     .stat-card .label{font-size:12px;}
     table{font-size:14px;}
+    .table-compact thead th{font-size:11px;}
+    .table-compact tbody td{font-size:13.5px;}
+    .fx-field{font-size:14px;}
+    .fx-note{font-size:13px;}
+    .legend{font-size:13.5px;}
+    .compare-row .clabel{font-size:14px;}
+    .compare-val{font-size:14.5px;}
+    .insight{font-size:14px;}
+    .readonly-summary a{font-size:13px;}
+    .exp-line{font-size:14px;}
+    .recur-head-row{font-size:12px;}
+    .wealth-head-row{font-size:12px;}
+    .staged-toggle-label{font-size:14px;}
+    .staged-total-box{font-size:14px;}
+    .page-head p{font-size:15.5px;}
+    .alert{font-size:15px;}
+    .wlabel{font-size:14.5px;}
+    .readiness-badge{font-size:26px;}
+    .readiness-eyebrow{font-size:12px;}
+    .readiness-label{font-size:17px;}
+    .readiness-intro{font-size:13.5px;}
+    .planner-narrative{font-size:15.5px;}
+    .slider-range-labels{font-size:13px;}
+    .toggle-checkbox-label{font-size:14px;}
+    .scale-badge{font-size:13px;}
+    .period-title{font-size:14px;}
+    .period-subtitle{font-size:12.5px;}
   }
 </style>
 </head>
@@ -585,7 +626,7 @@
       <div class="modal-card" style="max-width:560px;">
         <h3>Multiple income periods</h3>
         <p>Instead of one income that grows at a constant rate, define up to 5 periods — e.g. ฿1.2M for 10 years, then ฿1.8M for 20 years. Ages are filled in automatically, back to back starting from your current age, so periods can't overlap or leave gaps.</p>
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;margin-bottom:16px;">
+        <label class="staged-toggle-label" style="display:flex;align-items:center;gap:8px;font-weight:700;color:var(--muted);cursor:pointer;margin-bottom:16px;">
           <input type="checkbox" id="useStagedIncomeToggle" style="width:15px;height:15px;accent-color:var(--rust);">
           Use these periods instead of the constant growth rate
         </label>
@@ -594,7 +635,7 @@
         </div>
         <div id="stagedIncomeList"></div>
         <button class="btn ghost" id="addIncomePeriodBtn" style="margin-top:8px;">+ Add period</button>
-        <div style="margin-top:16px;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:700;" id="stagedIncomeTotal"></div>
+        <div class="staged-total-box" style="margin-top:16px;padding:12px 14px;border-radius:10px;font-weight:700;" id="stagedIncomeTotal"></div>
         <div class="modal-actions" style="margin-top:16px;">
           <button class="btn ghost" id="stagedIncomeCancelBtn">Cancel</button>
           <button class="btn" id="stagedIncomeApplyBtn">Apply</button>
@@ -658,19 +699,19 @@
       <div class="info-panel" id="info-summary">Everything here is a percentage or a year count on purpose — no dollar figures — so it reads the same whether the numbers behind it are small or large. <b>Savings Rate</b> is projected to your target retirement age using your income and savings growth rates, not just today's snapshot. <b>Target Achievement</b> compares your projected balance at retirement to what you actually need. <b>Retirement Years Funded</b> and <b>Extra Spending Capacity</b> both come straight from the same projection engine that drives the chart and table below, so they'll always agree with what you see there.</div>
 
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap;">
-        <div id="readinessBadge" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;flex-shrink:0;background:var(--muted-2);">—</div>
+        <div id="readinessBadge" class="readiness-badge" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0;background:var(--muted-2);">—</div>
         <div>
-          <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--muted-2);text-transform:uppercase;">Retirement Readiness Score</div>
-          <div id="readinessLabel" style="font-size:16px;font-weight:700;color:var(--text);margin:2px 0 3px 0;">—</div>
+          <div class="readiness-eyebrow" style="font-weight:700;letter-spacing:.05em;color:var(--muted-2);text-transform:uppercase;">Retirement Readiness Score</div>
+          <div id="readinessLabel" class="readiness-label" style="font-weight:700;color:var(--text);margin:2px 0 3px 0;">—</div>
           <button class="link-btn" id="toggleReadinessBreakdown" style="padding:0;">See how this is calculated</button>
         </div>
       </div>
       <div class="info-panel" id="readinessBreakdown">
-        <div style="font-size:12.5px;color:var(--muted-2);margin-bottom:12px;">Four factors, weighted — a plan needs to be strong across <i>all</i> of them to score highly. Hitting your target exactly (100%) is treated as adequate, not exceptional, since it leaves no margin for error.</div>
+        <div class="readiness-intro" style="color:var(--muted-2);margin-bottom:12px;">Four factors, weighted — a plan needs to be strong across <i>all</i> of them to score highly. Hitting your target exactly (100%) is treated as adequate, not exceptional, since it leaves no margin for error.</div>
         <div id="readinessBreakdownBody"></div>
       </div>
 
-      <p id="plannerNarrative" style="font-size:14.5px;line-height:1.7;color:var(--text);margin:0 0 18px 0;"></p>
+      <p id="plannerNarrative" class="planner-narrative" style="line-height:1.7;color:var(--text);margin:0 0 18px 0;"></p>
       <div class="stats" id="plannerStats" style="margin-bottom:0;"></div>
     </div>
 
@@ -888,7 +929,7 @@
       <div class="field">
         <label>Adjust portfolio growth rate by</label>
         <input type="range" id="sensitivitySlider" min="-3" max="3" step="0.1" value="0">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:4px;">
+        <div class="slider-range-labels" style="display:flex;justify-content:space-between;color:var(--muted);margin-top:4px;">
           <span>−3%</span><span id="sensitivityVal" style="font-weight:700;color:var(--rust-dark);">+0.0%</span><span>+3%</span>
         </div>
       </div>
@@ -908,7 +949,7 @@
           <input type="number" id="planUntilAge" value="95">
           <div class="desc">A common conservative planning horizon is 90–100.</div>
         </div>
-        <label style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;padding-bottom:18px;">
+        <label class="toggle-checkbox-label" style="display:flex;align-items:center;gap:7px;font-weight:600;color:var(--muted);cursor:pointer;padding-bottom:18px;">
           <input type="checkbox" id="showBandToggle" checked style="width:15px;height:15px;accent-color:var(--rust);">
           Show conservative–optimistic range
         </label>
@@ -918,7 +959,7 @@
           <label>Show chart through age: <span id="chartWindowLabel">95</span></label>
           <input type="range" id="chartWindowSlider" min="45" max="95" value="95" step="1">
         </div>
-        <span id="chartScaleBadge" style="display:inline-flex;align-items:center;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;"></span>
+        <span id="chartScaleBadge" class="scale-badge" style="display:inline-flex;align-items:center;padding:5px 12px;border-radius:20px;font-weight:700;"></span>
       </div>
       <div class="chart-wrap">
         <svg id="runwaySvg" width="100%" height="370" viewBox="0 0 1000 370" preserveAspectRatio="none" style="cursor:crosshair;"></svg>
@@ -980,7 +1021,7 @@
           <label>Show chart through age: <span id="appendixGrowthWindowLabel">95</span></label>
           <input type="range" id="appendixGrowthWindowSlider" min="45" max="95" value="95" step="1">
         </div>
-        <span id="appendixGrowthScaleBadge" style="display:inline-flex;align-items:center;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;"></span>
+        <span id="appendixGrowthScaleBadge" class="scale-badge" style="display:inline-flex;align-items:center;padding:5px 12px;border-radius:20px;font-weight:700;"></span>
       </div>
       <div class="chart-wrap">
         <svg id="appendixGrowthSvg" width="100%" height="480" viewBox="0 0 1000 480" preserveAspectRatio="none" style="cursor:crosshair;"></svg>
@@ -1533,8 +1574,8 @@ function renderStagedIncomeModal(){
   list.innerHTML = withAges.map((p, i) => `
     <div class="recur-row" data-id="${p.id}" style="grid-template-columns:1fr 150px 130px 34px;">
       <div>
-        <div style="font-weight:700;font-size:13px;">Period ${i+1}</div>
-        <div style="font-size:11.5px;color:var(--muted-2);">${p.years > 0 ? `Covers ages ${p.startAge}–${p.endAge}` : 'Enter years below'}</div>
+        <div class="period-title" style="font-weight:700;">Period ${i+1}</div>
+        <div class="period-subtitle" style="color:var(--muted-2);">${p.years > 0 ? `Covers ages ${p.startAge}–${p.endAge}` : 'Enter years below'}</div>
       </div>
       <div class="input-wrap has-prefix"><span class="prefix curSym">${currency==='USD'?'$':'฿'}</span><input type="text" inputmode="decimal" class="staged-amount" value="${p.amount ? formatStatic(toDisplay(p.amount)) : ''}"></div>
       <input type="number" class="staged-years" value="${p.years || ''}" min="1" placeholder="Years">
