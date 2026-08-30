@@ -253,11 +253,11 @@
   .chevron.open{transform:rotate(90deg);}
 
   .btn{
-    background:#4f46e5;color:#fff;border:none;border-radius:9px;
+    background:#4f6fb0;color:#fff;border:none;border-radius:9px;
     padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;
     display:inline-flex;align-items:center;gap:6px;font-family:inherit;
   }
-  .btn:hover{background:#4338ca;}
+  .btn:hover{background:#425d96;}
   .btn.ghost{background:var(--card);color:var(--text);border:1px solid var(--border);}
   .btn.ghost:hover{background:rgba(255,255,255,.06);}
   .btn.danger{background:var(--card);color:var(--red);border:1px solid rgba(248,113,113,.35);}
@@ -842,13 +842,13 @@
         <div></div><div>Current Balance</div><div>Growth Rate</div><div>New Savings %</div><div></div>
       </div>
       <div class="wealth-row" data-loc="thailand">
-        <div class="wlabel"><span class="wdot" style="background:#8fa3c9;"></span>Thailand</div>
+        <div class="wlabel"><span class="wdot" style="background:#a8b3c7;"></span>Thailand</div>
         <div class="input-wrap has-prefix"><span class="prefix curSym">฿</span><input type="text" inputmode="decimal" id="wealthThailand"></div>
         <div class="input-wrap has-suffix"><input type="number" step="0.1" id="wealthThailandRate" value="3.3"><span class="suffix">%</span></div>
         <div class="input-wrap has-suffix"><input type="number" step="1" id="savingsAllocThailand" value="100"><span class="suffix">%</span></div>
       </div>
       <div class="wealth-row" data-loc="usa">
-        <div class="wlabel"><span class="wdot" style="background:#4f8bf0;"></span>USA</div>
+        <div class="wlabel"><span class="wdot" style="background:#38a3d1;"></span>USA</div>
         <div class="input-wrap has-prefix"><span class="prefix">$</span><input type="text" inputmode="decimal" id="wealthUSA"></div>
         <div class="input-wrap has-suffix"><input type="number" step="0.1" id="wealthUSARate" value="6.0"><span class="suffix">%</span></div>
         <div class="input-wrap has-suffix"><input type="number" step="1" id="savingsAllocUSA" value="0"><span class="suffix">%</span></div>
@@ -971,13 +971,13 @@
         <svg id="runwaySvg" width="100%" height="370" viewBox="0 0 1000 370" preserveAspectRatio="none" style="cursor:crosshair;"></svg>
       </div>
       <div class="legend">
-        <span><span class="swatch" style="background:#8fa3c9;"></span>Balance: accumulating</span>
+        <span><span class="swatch" style="background:#a8b3c7;"></span>Balance: accumulating</span>
         <span><span class="swatch" style="background:#ff6b6b;"></span>Balance: withdrawing</span>
         <span><span class="swatch" style="background:#fff;opacity:.35;"></span>Retirement age</span>
         <span><span class="swatch" style="background:#34d399;"></span>Return (per year)</span>
         <span><span class="swatch" style="background:#ff6b6b;opacity:.55;"></span>Outflow — Expenses or Withdrawal (per year)</span>
         <span><span class="swatch" style="background:#8b94a3;"></span>Full expenses (per year)</span>
-        <span id="runwayBandLegend"><span class="swatch" style="background:#5b9bf5;opacity:.35;"></span>Conservative–optimistic range (tapers over long horizons)</span>
+        <span id="runwayBandLegend"><span class="swatch" style="background:#38a3d1;opacity:.35;"></span>Conservative–optimistic range (tapers over long horizons)</span>
         <span id="runwayGiftLegend" style="display:none;"><span class="swatch" style="background:#f43f5e;"></span>Life event</span>
       </div>
       <div class="insight" id="runwayGrowthInsight" style="margin-top:12px;"></div>
@@ -1033,8 +1033,8 @@
         <svg id="appendixGrowthSvg" width="100%" height="480" viewBox="0 0 1000 480" preserveAspectRatio="none" style="cursor:crosshair;"></svg>
       </div>
       <div class="legend">
-        <span><span class="swatch" style="background:#8fa3c9;"></span>Thailand</span>
-        <span><span class="swatch" style="background:#4f8bf0;"></span>USA</span>
+        <span><span class="swatch" style="background:#a8b3c7;"></span>Thailand</span>
+        <span><span class="swatch" style="background:#38a3d1;"></span>USA</span>
         <span><span class="swatch" style="background:#2dd4bf;"></span>Singapore</span>
         <span><span class="swatch" style="background:#c7cad6;"></span>Combined total (log scale only)</span>
         <span><span class="swatch" style="background:#ff6b6b;"></span>Withdrawal (separate panel, own scale)</span>
@@ -1714,8 +1714,8 @@ $('stagedIncomeApplyBtn').addEventListener('click', () => {
 function renderWealthComposition(thailandAmt, usaAmt, sgAmt, thailandRate, usaRate, sgRate){
   const total = thailandAmt + usaAmt + sgAmt;
   const segs = [
-    { label:'Thailand', val:thailandAmt, color:'#8fa3c9' },
-    { label:'USA', val:usaAmt, color:'#4f8bf0' },
+    { label:'Thailand', val:thailandAmt, color:'#a8b3c7' },
+    { label:'USA', val:usaAmt, color:'#38a3d1' },
     { label:'Singapore', val:sgAmt, color:'#2dd4bf' },
   ];
   const bar = $('wealthBar');
@@ -2183,7 +2183,7 @@ function renderCompareChart(annualExpenses, annualSavings, currentPortfolio){
   const items = [
     { label:'Annual Expenses', val: annualExpenses, color:'var(--red)' },
     { label:'Annual Savings', val: annualSavings, color:'var(--rust)' },
-    { label:'Current Portfolio', val: currentPortfolio, color:'#4f8bf0' },
+    { label:'Current Portfolio', val: currentPortfolio, color:'#38a3d1' },
   ];
   const maxVal = Math.max(...items.map(i=>i.val), 1);
   const root = $('compareChart');
@@ -2342,8 +2342,8 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
   const badge = $('chartScaleBadge');
   if (badge){
     badge.textContent = useLog ? 'Log scale' : 'Linear scale';
-    badge.style.background = useLog ? 'var(--red-bg)' : 'rgba(91,155,245,.15)';
-    badge.style.color = useLog ? 'var(--red)' : '#5b9bf5';
+    badge.style.background = useLog ? 'var(--red-bg)' : 'rgba(56,163,209,.15)';
+    badge.style.color = useLog ? 'var(--red)' : '#38a3d1';
   }
 
   const retireIdx = rows.findIndex(r => r.retiring);
@@ -2369,7 +2369,7 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
       botPts.push(`${xAt(i).toFixed(1)},${yAt(consV).toFixed(1)}`);
     }
     const bandPath = `M${topPts.join(' L')} L${botPts.reverse().join(' L')} Z`;
-    bandFill = `<path d="${bandPath}" fill="#5b9bf5" fill-opacity="0.10"></path>`;
+    bandFill = `<path d="${bandPath}" fill="#38a3d1" fill-opacity="0.10"></path>`;
   }
   const bandLegendEl = $('runwayBandLegend');
   if (bandLegendEl) bandLegendEl.style.display = showBand ? 'inline' : 'none';
@@ -2380,7 +2380,7 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
     (rows[i+1].retiring ? postSegs : preSegs).push(seg);
   }
   const lineSeg = (s,color,w) => `<line x1="${s.x1.toFixed(1)}" y1="${s.y1.toFixed(1)}" x2="${s.x2.toFixed(1)}" y2="${s.y2.toFixed(1)}" stroke="${color}" stroke-width="${w}"></line>`;
-  const lines = preSegs.map(s=>lineSeg(s,'#8fa3c9',2.5)).join('') + postSegs.map(s=>lineSeg(s,'#ff6b6b',3)).join('');
+  const lines = preSegs.map(s=>lineSeg(s,'#a8b3c7',2.5)).join('') + postSegs.map(s=>lineSeg(s,'#ff6b6b',3)).join('');
 
   const retireVertLine = retireIdx >= 0 ? `<line x1="${xAt(retireIdx).toFixed(1)}" y1="${mainY0}" x2="${xAt(retireIdx).toFixed(1)}" y2="${subY1}" stroke="#fff" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="5,4"></line>` : '';
 
@@ -2594,8 +2594,8 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   const badge = $('appendixGrowthScaleBadge');
   if (badge){
     badge.textContent = useLog ? 'Log scale' : 'Linear scale';
-    badge.style.background = useLog ? 'var(--red-bg)' : 'rgba(91,155,245,.15)';
-    badge.style.color = useLog ? 'var(--red)' : '#5b9bf5';
+    badge.style.background = useLog ? 'var(--red-bg)' : 'rgba(56,163,209,.15)';
+    badge.style.color = useLog ? 'var(--red)' : '#38a3d1';
   }
   const note = $('appendixGrowthNote');
   if (note){
@@ -2615,7 +2615,7 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
     shading = `<rect x="${shadeX.toFixed(1)}" y="${mainY0}" width="${(W-padR-shadeX).toFixed(1)}" height="${mainH}" fill="#f43f5e" fill-opacity="0.05"></rect>`;
   }
 
-  const bucketColors = { thailand:'#8fa3c9', usa:'#4f8bf0', singapore:'#2dd4bf' };
+  const bucketColors = { thailand:'#a8b3c7', usa:'#38a3d1', singapore:'#2dd4bf' };
   const bucketOrder = ['thailand','usa','singapore'];
   const barW = Math.max(2, (plotW/n) * 0.62);
 
