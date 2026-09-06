@@ -108,6 +108,15 @@
   }
   .status-pill.behind{background:var(--red-bg);color:var(--red);}
 
+  .lang-switch{
+    display:inline-flex;align-items:center;gap:6px;
+    background:transparent;color:var(--muted);
+    font-weight:700;font-size:12px;text-decoration:none;
+    padding:5px 11px;border-radius:20px;border:1px solid var(--border);
+    height:fit-content;transition:background .15s, color .15s;
+  }
+  .lang-switch:hover{background:rgba(255,255,255,.06);color:var(--text);}
+
   /* CURRENCY BAR */
   .currency-bar{
     display:flex;align-items:center;gap:16px;flex-wrap:wrap;
@@ -594,6 +603,7 @@
         <p>Your path to Financial Independence, Retire Early — updated live from your inputs below.</p>
       </div>
       <div id="headerStatus" class="status-pill">On track</div>
+      <a class="lang-switch" href="fire_estimator_TH.html">🌐 ไทย</a>
     </div>
 
     <div class="currency-bar">
