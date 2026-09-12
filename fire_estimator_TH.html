@@ -216,7 +216,7 @@
     background:var(--card);border:1px solid var(--border);border-radius:12px;
     padding:12px 18px;margin-bottom:18px;box-shadow:var(--shadow);
   }
-  .currency-bar-row1{display:flex;align-items:center;gap:16px;}
+  .currency-bar-row1{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
   .seg{display:flex;background:var(--tint-2);border-radius:9px;padding:3px;}
   .seg button{
     border:none;background:transparent;padding:6px 14px;border-radius:7px;
@@ -967,8 +967,15 @@
       <div class="mix-total" id="savingsAllocTotal">รวม % เงินออมใหม่: 100%</div>
       <div class="fx-note" style="margin:8px 0 16px 0;">ยอดเงินของสหรัฐฯ และสิงคโปร์ป้อนเป็นดอลลาร์สหรัฐเสมอ แล้วแปลงเป็นบาทภายในระบบโดยใช้อัตราแลกเปลี่ยนของคุณ "% เงินออมใหม่" จะแบ่งเงินออมรายปีของคุณไปยังทั้งสามแห่งในแต่ละปี และควรรวมกันได้ 100%</div>
 
-      <div id="wealthBar" class="wealth-bar"></div>
-      <div class="legend" id="wealthLegend" style="margin-top:10px;"></div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;">
+        <div style="flex:2;min-width:260px;">
+          <div id="wealthBar" class="wealth-bar"></div>
+          <div class="legend" id="wealthLegend" style="margin-top:10px;"></div>
+        </div>
+        <div style="flex:1;min-width:180px;max-width:220px;">
+          <svg id="wealthDonutSvg" width="100%" height="170" viewBox="0 0 200 200"></svg>
+        </div>
+      </div>
 
       <div class="insight" id="wealthInsight" style="margin-top:14px;"></div>
     </div>
@@ -980,7 +987,15 @@
         <h2>ค่าใช้จ่ายรายเดือน</h2>
         <div class="hint" id="monthlyTotalHint">Total: ฿0 / mo</div>
       </div>
-      <div id="expenseAccordion"></div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;">
+        <div style="flex:2;min-width:260px;">
+          <div id="expenseAccordion"></div>
+        </div>
+        <div style="flex:1;min-width:200px;max-width:280px;">
+          <svg id="expenseDonutSvg" width="100%" height="200" viewBox="0 0 200 200"></svg>
+          <div id="expenseDonutLegend" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;"></div>
+        </div>
+      </div>
       <div style="margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
         <button class="btn" id="syncExpensesBtn">ใช้ยอดนี้ × 12 เป็นค่าใช้จ่ายรายปี</button>
         <span class="fx-note" id="expenseDriftNote" style="margin:0;"></span>
@@ -1043,6 +1058,13 @@
         <div class="slider-range-labels" style="display:flex;justify-content:space-between;color:var(--muted);margin-top:4px;">
           <span>−3%</span><span id="sensitivityVal" style="font-weight:700;color:var(--rust-dark);">+0.0%</span><span>+3%</span>
         </div>
+      </div>
+      <div class="chart-wrap" style="margin-top:18px;">
+        <svg id="sensitivityChartSvg" width="100%" height="220" viewBox="0 0 1000 220" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="legend">
+        <span><span class="swatch" style="background:var(--chart-blue);"></span>อายุเกษียณ</span>
+        <span><span class="swatch" style="background:var(--chart-danger);"></span>เงินหมดเมื่ออายุ</span>
       </div>
     </div>
   </section>
@@ -1431,6 +1453,7 @@ function refreshExpenseTotals(){
     grand += sub;
   });
   $('monthlyTotalHint').textContent = `Total: ${fmtMoney(grand)} / mo · ${fmtMoney(grand*12)} / yr`;
+  renderExpenseDonut();
 
   const annualFromMonthly = grand * 12;
   const driftNote = $('expenseDriftNote');
@@ -1444,6 +1467,56 @@ function refreshExpenseTotals(){
     }
   }
   return grand;
+}
+
+// ---------- Expense category donut ----------
+const expenseCategoryColors = ['var(--chart-blue)', 'var(--chart-return)', 'var(--chart-needs)', 'var(--chart-singapore)'];
+function renderExpenseDonut(){
+  const svg = $('expenseDonutSvg');
+  const legend = $('expenseDonutLegend');
+  if (!svg || !legend) return;
+
+  const subtotals = expenseCategories.map(cat => cat.items.reduce((s,i)=>s+i[1],0));
+  const grand = subtotals.reduce((s,v)=>s+v,0);
+
+  const cx = 100, cy = 100, r = 72, strokeW = 30;
+  const circumference = 2 * Math.PI * r;
+
+  if (grand <= 0){
+    svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--chart-gridline)" stroke-width="${strokeW}"></circle>
+      <text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="12" fill="var(--chart-axislabel)">ยังไม่มีค่าใช้จ่าย</text>`;
+    legend.innerHTML = '';
+    return;
+  }
+
+  let offset = 0;
+  let segments = '';
+  expenseCategories.forEach((cat, i) => {
+    const val = subtotals[i];
+    if (val <= 0) return;
+    const frac = val / grand;
+    const dash = frac * circumference;
+    const color = expenseCategoryColors[i % expenseCategoryColors.length];
+    segments += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${strokeW}"
+      stroke-dasharray="${dash.toFixed(1)} ${(circumference-dash).toFixed(1)}"
+      stroke-dashoffset="${(-offset).toFixed(1)}" transform="rotate(-90 ${cx} ${cy})"></circle>`;
+    offset += dash;
+  });
+
+  svg.innerHTML = `${segments}
+    <text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text)">${fmtMoney(grand)}</text>
+    <text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="10.5" fill="var(--chart-axislabel)">ต่อเดือน</text>`;
+
+  legend.innerHTML = expenseCategories.map((cat, i) => {
+    const val = subtotals[i];
+    const pct = grand > 0 ? Math.round((val/grand)*100) : 0;
+    const color = expenseCategoryColors[i % expenseCategoryColors.length];
+    return `<div style="display:flex;align-items:center;gap:8px;">
+      <span style="width:10px;height:10px;border-radius:3px;background:${color};flex-shrink:0;"></span>
+      <span style="color:var(--text);flex:1;">${cat.name}</span>
+      <span style="color:var(--muted);font-weight:700;">${pct}%</span>
+    </div>`;
+  }).join('');
 }
 
 $('annualExpenses').addEventListener('input', refreshExpenseTotals);
@@ -1855,6 +1928,37 @@ function renderWealthComposition(thailandAmt, usaAmt, sgAmt, thailandRate, usaRa
 
   const weighted = total > 0 ? (thailandAmt*thailandRate + usaAmt*usaRate + sgAmt*sgRate) / total : 0;
   $('wealthInsight').innerHTML = `พอร์ตปัจจุบันรวมทั้งหมด: <b>${fmtMoney(total)}</b> ผลตอบแทนถัวเฉลี่ยถ่วงน้ำหนักของทั้งสามแห่ง: <b>${(weighted*100).toFixed(2)}%</b> (สัดส่วนปัจจุบัน — จะเปลี่ยนแปลงตามเวลาเนื่องจากแต่ละแห่งเติบโตในอัตราของตัวเอง)`;
+
+  renderWealthDonut(segs, total);
+}
+
+function renderWealthDonut(segs, total){
+  const svg = $('wealthDonutSvg');
+  if (!svg) return;
+  const cx = 100, cy = 100, r = 72, strokeW = 30;
+  const circumference = 2 * Math.PI * r;
+
+  if (total <= 0){
+    svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--chart-gridline)" stroke-width="${strokeW}"></circle>
+      <text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="12" fill="var(--chart-axislabel)">ยังไม่มียอดเงิน</text>`;
+    return;
+  }
+
+  let offset = 0;
+  let segments = '';
+  segs.forEach(s => {
+    if (s.val <= 0) return;
+    const frac = s.val / total;
+    const dash = frac * circumference;
+    segments += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${strokeW}"
+      stroke-dasharray="${dash.toFixed(1)} ${(circumference-dash).toFixed(1)}"
+      stroke-dashoffset="${(-offset).toFixed(1)}" transform="rotate(-90 ${cx} ${cy})"></circle>`;
+    offset += dash;
+  });
+
+  svg.innerHTML = `${segments}
+    <text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text)">${fmtMoney(total)}</text>
+    <text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="10.5" fill="var(--chart-axislabel)">รวม</text>`;
 }
 
 // ---------- Savings Allocation (which country new annual savings flow into) ----------
@@ -2083,6 +2187,7 @@ function recalc(){
   const bandWidth = 0.03, bandDecayYears = 15, bandFloor = 0.35;
   const bandTaper = y => bandFloor + (1 - bandFloor) * Math.exp(-y / bandDecayYears);
   const expected = computeFullProjection(projInputs, sensitivity);
+  renderSensitivityChart(projInputs, sensitivity);
   const conservative = computeFullProjection(projInputs, y => sensitivity - bandWidth * bandTaper(y));
   const optimistic = computeFullProjection(projInputs, y => sensitivity + bandWidth * bandTaper(y));
   const fullRows = expected.rows;
@@ -2327,6 +2432,72 @@ function renderCompareChart(annualExpenses, annualSavings, currentPortfolio){
   const savingsRate = annualExpenses+annualSavings > 0 ? (annualSavings/(annualExpenses+annualSavings)*100) : 0;
   const yearsCovered = annualExpenses > 0 ? (currentPortfolio/annualExpenses) : 0;
   $('compareInsight').innerHTML = `พอร์ตปัจจุบันของคุณครอบคลุมค่าใช้จ่ายรายปีปัจจุบันได้ประมาณ <b>${yearsCovered.toFixed(1)} ปี</b> จากยอดใช้จ่ายและออมรวมกัน ประมาณ <b>${savingsRate.toFixed(0)}%</b> เป็นเงินออม`;
+}
+
+// ---------- Sensitivity outcome chart ----------
+function renderSensitivityChart(projInputs, currentSensitivity){
+  const svg = $('sensitivityChartSvg');
+  if (!svg) return;
+  const { currentAge, planUntilAge } = projInputs;
+  const points = [-3,-2,-1,0,1,2,3];
+
+  const results = points.map(pct => {
+    const proj = computeFullProjection(projInputs, pct/100);
+    const metRow = proj.rows.find(r => r.met);
+    return {
+      pct,
+      retireAge: metRow ? metRow.age : null,
+      depletedAge: proj.depletedAge,
+    };
+  });
+
+  const W = 1000, H = 220, padL = 46, padR = 16, padT = 22, padB = 30;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const ageSpan = Math.max(1, planUntilAge - currentAge);
+  const yAt = age => padT + plotH - ((age - currentAge) / ageSpan) * plotH;
+  const groupW = plotW / points.length;
+  const barW = Math.min(26, groupW * 0.3);
+
+  const currentIdx = points.reduce((best,p,i) => Math.abs(p - currentSensitivity*100) < Math.abs(points[best]-currentSensitivity*100) ? i : best, 0);
+
+  let gridlines = '';
+  const ticks = 4;
+  for (let t=0; t<=ticks; t++){
+    const age = currentAge + (ageSpan/ticks)*t;
+    const yy = yAt(age);
+    gridlines += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${W-padR}" y2="${yy.toFixed(1)}" stroke="var(--chart-gridline)" stroke-width="1"></line>
+    <text x="${padL-8}" y="${(yy+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--chart-axislabel)">${Math.round(age)}</text>`;
+  }
+
+  let bars = '';
+  results.forEach((r, i) => {
+    const cx = padL + groupW*i + groupW/2;
+    const isCurrent = i === currentIdx;
+    const highlight = isCurrent ? `<rect x="${(cx-groupW/2+2).toFixed(1)}" y="${padT}" width="${(groupW-4).toFixed(1)}" height="${plotH}" fill="var(--chart-blue)" fill-opacity="0.06" rx="4"></rect>` : '';
+
+    const retireReached = r.retireAge !== null;
+    const retireTopAge = retireReached ? r.retireAge : planUntilAge;
+    const retireY = yAt(retireTopAge);
+    const retireX = cx - barW - 2;
+    const retireBar = `<rect x="${retireX.toFixed(1)}" y="${retireY.toFixed(1)}" width="${barW.toFixed(1)}" height="${(padT+plotH-retireY).toFixed(1)}" rx="2" fill="var(--chart-blue)" fill-opacity="${retireReached?0.85:0.35}"${retireReached?'':' stroke="var(--chart-blue)" stroke-dasharray="3,2" stroke-width="1"'}></rect>`;
+    const retireLabel = `<text x="${(retireX+barW/2).toFixed(1)}" y="${(retireY-6).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--chart-blue)">${retireReached ? r.retireAge : 'ไม่ถึง'}</text>`;
+
+    const runsOutKnown = r.depletedAge !== null;
+    const runsOutColor = runsOutKnown ? 'var(--chart-danger)' : 'var(--chart-return)';
+    const runsOutTopAge = runsOutKnown ? r.depletedAge : planUntilAge;
+    const runsOutY = yAt(runsOutTopAge);
+    const runsOutX = cx + 2;
+    const runsOutBar = `<rect x="${runsOutX.toFixed(1)}" y="${runsOutY.toFixed(1)}" width="${barW.toFixed(1)}" height="${(padT+plotH-runsOutY).toFixed(1)}" rx="2" fill="${runsOutColor}" fill-opacity="${runsOutKnown?0.85:0.35}"${runsOutKnown?'':` stroke="${runsOutColor}" stroke-dasharray="3,2" stroke-width="1"`}></rect>`;
+    const runsOutLabel = `<text x="${(runsOutX+barW/2).toFixed(1)}" y="${(runsOutY-6).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${runsOutColor}">${runsOutKnown ? r.depletedAge : 'ไม่หมด'}</text>`;
+
+    const pctLabel = `<text x="${cx.toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10.5" font-weight="${isCurrent?700:600}" fill="${isCurrent?'var(--text)':'var(--chart-axislabel)'}">${r.pct>0?'+':''}${r.pct}%</text>`;
+
+    bars += highlight + retireBar + retireLabel + runsOutBar + runsOutLabel + pctLabel;
+  });
+
+  svg.innerHTML = `${gridlines}
+    <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+plotH}" stroke="var(--chart-axisline)"></line>
+    ${bars}`;
 }
 
 // ---------- Hover tooltip for the Portfolio Growth & Retirement Runway chart ----------
