@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iOS Visibility Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .section {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f9f9f9;
+      border-left: 4px solid #007AFF;
+      border-radius: 4px;
+    }
+
+    .section h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .status-box {
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .status-visible {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .status-hidden {
+      background: #f44336;
+      color: white;
+    }
+
+    .status-blurred {
+      background: #FF9800;
+      color: white;
+    }
+
+    .log {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+
+    .log-entry {
+      padding: 4px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+
+    .timestamp {
+      color: #999;
+      font-size: 10px;
+    }
+
+    button {
+      background: #007AFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:active {
+      opacity: 0.8;
+    }
+
+    .blurred {
+      filter: blur(15px);
+      opacity: 0.3;
+    }
+
+    .instructions {
+      background: #e3f2fd;
+      border-left-color: #2196F3;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .instructions ol {
+      margin-left: 20px;
+      line-height: 1.6;
+    }
+
+    .demo-content {
+      margin-top: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .demo-content h3 {
+      margin-bottom: 10px;
+    }
+
+    .demo-content p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 iOS Webapp Visibility Test</h1>
+
+    <div class="instructions">
+      <h2>Test Instructions:</h2>
+      <ol>
+        <li>Open this page on iOS (iPhone/iPad)</li>
+        <li>Add to Home Screen as a web app</li>
+        <li>Launch the web app</li>
+        <li>Watch the status indicator and logs</li>
+        <li>Swipe up or press home button</li>
+        <li>Check if blur is visible BEFORE app switcher snapshot</li>
+        <li>Return to app and check console logs for timing</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>App Visibility Status</h2>
+      <div id="status" class="status-box status-visible">
+        📱 APP VISIBLE (Ready to test)
+      </div>
+      <p style="font-size: 12px; color: #666; margin-top: 10px;">
+        This box color changes when visibility changes. Watch this as you swipe to home.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Blur Status</h2>
+      <div id="blur-status" class="status-box" style="background: #2196F3; color: white;">
+        🔍 UNBLURRED (No activity timeout yet)
+      </div>
+      <p style="font-size: 12px; color: #666; margin-top: 10px;">
+        Wait 5 seconds without moving to see blur effect
+      </p>
+    </div>
+
+    <div class="demo-content">
+      <h3>🔐 Sensitive Content Demo</h3>
+      <p>This colorful gradient simulates sensitive app content.</p>
+      <p>When blurred, this should be unreadable in the app switcher.</p>
+    </div>
+
+    <div class="section">
+      <h2>Test Controls</h2>
+      <button onclick="simulateBlur()">Simulate Blur (Test)</button>
+      <button onclick="resetBlur()">Reset Blur</button>
+      <button onclick="clearLogs()">Clear Logs</button>
+    </div>
+
+    <div class="section">
+      <h2>Event Log</h2>
+      <p style="font-size: 12px; color: #666; margin-bottom: 10px;">
+        All events are logged here with precise timestamps (milliseconds)
+      </p>
+      <div id="log" class="log">
+        <div class="log-entry">
+          <span class="timestamp">[0ms]</span> Page loaded. Waiting for events...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let startTime = Date.now();
+    let isBlurred = false;
+    let idleTimer = null;
+    const IDLE_TIME = 5000; // 5 seconds for testing (use 10000 for production)
+
+    function getElapsedTime() {
+      return Date.now() - startTime;
+    }
+
+    function log(message) {
+      const elapsed = getElapsedTime();
+      const logDiv = document.getElementById("log");
+      const entry = document.createElement("div");
+      entry.className = "log-entry";
+      entry.innerHTML = `<span class="timestamp">[${elapsed}ms]</span> ${message}`;
+      logDiv.appendChild(entry);
+      logDiv.scrollTop = logDiv.scrollHeight;
+      console.log(`[${elapsed}ms] ${message}`);
+    }
+
+    function clearLogs() {
+      document.getElementById("log").innerHTML = '';
+      startTime = Date.now();
+      log("Logs cleared");
+    }
+
+    function updateStatus(visible, message) {
+      const statusDiv = document.getElementById("status");
+      statusDiv.textContent = message;
+      statusDiv.className = "status-box " + (visible ? "status-visible" : "status-hidden");
+    }
+
+    function updateBlurStatus(blurred, message) {
+      const blurDiv = document.getElementById("blur-status");
+      blurDiv.textContent = message;
+      blurDiv.className = "status-box " + (blurred ? "status-blurred" : "") + (blurred ? "" : "status-visible");
+    }
+
+    function blurPage() {
+      isBlurred = true;
+      document.body.classList.add("blurred");
+      document.querySelector(".demo-content").classList.add("blurred");
+      updateBlurStatus(true, "🔲 BLURRED (Content hidden)");
+      log("✅ PAGE BLURRED - Check app switcher now!");
+    }
+
+    function unblurPage() {
+      isBlurred = false;
+      document.body.classList.remove("blurred");
+      document.querySelector(".demo-content").classList.remove("blurred");
+      updateBlurStatus(false, "🔍 UNBLURRED (Content visible)");
+      log("✅ PAGE UNBLURRED");
+    }
+
+    function resetIdleTimer() {
+      clearTimeout(idleTimer);
+      if (isBlurred) {
+        unblurPage();
+      }
+      idleTimer = setTimeout(() => {
+        blurPage();
+      }, IDLE_TIME);
+    }
+
+    function simulateBlur() {
+      log("🧪 Manual blur triggered (for testing)");
+      blurPage();
+    }
+
+    function resetBlur() {
+      log("🧪 Manual blur reset (for testing)");
+      unblurPage();
+      resetIdleTimer();
+    }
+
+    // Track activity (movement/touch)
+    ["touchstart", "mousedown", "keydown", "click"].forEach((evt) => {
+      document.addEventListener(evt, () => {
+        log(`📌 Activity detected: ${evt}`);
+        resetIdleTimer();
+      }, true);
+    });
+
+    // CRITICAL TEST: Visibility Change
+    document.addEventListener("visibilitychange", () => {
+      const elapsed = getElapsedTime();
+      if (document.hidden) {
+        log(`⚠️  [CRITICAL] visibilitychange fired: document.hidden = true (${elapsed}ms)`);
+        log("❓ QUESTION: Did this fire BEFORE app switcher screenshot?");
+        log("➡️  Attempting immediate blur...");
+        blurPage();
+        clearTimeout(idleTimer);
+      } else if (document.visibilityState === "visible") {
+        log(`✅ [CRITICAL] visibilitychange fired: document.visibilityState = visible (${elapsed}ms)`);
+        log("App returned from background");
+        unblurPage();
+        resetIdleTimer();
+      }
+    });
+
+    // Initial state
+    log("Test page ready. Instructions:");
+    log("1. Add this page to Home Screen as web app");
+    log("2. Launch from home screen");
+    log("3. Wait 5 seconds without moving (or tap 'Simulate Blur')");
+    log("4. Swipe up to home and check app switcher");
+    log("5. Return to app and check timing in logs");
+    log("");
+    log("🔍 KEY QUESTION: Did blur appear in app switcher BEFORE it was backgrounded?");
+
+    // Start idle timer
+    resetIdleTimer();
+  </script>
+</body>
+</html>
