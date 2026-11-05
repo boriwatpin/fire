@@ -29,8 +29,8 @@
     --card:#ffffff;
     --border:#e4e8f0;
     --text:#111827;
-    --muted:#64748b;
-    --muted-2:#94a1b5;
+    --muted:#566377;
+    --muted-2:#5f6b7f;
     --rust:#4f6fb0;
     --rust-dark:#3d5a94;
     --cream:#ded4c2;
@@ -52,18 +52,18 @@
     --row-retiring:#fdf3e0;
 
     --sidebar-text:#475569;
-    --sidebar-text-dim:#64748b;
-    --sidebar-text-dimmer:#94a3b8;
+    --sidebar-text-dim:#566377;
+    --sidebar-text-dimmer:#5f6b7f;
 
     --chart-gridline: rgba(15,23,42,0.08);
     --chart-axisline: rgba(15,23,42,0.16);
     --chart-baseline: rgba(15,23,42,0.25);
     --chart-refline: #475569;
-    --chart-axislabel: #6b7686;
+    --chart-axislabel: #5f6b7f;
     --chart-dotfill: #1e293b;
     --chart-dotring: #ffffff;
     --chart-pillbg: #ffffff;
-    --chart-pilltext: #64748b;
+    --chart-pilltext: #566377;
     --chart-thailand: #64748b;
     --chart-blue: #2563a8;
     --chart-singapore: #0d9488;
@@ -77,6 +77,11 @@
     /* Chart tooltips are intentionally the same dark box in both themes (not overridden below). */
     --chart-tooltip-bg: #1f2c46;
     --chart-tooltip-text: #ffffff;
+    --chart-tooltip-c1: #b8c4dc;
+    --chart-tooltip-c2: #a9c8f5;
+    --chart-tooltip-c3: #9fe8db;
+    --chart-tooltip-good: #86efac;
+    --chart-tooltip-bad: #fca5a5;
     /* Scenario comparison lines: current plan + up to 3 saved scenarios */
     --chart-cmp-0: #2563a8;
     --chart-cmp-1: #c2570f;
@@ -91,7 +96,7 @@
     --border:rgba(255,255,255,.08);
     --text:#e8ecf3;
     --muted:#98a2b3;
-    --muted-2:#6b7686;
+    --muted-2:#8e98a9;
     --rust:#e2e5ec;
     --rust-dark:#c7cdd9;
     --cream:#2a3350;
@@ -113,7 +118,7 @@
 
     --sidebar-text:#c3cad6;
     --sidebar-text-dim:#8d97a8;
-    --sidebar-text-dimmer:#7a8494;
+    --sidebar-text-dimmer:#8e98a9;
 
     --chart-gridline: rgba(255,255,255,0.06);
     --chart-axisline: rgba(255,255,255,0.14);
@@ -767,6 +772,17 @@
   :focus-visible{outline:2px solid var(--rust);outline-offset:2px;}
   .seg button:focus-visible,.btn:focus-visible,.link-btn:focus-visible{outline-offset:1px;}
 
+  /* ---------- v2.5: report dialog ---------- */
+  .modal-card:has(#reportSections){max-width:560px;}
+  .report-sections{border:1px solid var(--border);border-radius:10px;padding:10px 14px 12px;margin:0 0 14px;}
+  .report-sections legend{font-weight:700;font-size:13px;padding:0 4px;color:var(--text);}
+  .rs-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin:4px 0 8px;}
+  .rs-item,.rs-detail label{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text);cursor:pointer;}
+  .rs-detail{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 8px 22px;}
+  .rs-detail.off{opacity:.45;pointer-events:none;}
+  #reportNotes{width:100%;font-family:inherit;font-size:13.5px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--tint-1);color:var(--text);resize:vertical;}
+  @media (max-width:900px){ .rs-grid{grid-template-columns:1fr;} #reportNotes{font-size:16px;} }
+
   /* ---------- Print / PDF report ---------- */
   @page{size:A4 landscape;margin:12mm;}
   @media print{
@@ -777,8 +793,8 @@
       --card:#ffffff;
       --border:#e4e8f0;
       --text:#111827;
-      --muted:#64748b;
-      --muted-2:#94a1b5;
+      --muted:#566377;
+      --muted-2:#5f6b7f;
       --rust:#4f6fb0;
       --rust-dark:#3d5a94;
       --cream:#ded4c2;
@@ -800,18 +816,18 @@
       --row-retiring:#fdf3e0;
   
       --sidebar-text:#475569;
-      --sidebar-text-dim:#64748b;
-      --sidebar-text-dimmer:#94a3b8;
+      --sidebar-text-dim:#566377;
+      --sidebar-text-dimmer:#5f6b7f;
   
       --chart-gridline: rgba(15,23,42,0.08);
       --chart-axisline: rgba(15,23,42,0.16);
       --chart-baseline: rgba(15,23,42,0.25);
       --chart-refline: #475569;
-      --chart-axislabel: #6b7686;
+      --chart-axislabel: #5f6b7f;
       --chart-dotfill: #1e293b;
       --chart-dotring: #ffffff;
       --chart-pillbg: #ffffff;
-      --chart-pilltext: #64748b;
+      --chart-pilltext: #566377;
       --chart-thailand: #64748b;
       --chart-blue: #2563a8;
       --chart-singapore: #0d9488;
@@ -855,6 +871,22 @@
     .pr-table th:first-child,.pr-table td:first-child{text-align:left;}
     .pr-table tr.key td{background:var(--row-hl);font-weight:700;}
     .pr-disclaimer{font-size:8.5pt;color:var(--muted-2);margin:12px 0 0;}
+    .pr-notes{border:1px solid var(--border);border-left:4px solid #4f6fb0;border-radius:6px;padding:8px 12px;}
+    .pr-notes h2{font-size:11pt;margin:0 0 4px;}
+    .pr-notes p{margin:0;font-size:10.5pt;line-height:1.5;}
+    .pr-cols{display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:start;}
+    .pr-block h3{font-size:10.5pt;margin:10px 0 5px;}
+    .pr-kv{width:100%;border-collapse:collapse;font-size:9.5pt;table-layout:fixed;}
+    .pr-kv th{text-align:left;font-weight:600;color:var(--muted);padding:3.5px 8px 3.5px 0;border-bottom:1px solid var(--border);width:58%;}
+    .pr-kv td{text-align:right;padding:3.5px 0;border-bottom:1px solid var(--border);font-weight:700;}
+    .pr-none{font-size:9pt;color:var(--muted);margin:2px 0 6px;}
+    .pr-donut-row{display:flex;align-items:center;gap:16px;}
+    #printReport svg.pr-donut{width:150px !important;height:150px;flex-shrink:0;}
+    #printReport .pr-donut-row .legend, #printReport .pr-donut-row > div{font-size:9pt;}
+    .pr-total{font-size:10pt;margin:8px 0 0;}
+    .pr-table thead{display:table-header-group;}
+    .pr-table tr{break-inside:avoid;}
+    .pr-table.left2 th:nth-child(2),.pr-table.left2 td:nth-child(2){text-align:left;}
   }
 </style>
 </head>
@@ -1081,9 +1113,19 @@
     <div id="reportOverlay" class="modal-overlay" style="display:none;">
       <div class="modal-card">
         <h3>PDF report</h3>
-        <p>Prints a summary, the main charts and a condensed year-by-year table on A4 landscape. In the print dialog, choose “Save as PDF” to keep a file.</p>
+        <p>Choose what to include. Prints on A4 landscape; in the print dialog, choose “Save as PDF” to keep a file.</p>
         <div class="field"><label for="reportFor">Prepared for (optional)</label><input type="text" id="reportFor" maxlength="80"></div>
         <div class="field"><label for="reportBy">Prepared by (optional)</label><input type="text" id="reportBy" maxlength="80"></div>
+        <fieldset class="report-sections" id="reportSections">
+          <legend>Sections</legend>
+          <div class="rs-grid"><label class="rs-item"><input type="checkbox" id="rs_inputs" checked> Inputs and assumptions</label><label class="rs-item"><input type="checkbox" id="rs_runway" checked> Growth & runway chart</label><label class="rs-item"><input type="checkbox" id="rs_sensitivity" checked> Sensitivity</label><label class="rs-item"><input type="checkbox" id="rs_byAccount" checked> Growth by account</label><label class="rs-item"><input type="checkbox" id="rs_returnSpend" checked> Return vs spend</label><label class="rs-item"><input type="checkbox" id="rs_breakdown" checked> Wealth and expense breakdown</label><label class="rs-item"><input type="checkbox" id="rs_scenarios" checked> Scenario comparison (if saved)</label><label class="rs-item"><input type="checkbox" id="rs_table" checked> Year-by-year table</label></div>
+          <div class="rs-detail" id="rsTableDetail" role="radiogroup">
+            <label><input type="radio" name="rsTable" id="rsTableFull" checked> Every year</label>
+            <label><input type="radio" name="rsTable" id="rsTableCondensed"> Every 5 years and key ages</label>
+          </div>
+          <div class="fx-note">The summary page is always included.</div>
+        </fieldset>
+        <div class="field"><label for="reportNotes">Notes and next steps (optional)</label><textarea id="reportNotes" rows="3" maxlength="800" placeholder="e.g. Increase savings to ฿40,000 a month; review again in 6 months."></textarea></div>
         <div class="fx-note" style="margin:-4px 0 16px;">Names are remembered in this browser only.</div>
         <div class="modal-actions">
           <button class="btn ghost" id="reportCancel" type="button">Cancel</button>
@@ -1505,7 +1547,7 @@
 
     <div class="card">
       <div class="card-head">
-        <h2>Appendix: Portfolio Growth by Country</h2>
+        <h2>Appendix: Portfolio Growth by Account</h2>
         <div class="hint">Balance by age, split across your three accounts — hover for the exact breakdown</div>
       </div>
       <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
@@ -1561,7 +1603,7 @@ const UI_ICON = { sun: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke=
 
 // Version shown in the sidebar, footer, PDF report and saved files. Numbering: MAJOR.MINOR[.PATCH]
 // (patch = fixes only, minor = new features, major = redesign or model change). See README.
-const APP_VERSION = '2.4';
+const APP_VERSION = '2.5';
 
 // ---------- Day / night mode ----------
 function applyThemeToggleLabel(){
@@ -2844,7 +2886,7 @@ function renderSensitivityChart(projInputs, currentSensitivity){
   });
 
   const M = isMobileView();
-  const W = M ? (sensMeasuredWidth(svg) || 380) : 1000;
+  const W = M ? measuredChartWidth(svg) : 1000;
   const H = 220;
   const padL = M ? 30 : 46, padR = M ? 6 : 16, padT = 22, padB = 30;
   sensRenderedW = W;
@@ -2867,7 +2909,7 @@ function renderSensitivityChart(projInputs, currentSensitivity){
   const notReachedText = M ? SENS_TXT.notReachedShort : SENS_TXT.notReached;
   const neverText = M ? SENS_TXT.neverShort : SENS_TXT.never;
   const symbolKey = $('sensSymbolKey');
-  if (symbolKey) symbolKey.style.display = M ? '' : 'none';
+  if (symbolKey){ symbolKey.style.display = ''; symbolKey.textContent = M ? V25_TXT.sensKeyMobile : V25_TXT.sensKeyDesktop; }
 
   const currentIdx = points.reduce((best,p,i) => Math.abs(p - currentSensitivity*100) < Math.abs(points[best]-currentSensitivity*100) ? i : best, 0);
 
@@ -2888,7 +2930,7 @@ function renderSensitivityChart(projInputs, currentSensitivity){
 
     const retireReached = r.retireAge !== null;
     const retireTopAge = retireReached ? r.retireAge : planUntilAge;
-    const retireY = yAt(retireTopAge);
+    const retireY = Math.min(yAt(retireTopAge), padT + plotH - (retireReached ? 6 : 0));   // met now: small visible stub
     const retireX = cx - barW - 2;
 
     const runsOutKnown = r.depletedAge !== null;
@@ -2900,10 +2942,10 @@ function renderSensitivityChart(projInputs, currentSensitivity){
     // Phones: when both labels sit at about the same height, push them apart so they don't touch.
     const nudge = (M && Math.abs(retireY - runsOutY) < 11) ? 3 : 0;
 
-    const retireBar = `<rect x="${retireX.toFixed(1)}" y="${retireY.toFixed(1)}" width="${barW.toFixed(1)}" height="${(padT+plotH-retireY).toFixed(1)}" rx="2" fill="var(--chart-blue)" fill-opacity="${retireReached?0.85:0.35}"${retireReached?'':' stroke="var(--chart-blue)" stroke-dasharray="3,2" stroke-width="1"'}></rect>`;
+    const retireBar = `<rect x="${retireX.toFixed(1)}" y="${retireY.toFixed(1)}" width="${barW.toFixed(1)}" height="${(padT+plotH-retireY).toFixed(1)}" rx="2" fill="var(--chart-blue)" fill-opacity="${retireReached?0.85:0.05}"${retireReached?'':' stroke="var(--chart-blue)" stroke-dasharray="4,3" stroke-width="1.4"'}></rect>`;
     const retireLabel = `<text class="sens-label" x="${(retireX+barW/2-nudge).toFixed(1)}" y="${(retireY-6).toFixed(1)}" text-anchor="middle" font-size="${retireReached?numFont:wordFont}" font-weight="700" fill="var(--chart-blue)">${retireReached ? r.retireAge : notReachedText}</text>`;
 
-    const runsOutBar = `<rect x="${runsOutX.toFixed(1)}" y="${runsOutY.toFixed(1)}" width="${barW.toFixed(1)}" height="${(padT+plotH-runsOutY).toFixed(1)}" rx="2" fill="${runsOutColor}" fill-opacity="${runsOutKnown?0.85:0.35}"${runsOutKnown?'':` stroke="${runsOutColor}" stroke-dasharray="3,2" stroke-width="1"`}></rect>`;
+    const runsOutBar = `<rect x="${runsOutX.toFixed(1)}" y="${runsOutY.toFixed(1)}" width="${barW.toFixed(1)}" height="${(padT+plotH-runsOutY).toFixed(1)}" rx="2" fill="${runsOutColor}" fill-opacity="${runsOutKnown?0.85:0.05}"${runsOutKnown?'':` stroke="${runsOutColor}" stroke-dasharray="4,3" stroke-width="1.4"`}></rect>`;
     const runsOutLabel = `<text class="sens-label" x="${(runsOutX+barW/2+nudge).toFixed(1)}" y="${(runsOutY-6).toFixed(1)}" text-anchor="middle" font-size="${runsOutKnown?numFont:wordFont}" font-weight="700" fill="${runsOutColor}">${runsOutKnown ? r.depletedAge : neverText}</text>`;
 
     const pctLabel = `<text x="${cx.toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10.5" font-weight="${isCurrent?700:600}" fill="${isCurrent?'var(--text)':'var(--chart-axislabel)'}">${pctText(r.pct)}</text>`;
@@ -2949,7 +2991,8 @@ function showSensitivityTip(i){
   band.setAttribute('width', Math.max(0, st.groupW-4).toFixed(1));
   band.style.display = 'block';
 
-  const lines = [SENS_TXT.tipGrowth(st.pctText(r.pct)), SENS_TXT.tipRetire(r.retireAge), SENS_TXT.tipRunsOut(r.depletedAge)];
+  const metNow = r.retireAge !== null && sensLastArgs && r.retireAge === sensLastArgs[0].currentAge;
+  const lines = [SENS_TXT.tipGrowth(st.pctText(r.pct)), metNow ? V25_TXT.metNow(r.retireAge) : SENS_TXT.tipRetire(r.retireAge), SENS_TXT.tipRunsOut(r.depletedAge)];
   lines.forEach((t, k) => { svg.querySelector('#sensTip'+(k+1)).textContent = t; });
   tip.style.display = 'block';
 
@@ -3066,7 +3109,8 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
   // preserveAspectRatio="none", distorted). A viewBox close to the actual device width keeps
   // the render scale near 1:1, so the same font-size numbers stay legible on both.
   const M = isMobileView();
-  const W = M ? 380 : 1000, H = M ? 372 : 370;
+  const W = M ? measuredChartWidth(svg) : 1000, H = M ? 372 : 370;
+  svg.dataset.vbw = W;
   const padL = M ? 54 : 92, padR = M ? 10 : 20, padT = 16;
   const mainH = M ? 220 : 210, gap = M ? 20 : 26, subH = M ? 82 : 78, padB = M ? 28 : 34;
   const mainY0 = padT, mainY1 = padT + mainH;
@@ -3074,7 +3118,7 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
   const plotW = W - padL - padR;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.setAttribute('height', H);
-  const yLabel = v => M ? fmtCompact(v) : fmtMoney(v);
+  const yLabel = v => fmtCompact(v);
 
   // ---- Age-range window: lets you focus on a shorter span instead of the full plan ----
   const currentAge = fullRowsIn.length ? fullRowsIn[0].age : 0;
@@ -3133,8 +3177,8 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
   const badge = $('chartScaleBadge');
   if (badge){
     badge.textContent = useLog ? 'Log scale' : 'Linear scale';
-    badge.style.background = useLog ? 'var(--red-bg)' : 'var(--chart-scale-badge-bg)';
-    badge.style.color = useLog ? 'var(--red)' : 'var(--chart-blue)';
+    badge.style.background = 'var(--chart-scale-badge-bg)';
+    badge.style.color = 'var(--chart-blue)';
   }
 
   const retireIdx = rows.findIndex(r => r.retiring);
@@ -3304,8 +3348,8 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
 
     <line id="hoverCrosshair" x1="0" y1="0" x2="0" y2="0" stroke="var(--chart-refline)" stroke-opacity="0.28" stroke-width="1" stroke-dasharray="3,3" style="display:none;"></line>
     <circle id="hoverDot" cx="0" cy="0" r="4.5" fill="var(--chart-dotfill)" stroke="var(--chart-dotring)" stroke-width="1.5" style="display:none;"></circle>
-    <rect id="hoverTooltipBg" x="0" y="0" width="0" height="24" rx="5" fill="#1f2c46" fill-opacity="0.95" style="display:none;"></rect>
-    <text id="hoverTooltipText" x="0" y="0" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fff" style="display:none;"></text>
+    <rect id="hoverTooltipBg" x="0" y="0" width="0" height="24" rx="5" fill="var(--chart-tooltip-bg)" fill-opacity="0.95" style="display:none;"></rect>
+    <text id="hoverTooltipText" x="0" y="0" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--chart-tooltip-text)" style="display:none;"></text>
   `;
 
   runwayHoverState = { rows, xAt, yAt, mainY0, mainY1, padL, padR, W, H };
@@ -3327,7 +3371,8 @@ let appendixGrowthHoverState = null;
 function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   const svg = $('appendixGrowthSvg');
   const M = isMobileView();
-  const W = M ? 380 : 1000, H = M ? 388 : 480;
+  const W = M ? measuredChartWidth(svg) : 1000, H = M ? 388 : 480;
+  svg.dataset.vbw = W;
   const padL = M ? 54 : 100, padR = M ? 10 : 24, padT = M ? 18 : 20, padB = M ? 26 : 40;
   const mainH = M ? 220 : 280, gap = M ? 34 : 26, subH = M ? 90 : 90;
   const mainY0 = padT, mainY1 = padT + mainH;
@@ -3335,7 +3380,7 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   const plotW = W - padL - padR;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.setAttribute('height', H);
-  const yLabel = v => M ? fmtCompact(v) : fmtMoney(v);
+  const yLabel = v => fmtCompact(v);
 
   // ---- Age-range window, same pattern as the main Growth & Runway chart ----
   const currentAge = fullRowsIn.length ? fullRowsIn[0].age : 0;
@@ -3387,14 +3432,14 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   const badge = $('appendixGrowthScaleBadge');
   if (badge){
     badge.textContent = useLog ? 'Log scale' : 'Linear scale';
-    badge.style.background = useLog ? 'var(--red-bg)' : 'var(--chart-scale-badge-bg)';
-    badge.style.color = useLog ? 'var(--red)' : 'var(--chart-blue)';
+    badge.style.background = 'var(--chart-scale-badge-bg)';
+    badge.style.color = 'var(--chart-blue)';
   }
   const note = $('appendixGrowthNote');
   if (note){
     note.textContent = useLog
-      ? 'Zoomed out far enough that stacking by country would misrepresent the numbers on a log scale, so bars show total balance only at this zoom — narrow the window above to see the country split again. Withdrawal below always uses its own independent, linear scale, so it stays accurate regardless.'
-      : 'Balance stacked by country above; withdrawal below uses its own independent, linear scale — the two are never forced to share one axis.';
+      ? 'Zoomed out far enough that stacking by account would misrepresent the numbers on a log scale, so bars show total balance only at this zoom — narrow the window above to see the country split again. Withdrawal below always uses its own independent, linear scale, so it stays accurate regardless.'
+      : 'Balance stacked by account above; withdrawal below uses its own independent, linear scale — the two are never forced to share one axis.';
   }
 
   const retireIdx = rows.findIndex(r => r.retiring);
@@ -3546,13 +3591,13 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
     <g>${xlabels}</g>
 
     <line id="appendixGrowthCrosshair" x1="0" y1="0" x2="0" y2="0" stroke="var(--chart-refline)" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="3,3" style="display:none;"></line>
-    <rect id="appendixGrowthTooltipBg" x="0" y="0" width="0" height="0" rx="6" fill="#1f2c46" fill-opacity="0.95" style="display:none;"></rect>
-    <text id="appendixGrowthTooltipTitle" x="0" y="0" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" style="display:none;"></text>
-    <text id="appendixGrowthTooltipThailand" x="0" y="0" text-anchor="middle" font-size="11" fill="#b8c4dc" style="display:none;"></text>
-    <text id="appendixGrowthTooltipUSA" x="0" y="0" text-anchor="middle" font-size="11" fill="#a9c8f5" style="display:none;"></text>
-    <text id="appendixGrowthTooltipSG" x="0" y="0" text-anchor="middle" font-size="11" fill="#9fe8db" style="display:none;"></text>
-    <text id="appendixGrowthTooltipTotal" x="0" y="0" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fff" style="display:none;"></text>
-    <text id="appendixGrowthTooltipWithdraw" x="0" y="0" text-anchor="middle" font-size="11" fill="#fca5a5" style="display:none;"></text>
+    <rect id="appendixGrowthTooltipBg" x="0" y="0" width="0" height="0" rx="6" fill="var(--chart-tooltip-bg)" fill-opacity="0.95" style="display:none;"></rect>
+    <text id="appendixGrowthTooltipTitle" x="0" y="0" text-anchor="middle" font-size="12" font-weight="700" fill="var(--chart-tooltip-text)" style="display:none;"></text>
+    <text id="appendixGrowthTooltipThailand" x="0" y="0" text-anchor="middle" font-size="11" fill="var(--chart-tooltip-c1)" style="display:none;"></text>
+    <text id="appendixGrowthTooltipUSA" x="0" y="0" text-anchor="middle" font-size="11" fill="var(--chart-tooltip-c2)" style="display:none;"></text>
+    <text id="appendixGrowthTooltipSG" x="0" y="0" text-anchor="middle" font-size="11" fill="var(--chart-tooltip-c3)" style="display:none;"></text>
+    <text id="appendixGrowthTooltipTotal" x="0" y="0" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--chart-tooltip-text)" style="display:none;"></text>
+    <text id="appendixGrowthTooltipWithdraw" x="0" y="0" text-anchor="middle" font-size="11" fill="var(--chart-tooltip-bad)" style="display:none;"></text>
   `;
 
   appendixGrowthHoverState = { rows, xAt, yAt, padL, padR, padT: mainY0, plotH: mainH, W, H, mainY0, subY1 };
@@ -3663,13 +3708,13 @@ let appendixHoverState = null;
 function renderAppendixChart(rows){
   const svg = $('appendixSvg');
   const M = isMobileView();
-  const W = M ? 380 : 1000, H = M ? 340 : 420;
+  const W = M ? measuredChartWidth(svg) : 1000, H = M ? 340 : 420;
+  svg.dataset.vbw = W;
   const padL = M ? 54 : 100, padR = M ? 10 : 24, padT = M ? 18 : 20, padB = M ? 28 : 40;
   const plotW = W - padL - padR, plotH = H - padT - padB;
-  const mid = padT + plotH/2;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.setAttribute('height', H);
-  const yLabel = v => M ? fmtCompact(v) : fmtMoney(v);
+  const yLabel = v => fmtCompact(v);
 
   const n = rows.length;
   const xAt = i => padL + (n <= 1 ? 0 : (i/(n-1)) * plotW);
@@ -3678,9 +3723,16 @@ function renderAppendixChart(rows){
   const retireLine = retireIdx >= 0 ? `<line x1="${xAt(retireIdx).toFixed(1)}" y1="${padT}" x2="${xAt(retireIdx).toFixed(1)}" y2="${H-padB}" stroke="var(--chart-refline)" stroke-opacity="0.3" stroke-width="1.5" stroke-dasharray="5,4"></line>
     <text x="${xAt(retireIdx).toFixed(1)}" y="${padT+14}" text-anchor="middle" font-size="11.5" fill="var(--chart-pilltext)">Retire</text>` : '';
 
-  const maxFlow = Math.max(...rows.map(r=>Math.max(r.ret||0, r.outflow||0, r.expenses||0)), 1) * 1.18;
-  const upY = v => mid - (v/maxFlow)*(plotH/2);
-  const downY = v => mid + (v/maxFlow)*(plotH/2);
+  // One "nice" step for both sides; each side only gets the height it needs, so zero sits where it should.
+  const rawUp = Math.max(...rows.map(r => r.ret || 0), 0), rawDown = Math.max(...rows.map(r => Math.max(r.outflow || 0, r.expenses || 0)), 0);
+  const niceStep = x => { const p = Math.pow(10, Math.floor(Math.log10(x))); return [1, 2, 2.5, 5, 10].map(m => m * p).find(v => v >= x); };
+  const flowStep = niceStep(Math.max(rawUp, rawDown, 1) / 4);
+  const upMax = Math.max(flowStep, Math.ceil(rawUp * 1.08 / flowStep) * flowStep);
+  const downMax = Math.max(flowStep, Math.ceil(rawDown * 1.08 / flowStep) * flowStep);
+  const zeroY = padT + plotH * upMax / (upMax + downMax);
+  const upY = v => zeroY - (v / upMax) * (zeroY - padT);
+  const downY = v => zeroY + (v / downMax) * (padT + plotH - zeroY);
+  const mid = zeroY;
   const barW = Math.max(2, (plotW/n) * 0.6);
 
   let bars = '';
@@ -3702,16 +3754,15 @@ function renderAppendixChart(rows){
     : '';
 
   let ylabels = '';
-  const ticks = 4;
-  for (let t=0; t<=ticks; t++){
-    const v = maxFlow / ticks * t;
-    const yUp = upY(v).toFixed(1), yDown = downY(v).toFixed(1);
-    ylabels += `<text x="${padL-12}" y="${(+yUp+4)}" text-anchor="end" font-size="11" fill="var(--chart-axislabel)">${yLabel(v)}</text>
-      <line x1="${padL}" y1="${yUp}" x2="${W-padR}" y2="${yUp}" stroke="var(--chart-gridline)" stroke-width="1"></line>`;
-    if (t > 0){
-      ylabels += `<text x="${padL-12}" y="${(+yDown+4)}" text-anchor="end" font-size="11" fill="var(--chart-axislabel)">${yLabel(v)}</text>
-        <line x1="${padL}" y1="${yDown}" x2="${W-padR}" y2="${yDown}" stroke="var(--chart-gridline)" stroke-width="1"></line>`;
-    }
+  for (let v = 0; v <= upMax + 1e-6; v += flowStep){
+    const yy = upY(v).toFixed(1);
+    ylabels += `<text x="${padL-12}" y="${(+yy+4)}" text-anchor="end" font-size="11" fill="var(--chart-axislabel)">${yLabel(v)}</text>
+      <line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="var(--chart-gridline)" stroke-width="1"></line>`;
+  }
+  for (let v = flowStep; v <= downMax + 1e-6; v += flowStep){
+    const yy = downY(v).toFixed(1);
+    ylabels += `<text x="${padL-12}" y="${(+yy+4)}" text-anchor="end" font-size="11" fill="var(--chart-axislabel)">−${yLabel(v)}</text>
+      <line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="var(--chart-gridline)" stroke-width="1"></line>`;
   }
   const baseline = `<line x1="${padL}" y1="${mid.toFixed(1)}" x2="${W-padR}" y2="${mid.toFixed(1)}" stroke="var(--chart-baseline)" stroke-width="1.2"></line>`;
 
@@ -3733,10 +3784,10 @@ function renderAppendixChart(rows){
     <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="var(--chart-axisline)"></line>
 
     <line id="appendixCrosshair" x1="0" y1="0" x2="0" y2="0" stroke="var(--chart-refline)" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="3,3" style="display:none;"></line>
-    <rect id="appendixTooltipBg" x="0" y="0" width="0" height="0" rx="6" fill="#1f2c46" fill-opacity="0.95" style="display:none;"></rect>
-    <text id="appendixTooltipTitle" x="0" y="0" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" style="display:none;"></text>
-    <text id="appendixTooltipReturn" x="0" y="0" text-anchor="middle" font-size="11.5" fill="#86efac" style="display:none;"></text>
-    <text id="appendixTooltipSpend" x="0" y="0" text-anchor="middle" font-size="11.5" fill="#fca5a5" style="display:none;"></text>
+    <rect id="appendixTooltipBg" x="0" y="0" width="0" height="0" rx="6" fill="var(--chart-tooltip-bg)" fill-opacity="0.95" style="display:none;"></rect>
+    <text id="appendixTooltipTitle" x="0" y="0" text-anchor="middle" font-size="12" font-weight="700" fill="var(--chart-tooltip-text)" style="display:none;"></text>
+    <text id="appendixTooltipReturn" x="0" y="0" text-anchor="middle" font-size="11.5" fill="var(--chart-tooltip-good)" style="display:none;"></text>
+    <text id="appendixTooltipSpend" x="0" y="0" text-anchor="middle" font-size="11.5" fill="var(--chart-tooltip-bad)" style="display:none;"></text>
   `;
 
   appendixHoverState = { rows, xAt, padL, padR, padT, W, H, mid };
@@ -4329,7 +4380,7 @@ const V21_TXT = {
   rptSummary: 'Summary',
   rptRunway: 'Portfolio growth & retirement runway',
   rptSensitivity: 'Sensitivity: what if growth is higher or lower?',
-  rptByCountry: 'Portfolio growth by country',
+  rptByCountry: 'Portfolio growth by account',
   rptTable: 'Year-by-year projection (every 5 years and key ages)',
   rptCols: ['Age', 'Year', 'Begin', 'Return', 'Income in', 'Outflow', 'Life events', 'End balance', 'Target met'],
   yes: 'Yes', no: 'No',
@@ -4539,7 +4590,7 @@ function renderScenarios(){
 
   // ---- Chart: one balance line per plan ----
   const M = isMobileView();
-  const W = M ? (Math.round(svg.getBoundingClientRect().width) || 380) : 1000;
+  const W = M ? measuredChartWidth(svg) : 1000;
   const H = M ? 230 : 260;
   scnRenderedW = W;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -4662,6 +4713,7 @@ $('scnList').addEventListener('click', e => {
 function refreshMeasuredCharts(){
   refreshSensitivityIfResized();
   refreshScenariosIfResized();
+  refreshWideCharts();
 }
 
 // ---------- PDF / print report ----------
@@ -4695,85 +4747,6 @@ function cloneHtmlForReport(id){
   return c.outerHTML;
 }
 
-function buildPrintReport(){
-  forceDesktopLayout = true;
-  recalc();
-
-  const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
-  const by = lsGet(REPORT_BY_KEY).trim();
-  const forName = String(reportForName !== null ? reportForName : activeProfileName()).trim();
-  const today = new Date();
-  const dateStr = today.toLocaleDateString(document.documentElement.lang === 'th' ? 'th-TH' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-  const v = id => $(id).value;
-  const meta = [];
-  if (forName) meta.push(`<div><span>${V21_TXT.rptFor}</span><b>${esc(forName)}</b></div>`);
-  if (by) meta.push(`<div><span>${V21_TXT.rptBy}</span><b>${esc(by)}</b></div>`);
-  meta.push(`<div><span>${V21_TXT.rptDate}</span><b>${esc(dateStr)}</b></div>`);
-  const sens = parseFloat(v('sensitivitySlider')) || 0;
-
-  // Condensed table: every 5 years plus the first/last year, target age, run-out age and life events.
-  const rows = lastFullRows;
-  const targetAge = +v('targetAge');
-  const lastAge = rows.length ? rows[rows.length - 1].age : 0;
-  const keep = rows.filter(r => r.year % 5 === 0 || r.age === targetAge || r.age === lastAge || r.gift > 0);
-  const tableRows = keep.map(r => {
-    const incomeIn = r.income + (r.incomeExtra > 0 ? r.incomeExtra : 0);
-    const outflow = r.retiring ? r.withdrawal : (r.expenses + (r.expenseExtra > 0 ? r.expenseExtra : 0));
-    const cls = r.age === targetAge ? ' class="key"' : '';
-    return `<tr${cls}><td>${r.age}</td><td>${r.year}</td><td>${fmtMoney(r.begin)}</td><td>${fmtMoney(r.ret)}</td>
-      <td>${incomeIn > 0 ? fmtMoney(incomeIn) : '–'}</td><td>${outflow ? '-' + fmtMoney(Math.abs(outflow)) : '–'}</td>
-      <td>${r.gift > 0 ? '-' + fmtMoney(r.gift) : '–'}</td><td><b>${fmtMoney(r.end)}</b></td><td>${r.met ? V21_TXT.yes : V21_TXT.no}</td></tr>`;
-  }).join('');
-
-  $('printReport').innerHTML = `
-    <header class="pr-head">
-      <div>
-        <div class="pr-brand">FIRE Planner <span>v${APP_VERSION}</span></div>
-        <h1>${V21_TXT.rptTitle}</h1>
-      </div>
-      <div class="pr-meta">${meta.join('')}</div>
-    </header>
-    <p class="pr-note">${V21_TXT.rptBasis(currency, moneyBasis === 'today')} ${esc(V22_TXT.xlRates)}: ${esc(fxDescribe())}.<br>${esc(V21_TXT.rptAssumptions({
-      currentAge: v('currentAge'), targetAge: v('targetAge'), planUntilAge: v('planUntilAge'),
-      inflation: v('inflationRate'), withdrawal: v('withdrawalRate'),
-      n0: accountLabel(0), n1: accountLabel(1), n2: accountLabel(2),
-      th: v('wealthThailandRate'), us: v('wealthUSARate'), sg: v('wealthSGRate'),
-      sens: (sens >= 0 ? '+' : '') + sens.toFixed(1) + '%' }))}</p>
-
-    <section class="pr-block">
-      <h2>${V21_TXT.rptSummary}</h2>
-      <div class="pr-status">${esc($('headerStatus').textContent)} · ${$('alertText').innerHTML}</div>
-      <div class="pr-readiness"><b>${esc($('readinessBadge').textContent)}</b><span>${esc($('readinessLabel').textContent)}</span></div>
-      <p class="pr-narrative">${$('plannerNarrative').innerHTML}</p>
-      ${cloneHtmlForReport('plannerStats')}
-      ${cloneHtmlForReport('overviewStats')}
-    </section>
-
-    <section class="pr-block pr-break">
-      <h2>${V21_TXT.rptRunway}</h2>
-      ${cloneSvgForReport('runwaySvg')}
-      ${cloneHtmlForReport('runwayLegend')}
-    </section>
-
-    <section class="pr-block pr-break">
-      <h2>${V21_TXT.rptSensitivity}</h2>
-      ${cloneSvgForReport('sensitivityChartSvg')}
-    </section>
-    <section class="pr-block">
-      <h2>${V21_TXT.rptByCountry}</h2>
-      ${cloneSvgForReport('appendixGrowthSvg')}
-    </section>
-
-    <section class="pr-block pr-break">
-      <h2>${V21_TXT.rptTable}</h2>
-      <table class="pr-table"><thead><tr>${V21_TXT.rptCols.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>
-      <p class="pr-disclaimer">${esc(V21_TXT.rptFooter(APP_VERSION, dateStr))}</p>
-    </section>`;
-
-  forceDesktopLayout = false;
-  recalc();             // put the on-screen charts back to the device's own layout
-  reportReady = true;
-}
 // Ctrl/Cmd+P or the browser's Print menu builds the report too (with the remembered names).
 window.addEventListener('beforeprint', () => { if (!reportReady) buildPrintReport(); });
 window.addEventListener('afterprint', () => { reportReady = false; reportForName = null; });
@@ -5483,7 +5456,10 @@ function fieldLabelText(id){
   if (id === 'events') return $('events') ? ($('events').querySelector('h2') || {}).textContent || '' : '';
   const el = $(id);
   if (!el) return id;
-  if (el.labels && el.labels.length) return el.labels[0].textContent.replace(/\s+/g, ' ').trim();
+  if (el.labels && el.labels.length){
+    const own = [...el.labels[0].childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(' ').replace(/\s+/g, ' ').trim();
+    return own || el.labels[0].textContent.replace(/\s+/g, ' ').trim();
+  }
   return el.getAttribute('aria-label') || id;
 }
 function showInputIssues(){
@@ -5619,6 +5595,214 @@ function nameCharts(rows, retireAge, depletedAge, annualExpenses, annualSavings,
   setChartName('expenseDonutSvg', V24_TXT.expenseDonut(expenseCategories.map((c, i) =>
     `${c.name} ${fmtMoney(subs[i])} (${grand > 0 ? Math.round(subs[i] / grand * 100) : 0}%)`).join(', ')));
   setChartName('compareChart', V24_TXT.compare(fmtMoney(annualExpenses), fmtMoney(annualSavings), fmtMoney(currentPortfolio)));
+}
+
+// =====================================================================================
+// v2.5 — Comprehensive PDF report (sections chosen in the dialog, notes), chart polish
+// =====================================================================================
+const V25_TXT = {
+  notes: 'Notes and next steps',
+  inputs: 'Inputs and assumptions', plan: 'Plan', profile: 'Profile', homeCur: 'Home currency', basis: 'Amounts shown in',
+  basisFuture: 'Future value (not adjusted for inflation)', basisToday: "Today's value (adjusted for inflation)", rates: 'Exchange rates',
+  accounts: 'Accounts', accCols: ['Account', 'Currency', 'Balance', 'In home currency', 'Growth', 'New savings'],
+  events: 'Life events', evCols: ['Category', 'Description', 'Age', 'Amount'],
+  addInc: 'Additional income', addExp: 'Additional expenses', recCols: ['Description', 'Amount / year', 'Start age', 'Years'],
+  periods: 'Income periods (used instead of the growth rate)', perCols: ['Period', 'Amount / year', 'Years'],
+  none: 'None',
+  returnSpend: 'Return vs spend by year',
+  breakdown: 'Wealth and expense breakdown', wealth: 'Current portfolio by account', expenses: 'Monthly expenses by category',
+  expCols: ['Category', 'Item', 'Per month'], totalMonth: 'Total per month', perYear: 'per year',
+  scenarios: 'Scenario comparison',
+  tableFull: 'Year-by-year projection (every year)',
+  metNow: age => `Target already met (age ${age})`,
+  sensKeyDesktop: 'Dashed outline: target not reached, or money never runs out, within the plan.',
+  sensKeyMobile: 'Dashed outline: – not reached · ∞ never runs out',
+};
+
+// ---------- Report options (sections + table detail), remembered in this browser ----------
+const REPORT_OPTS_KEY = 'firePlannerReportOpts';
+const REPORT_SECTIONS = ['inputs', 'runway', 'sensitivity', 'byAccount', 'returnSpend', 'breakdown', 'scenarios', 'table'];
+function loadReportOpts(){
+  let o = {};
+  try { o = JSON.parse(lsGet(REPORT_OPTS_KEY) || '{}') || {}; } catch(e){}
+  REPORT_SECTIONS.forEach(k => { const cb = $('rs_' + k); if (cb) cb.checked = o[k] !== false; });
+  const full = o.tableDetail !== 'condensed';
+  $('rsTableFull').checked = full; $('rsTableCondensed').checked = !full;
+}
+function readReportOpts(){
+  const o = {};
+  REPORT_SECTIONS.forEach(k => { const cb = $('rs_' + k); o[k] = !cb || cb.checked; });
+  o.tableDetail = $('rsTableCondensed').checked ? 'condensed' : 'full';
+  return o;
+}
+function saveReportOpts(){ lsSet(REPORT_OPTS_KEY, JSON.stringify(readReportOpts())); }
+$('reportSections').addEventListener('change', () => {
+  $('rsTableDetail').classList.toggle('off', !$('rs_table').checked);
+  saveReportOpts();
+});
+loadReportOpts();
+
+// ---------- Report builder ----------
+const escR = t => String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+const prTable = (cols, rows, cls) => rows.length
+  ? `<table class="pr-table ${cls || ''}"><thead><tr>${cols.map(c => `<th>${escR(c)}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`
+  : `<p class="pr-none">${V25_TXT.none}</p>`;
+const pct = id => `${$(id).value}%`;
+
+function reportInputsSection(){
+  const kv = (label, value) => `<tr><th>${escR(label)}</th><td>${value}</td></tr>`;
+  const planRows = [
+    kv(V25_TXT.profile, escR(activeProfileName())),
+    kv(V25_TXT.homeCur, `${currency} (${curSymbol(currency)})`),
+    kv(V25_TXT.basis, moneyBasis === 'today' ? V25_TXT.basisToday : V25_TXT.basisFuture),
+    kv(fieldLabelText('currentAge'), $('currentAge').value),
+    kv(fieldLabelText('targetAge'), $('targetAge').value),
+    kv(fieldLabelText('planUntilAge'), $('planUntilAge').value),
+    kv(fieldLabelText('annualIncome'), fmtMoney(S.annualIncome)),
+    kv(fieldLabelText('incomeGrowthRate'), pct('incomeGrowthRate')),
+    kv(fieldLabelText('annualExpenses'), fmtMoney(S.annualExpenses)),
+    kv(fieldLabelText('inflationRate'), pct('inflationRate')),
+    kv(fieldLabelText('withdrawalRate'), pct('withdrawalRate')),
+    kv(fieldLabelText('retirementRatio'), pct('retirementRatio')),
+    kv(fieldLabelText('sensitivitySlider'), `${(parseFloat($('sensitivitySlider').value) >= 0 ? '+' : '')}${(parseFloat($('sensitivitySlider').value) || 0).toFixed(1)}%`),
+    kv(V25_TXT.rates, escR(fxDescribe())),
+  ].join('');
+  const accRows = accounts.map((a, i) => [escR(accountLabel(i)), a.currency, `${curSymbol(a.currency)}${Math.round(+a.balance || 0).toLocaleString()}`,
+    fmtMoney(accountHome(i)), `${$(['wealthThailandRate', 'wealthUSARate', 'wealthSGRate'][i]).value}%`,
+    `${$(['savingsAllocThailand', 'savingsAllocUSA', 'savingsAllocSG'][i]).value}%`]);
+  const evRows = lifeEvents.filter(e => e.amount > 0).sort((a, b) => a.age - b.age).map(e => [escR(e.category), escR(e.label || '–'), e.age, fmtMoney(e.amount)]);
+  const rec = list => list.filter(x => x.amount > 0).map(x => [escR(x.label || '–'), fmtMoney(x.amount), x.startAge, x.duration]);
+  const per = useStagedIncome && incomePeriods.length
+    ? `<h3>${V25_TXT.periods}</h3>${prTable(V25_TXT.perCols, incomePeriods.map((p, i) => [i + 1, fmtMoney(p.amount), p.years]))}` : '';
+  return `<section class="pr-block pr-break">
+    <h2>${V25_TXT.inputs}</h2>
+    <div class="pr-cols">
+      <div><h3>${V25_TXT.plan}</h3><table class="pr-kv">${planRows}</table></div>
+      <div>
+        <h3>${V25_TXT.accounts}</h3>${prTable(V25_TXT.accCols, accRows)}
+        <h3>${V25_TXT.events}</h3>${prTable(V25_TXT.evCols, evRows, 'left2')}
+        <h3>${V25_TXT.addInc}</h3>${prTable(V25_TXT.recCols, rec(additionalIncomeItems), 'left1')}
+        <h3>${V25_TXT.addExp}</h3>${prTable(V25_TXT.recCols, rec(additionalExpenseItems), 'left1')}
+        ${per}
+      </div>
+    </div>
+  </section>`;
+}
+
+function reportBreakdownSection(){
+  const donut = id => { const c = cloneSvgForReport(id); return c.replace('<svg', '<svg class="pr-donut"'); };
+  const expRows = [];
+  expenseCategories.forEach(cat => cat.items.forEach(([name, v]) => { if (v > 0) expRows.push([escR(cat.name), escR(name), fmtMoney(v)]); }));
+  const grand = expenseCategories.reduce((s, c) => s + c.items.reduce((t, it) => t + it[1], 0), 0);
+  return `<section class="pr-block pr-break">
+    <h2>${V25_TXT.breakdown}</h2>
+    <div class="pr-cols">
+      <div><h3>${V25_TXT.wealth}</h3><div class="pr-donut-row">${donut('wealthDonutSvg')}${cloneHtmlForReport('wealthLegend')}</div></div>
+      <div><h3>${V25_TXT.expenses}</h3><div class="pr-donut-row">${donut('expenseDonutSvg')}${cloneHtmlForReport('expenseDonutLegend')}</div></div>
+    </div>
+    ${prTable(V25_TXT.expCols, expRows, 'left2')}
+    <p class="pr-total">${V25_TXT.totalMonth}: <b>${fmtMoney(grand)}</b> · ${fmtMoney(grand * 12)} ${V25_TXT.perYear}</p>
+  </section>`;
+}
+
+function reportScenariosSection(){
+  if (!scenarios.length) return '';
+  const rows = scenarioSeries().map(s => [escR(s.name), s.proj.p.targetAge, s.proj.retireAge ?? V21_TXT.notReached,
+    s.proj.depletedAge ?? V21_TXT.neverShort, s.proj.balanceAtTarget === null ? '–' : fmtMoney(s.proj.balanceAtTarget)]);
+  return `<section class="pr-block pr-break">
+    <h2>${V25_TXT.scenarios}</h2>
+    ${cloneSvgForReport('scenarioSvg')}
+    ${prTable(['', V21_TXT.mTargetAge, V21_TXT.mRetire, V21_TXT.mRunsOut, V21_TXT.mBalance], rows)}
+  </section>`;
+}
+
+function reportTableSection(full, dateStr){
+  const rows = lastFullRows;
+  const targetAge = +$('targetAge').value;
+  const lastAge = rows.length ? rows[rows.length - 1].age : 0;
+  const keep = full ? rows : rows.filter(r => r.year % 5 === 0 || r.age === targetAge || r.age === lastAge || r.gift > 0);
+  const body = keep.map(r => {
+    const incomeIn = r.income + (r.incomeExtra > 0 ? r.incomeExtra : 0);
+    const outflow = r.retiring ? r.withdrawal : (r.expenses + (r.expenseExtra > 0 ? r.expenseExtra : 0));
+    return `<tr${r.age === targetAge ? ' class="key"' : ''}><td>${r.age}</td><td>${r.year}</td><td>${fmtMoney(r.begin)}</td><td>${fmtMoney(r.ret)}</td>
+      <td>${incomeIn > 0 ? fmtMoney(incomeIn) : '–'}</td><td>${outflow ? '-' + fmtMoney(Math.abs(outflow)) : '–'}</td>
+      <td>${r.gift > 0 ? '-' + fmtMoney(r.gift) : '–'}</td><td><b>${fmtMoney(r.end)}</b></td><td>${r.met ? V21_TXT.yes : V21_TXT.no}</td></tr>`;
+  }).join('');
+  return `<section class="pr-break">
+    <h2>${full ? V25_TXT.tableFull : V21_TXT.rptTable}</h2>
+    <table class="pr-table"><thead><tr>${V21_TXT.rptCols.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table>
+  </section>`;
+}
+
+function buildPrintReport(){
+  const o = readReportOpts();
+  forceDesktopLayout = true;
+  recalc();
+
+  const by = lsGet(REPORT_BY_KEY).trim();
+  const forName = String(reportForName !== null ? reportForName : activeProfileName()).trim();
+  const dateStr = new Date().toLocaleDateString(document.documentElement.lang === 'th' ? 'th-TH' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const v = id => $(id).value;
+  const meta = [];
+  if (forName) meta.push(`<div><span>${V21_TXT.rptFor}</span><b>${escR(forName)}</b></div>`);
+  if (by) meta.push(`<div><span>${V21_TXT.rptBy}</span><b>${escR(by)}</b></div>`);
+  meta.push(`<div><span>${V21_TXT.rptDate}</span><b>${escR(dateStr)}</b></div>`);
+  const sens = parseFloat(v('sensitivitySlider')) || 0;
+  const notes = ($('reportNotes').value || '').trim();
+  const chart = (title, id, extra, brk) => `<section class="pr-block${brk ? ' pr-break' : ''}"><h2>${title}</h2>${cloneSvgForReport(id)}${extra || ''}</section>`;
+
+  $('printReport').innerHTML = `
+    <header class="pr-head">
+      <div><div class="pr-brand">FIRE Planner <span>v${APP_VERSION}</span></div><h1>${V21_TXT.rptTitle}</h1></div>
+      <div class="pr-meta">${meta.join('')}</div>
+    </header>
+    <p class="pr-note">${V21_TXT.rptBasis(currency, moneyBasis === 'today')} ${escR(V22_TXT.xlRates)}: ${escR(fxDescribe())}.<br>${escR(V21_TXT.rptAssumptions({
+      currentAge: v('currentAge'), targetAge: v('targetAge'), planUntilAge: v('planUntilAge'),
+      inflation: v('inflationRate'), withdrawal: v('withdrawalRate'),
+      n0: accountLabel(0), n1: accountLabel(1), n2: accountLabel(2),
+      th: v('wealthThailandRate'), us: v('wealthUSARate'), sg: v('wealthSGRate'),
+      sens: (sens >= 0 ? '+' : '') + sens.toFixed(1) + '%' }))}</p>
+    ${notes ? `<section class="pr-block pr-notes"><h2>${V25_TXT.notes}</h2><p>${escR(notes).replace(/\n/g, '<br>')}</p></section>` : ''}
+    <section class="pr-block">
+      <h2>${V21_TXT.rptSummary}</h2>
+      <div class="pr-status">${escR($('headerStatus').textContent)} · ${$('alertText').innerHTML}</div>
+      <div class="pr-readiness"><b>${escR($('readinessBadge').textContent)}</b><span>${escR($('readinessLabel').textContent)}</span></div>
+      <p class="pr-narrative">${$('plannerNarrative').innerHTML}</p>
+      ${cloneHtmlForReport('plannerStats')}
+      ${cloneHtmlForReport('overviewStats')}
+    </section>
+    ${o.inputs ? reportInputsSection() : ''}
+    ${o.runway ? chart(V21_TXT.rptRunway, 'runwaySvg', cloneHtmlForReport('runwayLegend'), true) : ''}
+    ${o.sensitivity ? chart(V21_TXT.rptSensitivity, 'sensitivityChartSvg', `<p class="pr-none">${escR(V25_TXT.sensKeyDesktop)}</p>`, !o.runway) : ''}
+    ${o.byAccount ? chart(V21_TXT.rptByCountry, 'appendixGrowthSvg', '', true) : ''}
+    ${o.returnSpend ? chart(V25_TXT.returnSpend, 'appendixSvg', '', true) : ''}
+    ${o.breakdown ? reportBreakdownSection() : ''}
+    ${o.scenarios ? reportScenariosSection() : ''}
+    ${o.table ? reportTableSection(o.tableDetail !== 'condensed', dateStr) : ''}
+    <p class="pr-disclaimer">${escR(V21_TXT.rptFooter(APP_VERSION, dateStr))}</p>`;
+
+  forceDesktopLayout = false;
+  recalc();             // put the on-screen charts back to the device's own layout
+  reportReady = true;
+}
+
+// ---------- Phone charts drawn at their real width ----------
+// Runway, growth-by-account and return-vs-spend now use the chart's on-screen width on phones (like
+// the sensitivity chart), so text renders 1:1. They are redrawn when their tab opens or the width changes.
+// While a chart's tab is hidden its width reads 0; reuse the last real width instead of a fixed 380.
+function measuredChartWidth(svg){
+  const w = Math.round(svg.getBoundingClientRect().width);
+  if (w > 0){ svg.dataset.mw = w; return w; }
+  return +svg.dataset.mw || 380;
+}
+function refreshWideCharts(){
+  if (!isMobileView()) return;
+  const stale = ['runwaySvg', 'appendixGrowthSvg', 'appendixSvg'].some(id => {
+    const s = $(id); if (!s) return false;
+    const w = Math.round(s.getBoundingClientRect().width);
+    return w > 0 && +s.dataset.vbw !== w;
+  });
+  if (stale) recalc();
 }
 
 // ---------- init ----------
