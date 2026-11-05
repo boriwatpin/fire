@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%234f6fb0'/%3E%3Crect x='3' y='14' width='4.5' height='7' rx='1' fill='white'/%3E%3Crect x='10' y='9' width='4.5' height='12' rx='1' fill='white'/%3E%3Crect x='17' y='3' width='4.5' height='18' rx='1' fill='white'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%235d80c6'/%3E%3Cstop offset='1' stop-color='%2336508a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url%28%23g%29'/%3E%3Cpath d='M5 24.5 11.5 15l3.2 4.4L19.5 11 27 24.5z' fill='%23fff'/%3E%3Cpath d='M19.5 11V5.5' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M19.5 5.5l4.8 1.8-4.8 1.8z' fill='%23ffd27a'/%3E%3C/svg%3E">
 <style>
   :root{
     --navy:#eaeef5;
@@ -740,6 +740,18 @@
     .wlabel .acct-cur{font-size:16px;}
   }
 
+  /* ---------- v2.3: icons ---------- */
+  .ico{width:16px;height:16px;flex-shrink:0;}
+  .ico.chev{width:14px;height:14px;opacity:.7;}
+  .lang-switch .ico{width:15px;height:15px;}
+  .nav a .nav-ico{width:18px;height:18px;flex-shrink:0;opacity:.85;}
+  .nav a.active .nav-ico{opacity:1;color:var(--rust);}
+  .mobile-tabbar button .tab-icon .tab-svg{width:21px;height:21px;}
+  .brand-icon{background:linear-gradient(135deg,#5d80c6,#36508a);}
+  .install-help p{margin:0 0 10px;font-size:13.5px;line-height:1.6;color:var(--text);}
+  .install-help p.ih-alt{color:var(--muted);font-size:12.5px;}
+  .modal-card .install-help p b{color:var(--text);}
+
   /* ---------- Print / PDF report ---------- */
   @page{size:A4 landscape;margin:12mm;}
   @media print{
@@ -834,27 +846,27 @@
 <body>
 <nav class="mobile-tabbar" id="mobileTabbar" aria-label="Section navigation">
   <button data-tab="overview">
-    <span class="tab-icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg></span>
+    <span class="tab-icon"><svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M15 3h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M15 11h4a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M5 15h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2z"/></svg></span>
     <span class="tab-label">Overview</span>
   </button>
   <button data-tab="household">
-    <span class="tab-icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 9.2L10 2.8L17.5 9.2V17H12V11.5H8V17H2.5V9.2Z"/></svg></span>
+    <span class="tab-icon"><svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v10.5a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9"/><path d="M10 20.5V15h4v5.5"/></svg></span>
     <span class="tab-label">Household</span>
   </button>
   <button data-tab="wealth">
-    <span class="tab-icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="5" width="16" height="11" rx="2.2"/><circle cx="14" cy="10.6" r="1.4" fill="var(--navy)"/></svg></span>
+    <span class="tab-icon"><svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3z"/><path d="M21 10h-4.5a2.5 2.5 0 0 0 0 5H21"/><path d="M16.75 12.5h.01"/><path d="M7 7.5h5"/></svg></span>
     <span class="tab-label">Wealth</span>
   </button>
   <button data-tab="events">
-    <span class="tab-icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3.5" width="16" height="14" rx="2"/><rect x="2" y="3.5" width="16" height="4" rx="2" opacity="0.55"/><rect x="5" y="1.3" width="1.7" height="4.2" rx="0.85"/><rect x="13.3" y="1.3" width="1.7" height="4.2" rx="0.85"/></svg></span>
+    <span class="tab-icon"><svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5h12a2.5 2.5 0 0 1 2.5 2.5v11A2.5 2.5 0 0 1 18 21H6a2.5 2.5 0 0 1-2.5-2.5v-11A2.5 2.5 0 0 1 6 5z"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M12 12.6l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></svg></span>
     <span class="tab-label">Events</span>
   </button>
   <button data-tab="runway">
-    <span class="tab-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 14L7.5 8.8L11 12.2L17.5 5.5"/><path d="M12.2 5.5H17.5V10.8"/></svg></span>
+    <span class="tab-icon"><svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 17.5 9 12l4 4 7.5-8"/><path d="M15 8h5.5v5.5"/><path d="M3.5 21h17"/></svg></span>
     <span class="tab-label">Growth</span>
   </button>
   <button data-tab="projection">
-    <span class="tab-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="16" height="14" rx="1.8"/><line x1="2" y1="8.3" x2="18" y2="8.3"/><line x1="2" y1="13.3" x2="18" y2="13.3"/><line x1="9.3" y1="3" x2="9.3" y2="17"/></svg></span>
+    <span class="tab-icon"><svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12a2.5 2.5 0 0 1 2.5 2.5v11A2.5 2.5 0 0 1 18 20H6a2.5 2.5 0 0 1-2.5-2.5v-11A2.5 2.5 0 0 1 6 4z"/><path d="M3.5 9.5h17"/><path d="M3.5 14.5h17"/><path d="M10 9.5V20"/></svg></span>
     <span class="tab-label">Table</span>
   </button>
 </nav>
@@ -862,11 +874,7 @@
 <aside class="sidebar">
   <div class="brand">
     <div class="brand-icon">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="14" width="4.5" height="7" rx="1" fill="white"/>
-        <rect x="10" y="9" width="4.5" height="12" rx="1" fill="white"/>
-        <rect x="17" y="3" width="4.5" height="18" rx="1" fill="white"/>
-      </svg>
+      <svg width="26" height="26" viewBox="3 3 26 26" aria-hidden="true"><path d="M5 24.5 11.5 15l3.2 4.4L19.5 11 27 24.5z" fill="#fff"/><path d="M19.5 11V5.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><path d="M19.5 5.5l4.8 1.8-4.8 1.8z" fill="#ffd27a"/></svg>
     </div>
     <div class="brand-text">
       <div class="name">FIRE Planner<span class="app-version"></span></div>
@@ -874,15 +882,15 @@
     </div>
   </div>
   <nav class="nav">
-    <a href="#overview" class="active"><span class="dot">◆</span>Overview</a>
-    <a href="#household"><span class="dot">▤</span>Household &amp; Goal</a>
-    <a href="#wealth"><span class="dot">◈</span>Sources of Wealth</a>
-    <a href="#expenses"><span class="dot">▥</span>Monthly Expenses</a>
-    <a href="#events"><span class="dot">✦</span>Life Events &amp; Income</a>
-    <a href="#sensitivity"><span class="dot">≈</span>Sensitivity</a>
-    <a href="#runway"><span class="dot">➝</span>Growth &amp; Runway</a>
-    <a href="#scenarios"><span class="dot">⇄</span>Compare scenarios</a>
-    <a href="#projection"><span class="dot">▲</span>Projection</a>
+    <a href="#overview" class="active"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M15 3h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M15 11h4a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M5 15h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2z"/></svg>Overview</a>
+    <a href="#household"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v10.5a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9"/><path d="M10 20.5V15h4v5.5"/></svg>Household &amp; Goal</a>
+    <a href="#wealth"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3z"/><path d="M21 10h-4.5a2.5 2.5 0 0 0 0 5H21"/><path d="M16.75 12.5h.01"/><path d="M7 7.5h5"/></svg>Sources of Wealth</a>
+    <a href="#expenses"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4z"/><path d="M9 8h6"/><path d="M9 11.5h6"/><path d="M9 15h3.5"/></svg>Monthly Expenses</a>
+    <a href="#events"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5h12a2.5 2.5 0 0 1 2.5 2.5v11A2.5 2.5 0 0 1 18 21H6a2.5 2.5 0 0 1-2.5-2.5v-11A2.5 2.5 0 0 1 6 5z"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M12 12.6l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></svg>Life Events &amp; Income</a>
+    <a href="#sensitivity"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7h8.5"/><path d="M17.5 7h3"/><path d="M3.5 17h3"/><path d="M12 17h8.5"/><path d="M14.75 4.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"/><path d="M9.25 14.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"/></svg>Sensitivity</a>
+    <a href="#runway"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 17.5 9 12l4 4 7.5-8"/><path d="M15 8h5.5v5.5"/><path d="M3.5 21h17"/></svg>Growth &amp; Runway</a>
+    <a href="#scenarios"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14"/><path d="M15 4.5 18.5 8 15 11.5"/><path d="M20 16H6"/><path d="M9 12.5 5.5 16 9 19.5"/></svg>Compare scenarios</a>
+    <a href="#projection"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12a2.5 2.5 0 0 1 2.5 2.5v11A2.5 2.5 0 0 1 18 20H6a2.5 2.5 0 0 1-2.5-2.5v-11A2.5 2.5 0 0 1 6 4z"/><path d="M3.5 9.5h17"/><path d="M3.5 14.5h17"/><path d="M10 9.5V20"/></svg>Projection</a>
   </nav>
   <div class="sidebar-foot">
     Every figure recalculates instantly as you edit inputs.<br>Nothing here leaves your browser.
@@ -900,13 +908,13 @@
       </div>
       <div class="head-actions">
       <div class="profile-switch" id="profileSwitch">
-        <button class="lang-switch profile-btn" id="profileBtn" type="button" aria-haspopup="true" aria-expanded="false">👤 <span id="profileBtnName"></span> ▾</button>
+        <button class="lang-switch profile-btn" id="profileBtn" type="button" aria-haspopup="true" aria-expanded="false"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.5a3.75 3.75 0 1 1 0 7.5 3.75 3.75 0 0 1 0-7.5z"/><path d="M5 20.5a7 7 0 0 1 14 0"/></svg><span id="profileBtnName"></span><svg class="ico chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button>
         <div class="profile-menu" id="profileMenu" hidden></div>
       </div>
       <div id="headerStatus" class="status-pill">On track</div>
       <button class="lang-switch" id="installBtn" type="button" hidden></button>
-      <button id="themeToggle" class="lang-switch" onclick="toggleTheme()" type="button">🌙 Dark</button>
-      <a class="lang-switch" href="fire_estimator_TH.html">🌐 ไทย</a>
+      <button id="themeToggle" class="lang-switch" onclick="toggleTheme()" type="button"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.2A8 8 0 1 1 9.8 4a6.4 6.4 0 0 0 10.2 10.2z"/></svg>Dark</button>
+      <a class="lang-switch" href="fire_estimator_TH.html"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 1 0 17 8.5 8.5 0 0 1 0-17z"/><path d="M3.5 12h17"/><path d="M12 3.5c2.4 2.6 3.5 5.5 3.5 8.5s-1.1 5.9-3.5 8.5c-2.4-2.6-3.5-5.5-3.5-8.5s1.1-5.9 3.5-8.5z"/></svg>ไทย</a>
       </div>
     </div>
 
@@ -928,12 +936,12 @@
       </div>
       <div class="fx-note">Amounts are in this profile's home currency. Accounts held in other currencies are converted at the rates shown.</div>
       <div class="currency-actions">
-        <button class="btn ghost" id="exportBtn">⬇ Save data</button>
-        <button class="btn ghost" id="importBtn">⬆ Load data</button>
+        <button class="btn ghost" id="exportBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg>Save data</button>
+        <button class="btn ghost" id="importBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="M7.5 8.5 12 4l4.5 4.5"/><path d="M5 20h14"/></svg>Load data</button>
         <input type="file" id="importFile" accept="application/json" style="display:none;">
-        <button class="btn ghost" id="shareLinkBtn">🔗 Copy link</button>
-        <button class="btn ghost" id="reportBtn">🖨 PDF report</button>
-        <button class="btn danger" id="resetDataBtn">⟲ Reset data</button>
+        <button class="btn ghost" id="shareLinkBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>Copy link</button>
+        <button class="btn ghost" id="reportBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3.5H7.5A1.5 1.5 0 0 0 6 5v14a1.5 1.5 0 0 0 1.5 1.5h9A1.5 1.5 0 0 0 18 19V7.5z"/><path d="M14 3.5v4h4"/><path d="M9 12h6"/><path d="M9 15.5h6"/></svg>PDF report</button>
+        <button class="btn danger" id="resetDataBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></svg>Reset data</button>
       </div>
     </div>
 
@@ -979,8 +987,8 @@
         </table></div>
         <div class="pm-foot">
           <button class="btn" id="profilesNew" type="button">+ New profile</button>
-          <button class="btn ghost" id="profilesBackup" type="button">⬇ Back up all profiles</button>
-          <button class="btn ghost" id="profilesRestore" type="button">⬆ Restore from backup…</button>
+          <button class="btn ghost" id="profilesBackup" type="button"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg>Back up all profiles</button>
+          <button class="btn ghost" id="profilesRestore" type="button"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="M7.5 8.5 12 4l4.5 4.5"/><path d="M5 20h14"/></svg>Restore from backup…</button>
           <span class="fx-note" id="profilesLastBackup"></span>
         </div>
         <div class="modal-actions" style="margin-top:14px;"><button class="btn ghost" id="profilesClose" type="button">Close</button></div>
@@ -1020,6 +1028,18 @@
       </div>
     </div>
 
+    <div id="installHelpOverlay" class="modal-overlay" style="display:none;">
+      <div class="modal-card">
+        <h3>Install FIRE Planner</h3>
+        <p style="color:var(--muted);">Installed, the planner opens in its own window, works offline, and the browser keeps your data longer.</p>
+        <div id="installHelpBody" class="install-help"></div>
+        <div class="modal-actions" style="margin-top:16px;"><button class="btn" id="installHelpOk" type="button">OK</button></div>
+      </div>
+    </div>
+    <div id="installHelpText" hidden>
+      <div data-k="chrome"><b>Chrome:</b> click the install icon at the right end of the address bar, or open the ⋮ menu → <b>Cast, save and share</b> → <b>Install page as app</b>.<br><b>Edge:</b> open the … menu → <b>Apps</b> → <b>Install this site as an app</b>.</div><div data-k="safari"><b>Safari on Mac:</b> choose <b>File</b> → <b>Add to Dock</b> (macOS Sonoma or later).</div><div data-k="ios"><b>iPhone / iPad:</b> tap <b>Share</b>, then <b>Add to Home Screen</b>. The installed app keeps its own data, separate from Safari, so use Back up → Restore to move your profiles into it.</div>
+      <div data-k="android"><b>Android:</b> open the ⋮ menu and tap <b>Install app</b> (or <b>Add to Home screen</b>).</div><div data-k="firefox"><b>Firefox</b> can’t install web apps. Open this page in Chrome, Edge or Safari to install it; you can keep using it here as a bookmark.</div><div data-k="other">Use Chrome, Edge or Safari: look for <b>Install</b> or <b>Add to Dock / Home Screen</b> in the browser menu.</div>
+    </div>
     <div id="v21ConfirmOverlay" class="modal-overlay" style="display:none;">
       <div class="modal-card">
         <h3 id="v21ConfirmTitle"></h3>
@@ -1445,7 +1465,7 @@
         <div class="hint"><span class="basis-badge"></span>Full lifetime — accumulation, then retirement drawdown with inflation-adjusted spending</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
-        <button class="btn" id="exportExcelBtn">⬇ Export to Excel</button>
+        <button class="btn" id="exportExcelBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2z"/><path d="M4 9h16"/><path d="M4 14.5h16"/><path d="M10 9v11.5"/></svg>Export to Excel</button>
         <span class="fx-note" id="exportExcelNote" style="margin:0;">Exports every year from your current age through your Plan-until age, with every tracked field broken into its own column (per-country balances, inflation cost, cumulative contributions vs. growth, and more) — first click loads a small formatting library (needs internet once).</span>
       </div>
       <div class="mobile-scroll-hint">← Swipe sideways to see all columns; Age stays pinned →</div>
@@ -1520,17 +1540,19 @@
 
 <script>
 const $ = id => document.getElementById(id);
+// Line icons used by labels that are set from script (same drawings as the static ones).
+const UI_ICON = { sun: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/><path d="M12 2.5v2"/><path d="M12 19.5v2"/><path d="M4.6 4.6 6 6"/><path d="M18 18l1.4 1.4"/><path d="M2.5 12h2"/><path d="M19.5 12h2"/><path d="M4.6 19.4 6 18"/><path d="M18 6l1.4-1.4"/></svg>', moon: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.2A8 8 0 1 1 9.8 4a6.4 6.4 0 0 0 10.2 10.2z"/></svg>', install: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6a2.5 2.5 0 0 1 2.5 2.5v13A2.5 2.5 0 0 1 15 21H9a2.5 2.5 0 0 1-2.5-2.5v-13A2.5 2.5 0 0 1 9 3z"/><path d="M12 7.5v6.5"/><path d="M9.5 11.5 12 14l2.5-2.5"/></svg>' };
 
 // Version shown in the sidebar, footer, PDF report and saved files. Numbering: MAJOR.MINOR[.PATCH]
 // (patch = fixes only, minor = new features, major = redesign or model change). See README.
-const APP_VERSION = '2.2';
+const APP_VERSION = '2.3';
 
 // ---------- Day / night mode ----------
 function applyThemeToggleLabel(){
   const btn = $('themeToggle');
   if (!btn) return;
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  btn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+  btn.innerHTML = isDark ? UI_ICON.sun + 'Light' : UI_ICON.moon + 'Dark';
 }
 function toggleTheme(){
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -3910,7 +3932,7 @@ function loadScriptOnce(src){
 async function exportToExcel(){
   const btn = $('exportExcelBtn');
   const note = $('exportExcelNote');
-  const originalLabel = btn.textContent;
+  const originalLabel = btn.innerHTML;
   btn.disabled = true;
   btn.textContent = 'Preparing…';
   try {
@@ -4044,7 +4066,7 @@ async function exportToExcel(){
     note.textContent = 'Could not export: ' + err.message;
   } finally {
     btn.disabled = false;
-    btn.textContent = originalLabel;
+    btn.innerHTML = originalLabel;
   }
 }
 
@@ -4776,7 +4798,7 @@ const V22_TXT = {
   fxRefreshTitle: 'Use the latest ECB rates',
   fxFetchFailed: "Couldn't reach the exchange-rate service. Using the last saved rates.",
   xlRates: 'Exchange rates',
-  install: '⬇ Install app',
+  install: 'Install app',
   installBanner: '<b>Install FIRE Planner</b> so it opens offline and the browser keeps your data safe.',
   installIOS: '<b>Install FIRE Planner:</b> tap <b>Share</b> → <b>Add to Home Screen</b>. The installed app keeps its own data, separate from Safari, so use Back up → Restore to move your profiles into it.',
   notNow: 'Not now',
@@ -5277,11 +5299,11 @@ function renderBanners(){
   if (due) out.push(`<div class="app-banner"><span>⚠</span><span class="ab-text">${V22_TXT.bannerBackup(due.count, due.days, due.never)}</span><button class="btn small" data-b="backup">${V22_TXT.backupNow}</button><button class="link-btn" data-b="later">${V22_TXT.later}</button></div>`);
   const dismissed = +lsGet(INSTALL_DISMISS_KEY) > Date.now();
   if (profileStore && !isStandalone() && !dismissed){
-    if (deferredInstall) out.push(`<div class="app-banner info"><span>📲</span><span class="ab-text">${V22_TXT.installBanner}</span><button class="btn small" data-b="install">${V22_TXT.install.replace(/^⬇\s*/, '')}</button><button class="link-btn" data-b="notnow">${V22_TXT.notNow}</button></div>`);
-    else if (isIOS()) out.push(`<div class="app-banner info"><span>📲</span><span class="ab-text">${V22_TXT.installIOS}</span><button class="link-btn" data-b="notnow">${V22_TXT.notNow}</button></div>`);
+    if (deferredInstall) out.push(`<div class="app-banner info"><span class="ab-ico">${UI_ICON.install}</span><span class="ab-text">${V22_TXT.installBanner}</span><button class="btn small" data-b="install">${V22_TXT.install.replace(/^⬇\s*/, '')}</button><button class="link-btn" data-b="notnow">${V22_TXT.notNow}</button></div>`);
+    else if (isIOS()) out.push(`<div class="app-banner info"><span class="ab-ico">${UI_ICON.install}</span><span class="ab-text">${V22_TXT.installIOS}</span><button class="link-btn" data-b="notnow">${V22_TXT.notNow}</button></div>`);
   }
   $('appBanners').innerHTML = out.join('');
-  $('installBtn').hidden = !(deferredInstall && !isStandalone());
+  $('installBtn').hidden = isStandalone();
 }
 $('appBanners').addEventListener('click', e => {
   const b = e.target.closest('[data-b]');
@@ -5296,13 +5318,13 @@ $('appBanners').addEventListener('click', e => {
 
 // ----- Installable app (service worker + install prompt) -----
 async function promptInstall(){
-  if (!deferredInstall) return;
+  if (!deferredInstall){ showInstallHelp(); return; }   // browsers without a one-click prompt get instructions
   deferredInstall.prompt();
   try { await deferredInstall.userChoice; } catch(e){}
   deferredInstall = null;
   renderBanners();
 }
-$('installBtn').textContent = V22_TXT.install;
+$('installBtn').innerHTML = UI_ICON.install + V22_TXT.install;
 $('installBtn').addEventListener('click', promptInstall);
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; renderBanners(); });
 window.addEventListener('appinstalled', () => {
@@ -5323,6 +5345,27 @@ if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   // Reload only when the user asked for the new version (not on the very first install).
   navigator.serviceWorker.addEventListener('controllerchange', () => { if (swReloadRequested){ swReloadRequested = false; location.reload(); } });
 }
+
+// Install instructions for browsers that don't offer a one-click install prompt (Safari, Firefox,
+// or Chrome/Edge before the prompt is available). Shows this browser's steps first.
+function installHelpKey(){
+  const ua = navigator.userAgent;
+  if (isIOS()) return 'ios';
+  if (/Android/.test(ua)) return 'android';
+  if (/Firefox\//.test(ua)) return 'firefox';
+  if (/Edg\/|Chrome\/|Chromium\//.test(ua)) return 'chrome';
+  if (/Safari\//.test(ua) && /Macintosh/.test(ua)) return 'safari';
+  return 'other';
+}
+function showInstallHelp(){
+  const k = installHelpKey();
+  const all = [...$('installHelpText').children];
+  const first = all.find(d => d.dataset.k === k);
+  const rest = all.filter(d => d !== first && ['chrome', 'safari', 'ios'].includes(d.dataset.k) && k !== 'other');
+  $('installHelpBody').innerHTML = [first, ...rest].filter(Boolean).map((d, i) => `<p class="${i ? 'ih-alt' : 'ih-main'}">${d.innerHTML}</p>`).join('');
+  $('installHelpOverlay').style.display = 'flex';
+}
+$('installHelpOk').addEventListener('click', () => { $('installHelpOverlay').style.display = 'none'; });
 
 // Shared links carry the profile's name so the new profile is labelled sensibly.
 function sharePayload(){ const s = collectState(); s.profileName = activeProfileName(); return s; }
