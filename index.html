@@ -69,6 +69,9 @@
     --chart-needs: #c2570f;
     --chart-combined-total: #475569;
     --chart-scale-badge-bg: rgba(37,99,168,.10);
+    /* Chart tooltips are intentionally the same dark box in both themes (not overridden below). */
+    --chart-tooltip-bg: #1f2c46;
+    --chart-tooltip-text: #ffffff;
   }
   html[data-theme="dark"]{
     --navy:#0d1420;
@@ -1065,6 +1068,7 @@
       <div class="legend">
         <span><span class="swatch" style="background:var(--chart-blue);"></span>Retirement age</span>
         <span><span class="swatch" style="background:var(--chart-danger);"></span>Portfolio runs out at age</span>
+        <span id="sensSymbolKey" style="display:none;">–&nbsp;not reached · ∞&nbsp;never runs out</span>
       </div>
     </div>
   </section>
@@ -2438,11 +2442,46 @@ function renderCompareChart(annualExpenses, annualSavings, currentPortfolio){
 // Shows how retirement age and "runs out at" age shift across the full −3%..+3%
 // slider range, so the effect of the slider is visible rather than requiring the
 // person to drag it repeatedly and re-read the summary numbers each time.
+// ---------- Sensitivity chart ----------
+// Text used inside the chart. This is the only part that differs between the EN and TH editions.
+const SENS_TXT = {
+  notReached: 'N/A',
+  never: 'Never',
+  notReachedShort: '–',   // phones: words don't fit in a ~40px group, symbols always do
+  neverShort: '∞',
+  tipGrowth: pct => `Growth ${pct}`,
+  tipRetire: age => age === null ? 'Retire: not reached' : `Retire at ${age}`,
+  tipRunsOut: age => age === null ? 'Never runs out' : `Runs out at ${age}`,
+  aria: 'Sensitivity chart: retirement age and the age the portfolio runs out, for growth adjusted from -3% to +3%.',
+};
+
+let sensLastArgs = null;   // last (projInputs, sensitivity) — lets tab switches / resizes redraw without a full recalc
+let sensRenderedW = 0;     // viewBox width of the current render
+let sensHoverState = null;
+
+// On phones the chart's viewBox width is the SVG's real on-screen width, so the render scale is
+// exactly 1:1 and text is never squeezed. Returns 0 while the section is hidden (other mobile tab).
+function sensMeasuredWidth(svg){
+  return Math.round(svg.getBoundingClientRect().width);
+}
+
+// Called when the Growth tab is shown or the phone width changes: the hidden-tab render used a
+// fallback width, so redraw at the real width once it can be measured.
+function refreshSensitivityIfResized(){
+  if (!sensLastArgs || !isMobileView()) return;
+  const svg = $('sensitivityChartSvg');
+  if (!svg) return;
+  const w = sensMeasuredWidth(svg);
+  if (w > 0 && w !== sensRenderedW) renderSensitivityChart(sensLastArgs[0], sensLastArgs[1]);
+}
+
 function renderSensitivityChart(projInputs, currentSensitivity){
   const svg = $('sensitivityChartSvg');
   if (!svg) return;
+  sensLastArgs = [projInputs, currentSensitivity];
   const { currentAge, planUntilAge } = projInputs;
   const points = [-3,-2,-1,0,1,2,3];
+  const pctText = p => `${p>0?'+':''}${p}%`;
 
   const results = points.map(pct => {
     const proj = computeFullProjection(projInputs, pct/100);
@@ -2454,25 +2493,44 @@ function renderSensitivityChart(projInputs, currentSensitivity){
     };
   });
 
-  const W = 1000, H = 220, padL = 46, padR = 16, padT = 22, padB = 30;
+  const M = isMobileView();
+  const W = M ? (sensMeasuredWidth(svg) || 380) : 1000;
+  const H = 220;
+  const padL = M ? 30 : 46, padR = M ? 6 : 16, padT = 22, padB = 30;
+  sensRenderedW = W;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('height', H);
+
   const plotW = W - padL - padR, plotH = H - padT - padB;
-  const ageSpan = Math.max(1, planUntilAge - currentAge);
-  const yAt = age => padT + plotH - ((age - currentAge) / ageSpan) * plotH;
+
+  // Round y-axis: pick a "nice" step for ~5 ticks, extend the top to the next multiple of it.
+  // The baseline stays at the current age (bars still grow from "today").
+  const rawStep = Math.max(1, (planUntilAge - currentAge) / 5);
+  const step = [1,2,5,10,20,25,50].find(s => s >= rawStep) || 50;
+  const yMin = currentAge;
+  const yMax = Math.max(currentAge + 1, Math.ceil(planUntilAge / step) * step);
+  const yAt = age => padT + plotH - ((age - yMin) / (yMax - yMin)) * plotH;
+
   const groupW = plotW / points.length;
   const barW = Math.min(26, groupW * 0.3);
+  const numFont = 9.5, wordFont = M ? 11 : 9.5;
+  const notReachedText = M ? SENS_TXT.notReachedShort : SENS_TXT.notReached;
+  const neverText = M ? SENS_TXT.neverShort : SENS_TXT.never;
+  const symbolKey = $('sensSymbolKey');
+  if (symbolKey) symbolKey.style.display = M ? '' : 'none';
 
   const currentIdx = points.reduce((best,p,i) => Math.abs(p - currentSensitivity*100) < Math.abs(points[best]-currentSensitivity*100) ? i : best, 0);
 
+  const tickAges = [yMin];
+  for (let a = Math.ceil((yMin + step*0.4) / step) * step; a <= yMax; a += step) tickAges.push(a);
   let gridlines = '';
-  const ticks = 4;
-  for (let t=0; t<=ticks; t++){
-    const age = currentAge + (ageSpan/ticks)*t;
+  tickAges.forEach(age => {
     const yy = yAt(age);
     gridlines += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${W-padR}" y2="${yy.toFixed(1)}" stroke="var(--chart-gridline)" stroke-width="1"></line>
-    <text x="${padL-8}" y="${(yy+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--chart-axislabel)">${Math.round(age)}</text>`;
-  }
+    <text x="${padL-6}" y="${(yy+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--chart-axislabel)">${Math.round(age)}</text>`;
+  });
 
-  let bars = '';
+  let bars = '', hits = '';
   results.forEach((r, i) => {
     const cx = padL + groupW*i + groupW/2;
     const isCurrent = i === currentIdx;
@@ -2482,26 +2540,110 @@ function renderSensitivityChart(projInputs, currentSensitivity){
     const retireTopAge = retireReached ? r.retireAge : planUntilAge;
     const retireY = yAt(retireTopAge);
     const retireX = cx - barW - 2;
-    const retireBar = `<rect x="${retireX.toFixed(1)}" y="${retireY.toFixed(1)}" width="${barW.toFixed(1)}" height="${(padT+plotH-retireY).toFixed(1)}" rx="2" fill="var(--chart-blue)" fill-opacity="${retireReached?0.85:0.35}"${retireReached?'':' stroke="var(--chart-blue)" stroke-dasharray="3,2" stroke-width="1"'}></rect>`;
-    const retireLabel = `<text x="${(retireX+barW/2).toFixed(1)}" y="${(retireY-6).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--chart-blue)">${retireReached ? r.retireAge : 'N/A'}</text>`;
 
     const runsOutKnown = r.depletedAge !== null;
     const runsOutColor = runsOutKnown ? 'var(--chart-danger)' : 'var(--chart-return)';
     const runsOutTopAge = runsOutKnown ? r.depletedAge : planUntilAge;
     const runsOutY = yAt(runsOutTopAge);
     const runsOutX = cx + 2;
-    const runsOutBar = `<rect x="${runsOutX.toFixed(1)}" y="${runsOutY.toFixed(1)}" width="${barW.toFixed(1)}" height="${(padT+plotH-runsOutY).toFixed(1)}" rx="2" fill="${runsOutColor}" fill-opacity="${runsOutKnown?0.85:0.35}"${runsOutKnown?'':` stroke="${runsOutColor}" stroke-dasharray="3,2" stroke-width="1"`}></rect>`;
-    const runsOutLabel = `<text x="${(runsOutX+barW/2).toFixed(1)}" y="${(runsOutY-6).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${runsOutColor}">${runsOutKnown ? r.depletedAge : 'Never'}</text>`;
 
-    const pctLabel = `<text x="${cx.toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10.5" font-weight="${isCurrent?700:600}" fill="${isCurrent?'var(--text)':'var(--chart-axislabel)'}">${r.pct>0?'+':''}${r.pct}%</text>`;
+    // Phones: when both labels sit at about the same height, push them apart so they don't touch.
+    const nudge = (M && Math.abs(retireY - runsOutY) < 11) ? 3 : 0;
+
+    const retireBar = `<rect x="${retireX.toFixed(1)}" y="${retireY.toFixed(1)}" width="${barW.toFixed(1)}" height="${(padT+plotH-retireY).toFixed(1)}" rx="2" fill="var(--chart-blue)" fill-opacity="${retireReached?0.85:0.35}"${retireReached?'':' stroke="var(--chart-blue)" stroke-dasharray="3,2" stroke-width="1"'}></rect>`;
+    const retireLabel = `<text class="sens-label" x="${(retireX+barW/2-nudge).toFixed(1)}" y="${(retireY-6).toFixed(1)}" text-anchor="middle" font-size="${retireReached?numFont:wordFont}" font-weight="700" fill="var(--chart-blue)">${retireReached ? r.retireAge : notReachedText}</text>`;
+
+    const runsOutBar = `<rect x="${runsOutX.toFixed(1)}" y="${runsOutY.toFixed(1)}" width="${barW.toFixed(1)}" height="${(padT+plotH-runsOutY).toFixed(1)}" rx="2" fill="${runsOutColor}" fill-opacity="${runsOutKnown?0.85:0.35}"${runsOutKnown?'':` stroke="${runsOutColor}" stroke-dasharray="3,2" stroke-width="1"`}></rect>`;
+    const runsOutLabel = `<text class="sens-label" x="${(runsOutX+barW/2+nudge).toFixed(1)}" y="${(runsOutY-6).toFixed(1)}" text-anchor="middle" font-size="${runsOutKnown?numFont:wordFont}" font-weight="700" fill="${runsOutColor}">${runsOutKnown ? r.depletedAge : neverText}</text>`;
+
+    const pctLabel = `<text x="${cx.toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10.5" font-weight="${isCurrent?700:600}" fill="${isCurrent?'var(--text)':'var(--chart-axislabel)'}">${pctText(r.pct)}</text>`;
 
     bars += highlight + retireBar + retireLabel + runsOutBar + runsOutLabel + pctLabel;
+    // Invisible full-height hit area per group (mouse hover / finger tap).
+    hits += `<rect class="sens-hit" data-i="${i}" x="${(cx-groupW/2).toFixed(1)}" y="${padT}" width="${groupW.toFixed(1)}" height="${(plotH+padB).toFixed(1)}" fill="none" pointer-events="all"></rect>`;
   });
 
   svg.innerHTML = `${gridlines}
     <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+plotH}" stroke="var(--chart-axisline)"></line>
-    ${bars}`;
+    <rect id="sensHoverBand" x="0" y="${padT}" width="0" height="${plotH}" rx="4" fill="var(--chart-blue)" fill-opacity="0.10" style="display:none;pointer-events:none;"></rect>
+    ${bars}
+    ${hits}
+    <g id="sensTip" style="display:none;pointer-events:none;">
+      <rect id="sensTipBg" x="0" y="0" width="0" height="0" rx="6" fill="var(--chart-tooltip-bg)" fill-opacity="0.95"></rect>
+      <text id="sensTipText" font-size="11" fill="var(--chart-tooltip-text)">
+        <tspan id="sensTip1" font-weight="700"></tspan><tspan id="sensTip2"></tspan><tspan id="sensTip3"></tspan>
+      </text>
+    </g>`;
+
+  // Accessible name: what the chart is, plus every value in words.
+  const summary = results.map(r => `${pctText(r.pct)}: ${SENS_TXT.tipRetire(r.retireAge)}, ${SENS_TXT.tipRunsOut(r.depletedAge)}`).join('; ');
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', `${SENS_TXT.aria} ${summary}.`);
+
+  sensHoverState = { results, pctText, padL, padR, padT, plotH, groupW, W };
 }
+
+function showSensitivityTip(i){
+  const svg = $('sensitivityChartSvg');
+  const st = sensHoverState;
+  if (!svg || !st || !st.results[i]) return;
+  const r = st.results[i];
+  const band = svg.querySelector('#sensHoverBand');
+  const tip = svg.querySelector('#sensTip');
+  const bg = svg.querySelector('#sensTipBg');
+  const text = svg.querySelector('#sensTipText');
+  if (!band || !tip || !bg || !text) return;
+
+  const x0 = st.padL + st.groupW*i;
+  band.setAttribute('x', (x0+2).toFixed(1));
+  band.setAttribute('width', Math.max(0, st.groupW-4).toFixed(1));
+  band.style.display = 'block';
+
+  const lines = [SENS_TXT.tipGrowth(st.pctText(r.pct)), SENS_TXT.tipRetire(r.retireAge), SENS_TXT.tipRunsOut(r.depletedAge)];
+  lines.forEach((t, k) => { svg.querySelector('#sensTip'+(k+1)).textContent = t; });
+  tip.style.display = 'block';
+
+  // Measure the real text width (works for Thai too), then sit the box beside the group so the
+  // hovered bars stay visible: to the right of groups in the left half, to the left otherwise.
+  const lineH = 15, padX = 8, padY = 7;
+  const tw = Math.ceil(Math.max(...[1,2,3].map(k => svg.querySelector('#sensTip'+k).getComputedTextLength()))) + padX*2;
+  const th = lineH*3 + padY*2 - 3;
+  const groupMid = x0 + st.groupW/2;
+  let bx = groupMid < st.W/2 ? x0 + st.groupW + 4 : x0 - tw - 4;
+  bx = Math.min(Math.max(bx, 2), st.W - tw - 2);
+  const by = st.padT + 2;
+
+  bg.setAttribute('x', bx.toFixed(1)); bg.setAttribute('y', by.toFixed(1));
+  bg.setAttribute('width', tw); bg.setAttribute('height', th);
+  [1,2,3].forEach(k => {
+    const ts = svg.querySelector('#sensTip'+k);
+    ts.setAttribute('x', (bx + padX).toFixed(1));
+    ts.setAttribute('y', (by + padY + 10 + lineH*(k-1)).toFixed(1));
+  });
+}
+
+function hideSensitivityTip(){
+  const svg = $('sensitivityChartSvg');
+  if (!svg) return;
+  ['sensHoverBand','sensTip'].forEach(id => {
+    const el = svg.querySelector('#'+id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+(function initSensitivityHover(){
+  const svg = $('sensitivityChartSvg');
+  if (!svg) return;
+  const onPoint = evt => {
+    const hit = evt.target.closest && evt.target.closest('.sens-hit');
+    if (hit) showSensitivityTip(+hit.dataset.i); else hideSensitivityTip();
+  };
+  svg.addEventListener('pointermove', onPoint);
+  svg.addEventListener('pointerdown', onPoint);
+  // Mouse: hide when leaving. Touch: the tip stays after the tap and hides on a tap elsewhere.
+  svg.addEventListener('pointerleave', evt => { if (evt.pointerType === 'mouse') hideSensitivityTip(); });
+  document.addEventListener('pointerdown', evt => { if (!svg.contains(evt.target)) hideSensitivityTip(); });
+})();
 
 // ---------- Hover tooltip for the Portfolio Growth & Retirement Runway chart ----------
 let runwayHoverState = null;
@@ -3703,6 +3845,7 @@ function showMobileTab(tab, opts){
   currentMobileTab = tab;
   applyMobileVisibility();
   setMobileTabbarActive();
+  refreshSensitivityIfResized(); // chart was drawn while hidden; redraw at its real width
   if (!opts || !opts.skipScroll) window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
@@ -3735,7 +3878,28 @@ document.addEventListener('click', (e) => {
   if (mobileGoToSection(id)) e.preventDefault();
 });
 
-window.addEventListener('resize', applyMobileVisibility);
+// Rotation / window resize: charts pick their layout (phone vs desktop viewBox) at render time,
+// so redraw when the phone/desktop breakpoint is crossed. On phones the sensitivity chart also
+// follows the exact width. Height-only resizes (e.g. the iOS address bar) are ignored.
+let lastViewportW = window.innerWidth;
+let lastWasMobile = isMobileView();
+let resizeRedrawTimer = null;
+window.addEventListener('resize', () => {
+  applyMobileVisibility();
+  clearTimeout(resizeRedrawTimer);
+  resizeRedrawTimer = setTimeout(() => {
+    const w = window.innerWidth;
+    if (w === lastViewportW) return;
+    lastViewportW = w;
+    const nowMobile = isMobileView();
+    if (nowMobile !== lastWasMobile){
+      lastWasMobile = nowMobile;
+      recalc();
+    } else if (nowMobile){
+      refreshSensitivityIfResized();
+    }
+  }, 150);
+});
 applyMobileVisibility();
 setMobileTabbarActive();
 // ---------- init ----------
