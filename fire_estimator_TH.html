@@ -752,6 +752,21 @@
   .install-help p.ih-alt{color:var(--muted);font-size:12.5px;}
   .modal-card .install-help p b{color:var(--text);}
 
+  /* ---------- v2.4: input checks, focus ---------- */
+  .field-warn{font-size:12px;font-weight:600;color:var(--red);margin-top:5px;line-height:1.4;}
+  .field-warn.warn{color:var(--chart-needs);}
+  input[aria-invalid="true"]{border-color:var(--red) !important;box-shadow:0 0 0 1px var(--red);}
+  input.input-warn{border-color:var(--chart-needs) !important;}
+  #inputIssues ul{margin:6px 0 0;padding-left:18px;}
+  #inputIssues li{margin:2px 0;}
+  #inputIssues a{color:inherit;font-weight:700;}
+  #inputIssues.warnbox{background:var(--tint-2);border:1px solid var(--border);color:var(--text);}
+  #inputIssues.warnbox .ico-dot{color:var(--chart-needs);}
+  #inputIssues.behind .ico-dot{color:var(--red);}
+  .ico-dot{margin-right:2px;}
+  :focus-visible{outline:2px solid var(--rust);outline-offset:2px;}
+  .seg button:focus-visible,.btn:focus-visible,.link-btn:focus-visible{outline-offset:1px;}
+
   /* ---------- Print / PDF report ---------- */
   @page{size:A4 landscape;margin:12mm;}
   @media print{
@@ -844,7 +859,7 @@
 </style>
 </head>
 <body>
-<nav class="mobile-tabbar" id="mobileTabbar" aria-label="Section navigation">
+<nav class="mobile-tabbar" id="mobileTabbar" aria-label="เมนูส่วนต่างๆ">
   <button data-tab="overview">
     <span class="tab-icon"><svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M15 3h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M15 11h4a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M5 15h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2z"/></svg></span>
     <span class="tab-label">ภาพรวม</span>
@@ -1120,6 +1135,7 @@
       </div>
     </div>
 
+    <div id="inputIssues" class="alert" role="alert" hidden></div>
     <div id="alertBox" class="alert ok">
       <span class="ico">●</span>
       <div id="alertText"><b>คุณเป็นไปตามแผน</b> อัปเดตแผนนี้ต่อไปเมื่อตัวเลขของคุณเปลี่ยนแปลง</div>
@@ -1545,7 +1561,7 @@ const UI_ICON = { sun: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke=
 
 // Version shown in the sidebar, footer, PDF report and saved files. Numbering: MAJOR.MINOR[.PATCH]
 // (patch = fixes only, minor = new features, major = redesign or model change). See README.
-const APP_VERSION = '2.3';
+const APP_VERSION = '2.4';
 
 // ---------- Day / night mode ----------
 function applyThemeToggleLabel(){
@@ -1701,10 +1717,10 @@ amountFields.forEach(id => {
 
 // ---------- Monthly expenses data (base values in THB) ----------
 const expenseCategories = [
-  { name:"Housing", items:[["Mortgage or rent",33000],["Phone",3000],["Electricity",1900],["Water and sewer",700],["Cable",1150],["Maintenance or repairs",0],["Supplies",0],["House insurance",0],["Other",0]] },
-  { name:"Food", items:[["Groceries",33000],["Dining out",0],["Other",0]] },
-  { name:"Transportation", items:[["Vehicle payment",0],["Insurance",0],["Licensing",0],["Fuel",0],["Maintenance",0],["Other",0]] },
-  { name:"Travel & Health", items:[["Travel",0],["Entertainment",0],["Health Insurance",0],["Fitness",0],["Other",0]] },
+  { name:"ที่อยู่อาศัย", items:[["ค่าผ่อนบ้านหรือค่าเช่า",33000],["ค่าโทรศัพท์",3000],["ค่าไฟฟ้า",1900],["ค่าน้ำประปา",700],["อินเทอร์เน็ต/เคเบิลทีวี",1150],["ค่าซ่อมแซมบ้าน",0],["ของใช้ในบ้าน",0],["ประกันบ้าน",0],["อื่นๆ",0]] },
+  { name:"อาหาร", items:[["ของสดและของชำ",33000],["ทานอาหารนอกบ้าน",0],["อื่นๆ",0]] },
+  { name:"การเดินทาง", items:[["ค่างวดรถ",0],["ประกันรถ",0],["ภาษีและทะเบียนรถ",0],["ค่าน้ำมัน",0],["ค่าบำรุงรักษารถ",0],["อื่นๆ",0]] },
+  { name:"ท่องเที่ยวและสุขภาพ", items:[["ท่องเที่ยว",0],["ความบันเทิง",0],["ประกันสุขภาพ",0],["ออกกำลังกาย",0],["อื่นๆ",0]] },
 ];
 
 function buildAccordion(){
@@ -1781,7 +1797,7 @@ function refreshExpenseTotals(){
     const diff = Math.abs(S.annualExpenses - annualFromMonthly);
     const pctDiff = annualFromMonthly > 0 ? diff / annualFromMonthly : 0;
     if (pctDiff > 0.02 && diff > 1){
-      driftNote.innerHTML = `⚠️ Your annual expenses field (${fmtMoney(S.annualExpenses)}) no longer matches this monthly total × 12 (${fmtMoney(annualFromMonthly)}) — click the button to re-sync, or leave as-is if that's intentional.`;
+      driftNote.innerHTML = `⚠️ ค่าใช้จ่ายรายปีที่กรอกไว้ (${fmtMoney(S.annualExpenses)}) ไม่ตรงกับยอดรวมรายเดือน × 12 (${fmtMoney(annualFromMonthly)}) — กดปุ่มเพื่อซิงค์ใหม่ หรือปล่อยไว้หากตั้งใจให้ต่างกัน`;
     } else {
       driftNote.textContent = '';
     }
@@ -2582,8 +2598,11 @@ function recalc(){
   const retireRow = dExpected.find(r => r.age === targetAge) || dExpected[dExpected.length - 1];
   if (retireRow && retireRow.end > 0){
     const growthPct = retireRow.cumulativeGrowth / retireRow.end * 100;
-    $('runwayGrowthInsight').innerHTML = `By age <b>${retireRow.age}</b>, about <b>${growthPct.toFixed(0)}%</b> of your balance (${fmtMoney(retireRow.cumulativeGrowth)}) comes from investment growth rather than money you contributed (${fmtMoney(retireRow.cumulativeContrib)}).`;
+    $('runwayGrowthInsight').innerHTML = `เมื่ออายุ <b>${retireRow.age}</b> ประมาณ <b>${growthPct.toFixed(0)}%</b> ของยอดเงิน (${fmtMoney(retireRow.cumulativeGrowth)}) มาจากการเติบโตของการลงทุน ไม่ใช่เงินที่คุณใส่เข้าไปเอง (${fmtMoney(retireRow.cumulativeContrib)})`;
   }
+
+  showInputIssues();
+  nameCharts(dExpected, minRetireAge, depletedAge, annualExpenses, impliedAnnualSavings, currentPortfolio);
 
   clearTimeout(window._saveTimer);
   window._saveTimer = setTimeout(saveLocal, 400);
@@ -2746,9 +2765,9 @@ function renderPlannerSummary(p){
 
 function renderCompareChart(annualExpenses, annualSavings, currentPortfolio){
   const items = [
-    { label:'Annual Expenses', val: annualExpenses, color:'var(--red)' },
-    { label:'Annual Savings', val: annualSavings, color:'var(--rust)' },
-    { label:'Current Portfolio', val: currentPortfolio, color:'var(--chart-blue)' },
+    { label:'ค่าใช้จ่ายรายปี', val: annualExpenses, color:'var(--red)' },
+    { label:'เงินออมรายปี', val: annualSavings, color:'var(--rust)' },
+    { label:'พอร์ตปัจจุบัน', val: currentPortfolio, color:'var(--chart-blue)' },
   ];
   const maxVal = Math.max(...items.map(i=>i.val), 1);
   const root = $('compareChart');
@@ -3184,7 +3203,7 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
 
   let retireLabel = null;
   if (retireIdx >= 0){
-    retireLabel = { x: xAt(retireIdx), y: mainY0+12, text: 'Retire', color: 'var(--chart-pilltext)', fontSize: 10.5, weight: 600, bg:'var(--chart-pillbg)' };
+    retireLabel = { x: xAt(retireIdx), y: mainY0+12, text: 'เกษียณ', color: 'var(--chart-pilltext)', fontSize: 10.5, weight: 600, bg:'var(--chart-pillbg)' };
     const requiredGap = 22;
     eventLabels.forEach(lc => {
       if (Math.abs(lc.x - retireLabel.x) < minGap && Math.abs(lc.y - retireLabel.y) < requiredGap){
@@ -3215,7 +3234,7 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
     const di = rows.findIndex(r => r.age === depletedAge);
     if (di >= 0){
       depletedMark = `<circle cx="${xAt(di).toFixed(1)}" cy="${yAt(0).toFixed(1)}" r="5" fill="var(--chart-danger)"></circle>
-        <text x="${xAt(di).toFixed(1)}" y="${(yAt(0)-10).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="var(--chart-danger)" font-weight="700">เงินหมด</text>`;
+        <text x="${Math.min(Math.max(xAt(di), padL + 2), W - padR).toFixed(1)}" y="${(yAt(0)-10).toFixed(1)}" text-anchor="${xAt(di) > W - padR - 34 ? 'end' : (xAt(di) < padL + 34 ? 'start' : 'middle')}" font-size="10.5" fill="var(--chart-danger)" font-weight="700">เงินหมด</text>`;
     }
   }
 
@@ -3253,8 +3272,8 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
   let xlabels = '';
   const labelEvery = Math.max(1, Math.ceil(n/(M?6:12)));
   rows.forEach((r,i)=>{
-    if (i % labelEvery === 0 || i === n-1){
-      xlabels += `<text x="${xAt(i).toFixed(1)}" y="${subY1+16}" text-anchor="middle" font-size="10.5" fill="var(--chart-axislabel)">${r.age}</text>`;
+    if ((i % labelEvery === 0 && (n-1-i) >= labelEvery*0.6) || i === n-1){
+      xlabels += `<text x="${xAt(i).toFixed(1)}" y="${subY1+16}" text-anchor="${i === n-1 && n > 1 ? 'end' : 'middle'}" font-size="10.5" fill="var(--chart-axislabel)">${r.age}</text>`;
     }
   });
 
@@ -3292,10 +3311,10 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
   const text = $('runwayText');
   if (depletedAgeIn !== null){
     alertBox.className = 'alert behind';
-    text.innerHTML = `<b>Your portfolio is projected to run out at age ${depletedAgeIn}</b> — ${depletedAgeIn-targetAge} year${(depletedAgeIn-targetAge)===1?'':'s'} into retirement, under your current withdrawal rate and assumptions.`;
+    text.innerHTML = `<b>คาดว่าพอร์ตจะหมดเมื่ออายุ ${depletedAgeIn}</b> — หลังเกษียณ ${depletedAgeIn-targetAge} ปี ภายใต้อัตราการถอนและสมมติฐานปัจจุบัน`;
   } else {
     alertBox.className = 'alert ok';
-    text.innerHTML = `<b>Your portfolio is projected to last through age ${planUntilAge}</b> without running out, under your current withdrawal rate and assumptions.`;
+    text.innerHTML = `<b>คาดว่าพอร์ตจะอยู่ได้ถึงอายุ ${planUntilAge}</b> โดยไม่หมดก่อน ภายใต้อัตราการถอนและสมมติฐานปัจจุบัน`;
   }
 }
 
@@ -3429,6 +3448,9 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   let eventLabelMarkup = '';
   eventLabels.forEach(lc => {
     const w = lc.text.length * 10.5 * 0.62 + 10;
+    lc.x = Math.min(Math.max(lc.x, padL + w / 2), W - padR - w / 2);
+    if (lc.y - 19 < mainY0) lc.y = mainY0 + 19;
+    if (retireIdx >= 0 && Math.abs(lc.x - xAt(retireIdx)) < (w + 56) / 2 && lc.y - 19 < mainY0 + 20) lc.y = mainY0 + 42;
     eventLabelMarkup += `<rect x="${(lc.x-w/2).toFixed(1)}" y="${(lc.y-19).toFixed(1)}" width="${w.toFixed(1)}" height="17" rx="4" fill="var(--chart-pillbg)" fill-opacity="0.92"></rect>
       <text x="${lc.x.toFixed(1)}" y="${lc.y.toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--chart-danger)">${lc.text}</text>`;
   });
@@ -3440,9 +3462,24 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   const targetPts = rows.map((r, i) => `${xAt(i).toFixed(1)},${Math.max(mainY0, yAt(targetAt(r))).toFixed(1)}`).join(' ');
   const targetLabelText = `เป้าหมาย ${yLabel(lastTarget)}`;
   const targetLabelW = targetLabelText.length * 6.2 + 10;
+  // Keep the "Target" pill clear of the bars: right end first, then left end, else just above the tallest bar.
+  const barTopAt = i => yAt(Math.max(rows[i].end, rows[i].totalBeforeEvents || 0));
+  const pillAt = side => {
+    const x0 = side === 'right' ? W - padR - targetLabelW : padL + 4;
+    const ref = side === 'right' ? rows.length - 1 : 0;
+    const top = Math.max(mainY0, Math.max(mainY0, yAt(targetAt(rows[ref]))) - 20);
+    const clash = rows.some((r, i) => xAt(i) + barW / 2 >= x0 && xAt(i) - barW / 2 <= x0 + targetLabelW && barTopAt(i) < top + 18);
+    return { x0, top, clash, tx: side === 'right' ? W - padR - 5 : x0 + 5, anchor: side === 'right' ? 'end' : 'start' };
+  };
+  let pill = pillAt('right');
+  if (pill.clash){
+    const left = pillAt('left');
+    if (!left.clash) pill = left;
+    else pill.top = Math.max(mainY0, Math.min(pill.top, Math.min(...rows.map((r, i) => barTopAt(i))) - 20));
+  }
   const targetLine = `<polyline points="${targetPts}" fill="none" stroke="var(--chart-refline)" stroke-opacity="0.32" stroke-width="1.5" stroke-dasharray="6,4"></polyline>
-    <rect x="${(W-padR-targetLabelW).toFixed(1)}" y="${(+targetY-20).toFixed(1)}" width="${targetLabelW.toFixed(1)}" height="16" fill="var(--chart-pillbg)" fill-opacity="0.9" rx="3"></rect>
-    <text x="${W-padR}" y="${(+targetY-8).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--chart-pilltext)">${targetLabelText}</text>`;
+    <rect x="${pill.x0.toFixed(1)}" y="${pill.top.toFixed(1)}" width="${targetLabelW.toFixed(1)}" height="16" fill="var(--chart-pillbg)" fill-opacity="0.9" rx="3"></rect>
+    <text x="${pill.tx.toFixed(1)}" y="${(pill.top + 12).toFixed(1)}" text-anchor="${pill.anchor}" font-size="11" fill="var(--chart-pilltext)">${targetLabelText}</text>`;
 
   let ylabels = '';
   const ticks = 4;
@@ -3477,14 +3514,14 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
     subYlabels += `<text x="${padL-12}" y="${(+yy+4)}" text-anchor="end" font-size="10.5" fill="var(--chart-axislabel)">${labelText}</text>
       <line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="var(--chart-gridline)" stroke-width="1"></line>`;
   }
-  const subLabel = `<text x="${padL-12}" y="${(subY0-8).toFixed(1)}" text-anchor="end" font-size="10" font-weight="700" fill="var(--chart-axislabel)">เงินที่ถอน</text>`;
+  const subLabel = `<text x="${M ? padL : padL-12}" y="${(subY0-8).toFixed(1)}" text-anchor="${M ? 'start' : 'end'}" font-size="10" font-weight="700" fill="var(--chart-axislabel)">เงินที่ถอน</text>`;
   const retireLineSub = retireIdx >= 0 ? `<line x1="${xAt(retireIdx).toFixed(1)}" y1="${subY0}" x2="${xAt(retireIdx).toFixed(1)}" y2="${subY1}" stroke="var(--chart-refline)" stroke-opacity="0.2" stroke-width="1.2" stroke-dasharray="4,3"></line>` : '';
 
   let xlabels = '';
   const labelEvery = Math.max(1, Math.ceil(n/(M?6:14)));
   rows.forEach((r,i) => {
-    if (i % labelEvery === 0 || i === n-1){
-      xlabels += `<text x="${xAt(i).toFixed(1)}" y="${subY1+18}" text-anchor="middle" font-size="11" fill="var(--chart-axislabel)">${r.age}</text>`;
+    if ((i % labelEvery === 0 && (n-1-i) >= labelEvery*0.6) || i === n-1){
+      xlabels += `<text x="${xAt(i).toFixed(1)}" y="${subY1+18}" text-anchor="${i === n-1 && n > 1 ? 'end' : 'middle'}" font-size="11" fill="var(--chart-axislabel)">${r.age}</text>`;
     }
   });
 
@@ -3678,8 +3715,8 @@ function renderAppendixChart(rows){
   let xlabels = '';
   const labelEvery = Math.max(1, Math.ceil(n/(M?6:14)));
   rows.forEach((r,i) => {
-    if (i % labelEvery === 0 || i === n-1){
-      xlabels += `<text x="${xAt(i).toFixed(1)}" y="${H-padB+18}" text-anchor="middle" font-size="11" fill="var(--chart-axislabel)">${r.age}</text>`;
+    if ((i % labelEvery === 0 && (n-1-i) >= labelEvery*0.6) || i === n-1){
+      xlabels += `<text x="${xAt(i).toFixed(1)}" y="${H-padB+18}" text-anchor="${i === n-1 && n > 1 ? 'end' : 'middle'}" font-size="11" fill="var(--chart-axislabel)">${r.age}</text>`;
     }
   });
 
@@ -5367,6 +5404,218 @@ $('installHelpOk').addEventListener('click', () => { $('installHelpOverlay').sty
 // Shared links carry the profile's name so the new profile is labelled sensibly.
 function sharePayload(){ const s = collectState(); s.profileName = activeProfileName(); return s; }
 
+// =====================================================================================
+// v2.4 — Input checks, accessible labels and chart names
+// =====================================================================================
+const V24_TXT = {
+  ageRange: 'กรอกอายุปัจจุบันระหว่าง 1 ถึง 100',
+  targetLow: a => `อายุเกษียณเป้าหมายควรมากกว่าอายุปัจจุบัน (${a})`,
+  targetHigh: a => `อายุเกษียณเป้าหมายควรน้อยกว่า "วางแผนถึงอายุ" (${a})`,
+  planLow: a => `"วางแผนถึงอายุ" ควรมากกว่าอายุเกษียณเป้าหมาย (${a})`,
+  planHigh: '"วางแผนถึงอายุ" ไม่ควรเกิน 120',
+  withdrawalZero: 'อัตราการถอนต้องมากกว่า 0% (โดยทั่วไป 3–5%)',
+  withdrawalHigh: 'อัตราการถอนเกิน 10% ถือว่าสูงมาก โปรดตรวจสอบ',
+  ratioZero: 'ค่าใช้จ่ายตอนเกษียณต้องมากกว่า 0% ของค่าใช้จ่ายปัจจุบัน',
+  inflation: 'อัตราเงินเฟ้อดูผิดปกติ (ควรอยู่ระหว่าง −5% ถึง 20%)',
+  incomeGrowth: 'อัตราการเติบโตของรายได้ดูผิดปกติ (ควรอยู่ระหว่าง −20% ถึง 30%)',
+  growth: n => `${n}: อัตราการเติบโตดูผิดปกติ (ควรอยู่ระหว่าง −20% ถึง 30%)`,
+  negBalance: n => `${n}: ยอดเงินติดลบไม่ได้`,
+  negAmount: 'จำนวนเงินนี้ติดลบไม่ได้',
+  events: n => `มีเหตุการณ์สำคัญ ${n} รายการที่อยู่นอกช่วงอายุของแผน และจะไม่ถูกนำมาคำนวณ`,
+  summary: n => `<b>มี ${n} รายการที่ต้องตรวจสอบ</b> ผลลัพธ์อาจคลาดเคลื่อนจนกว่าจะแก้ไข:`,
+  colAmount: 'จำนวนเงิน', colAge: 'อายุ', colCategory: 'หมวดหมู่', colDescription: 'รายละเอียด',
+  balance: 'ยอดเงินปัจจุบัน', rate: 'อัตราการเติบโต', alloc: '% เงินออมใหม่', accName: 'ชื่อบัญชี', accCur: 'สกุลเงิน',
+  remove: 'ลบ',
+  runway: (a, b, retire, out) => `กราฟการเติบโตและระยะเวลาใช้ได้: ยอดเงินที่คาดการณ์จากอายุ ${a} ถึง ${b} ${retire === null ? 'ยังไม่ถึงเป้าหมาย' : `ถึงเป้าหมายเมื่ออายุ ${retire}`} ${out === null ? `เงินอยู่ได้ถึงอายุ ${b}` : `เงินหมดเมื่ออายุ ${out}`}`,
+  byCountry: (a, b, peak) => `การเติบโตของพอร์ตแยกตามบัญชี อายุ ${a} ถึง ${b} ยอดสูงสุด ${peak}`,
+  returnSpend: (a, b, ret, out) => `ผลตอบแทนเทียบกับการใช้จ่ายรายปี อายุ ${a} ถึง ${b} ผลตอบแทนสูงสุดต่อปี ${ret} เงินออกสูงสุดต่อปี ${out}`,
+  wealthDonut: parts => `พอร์ตปัจจุบันแยกตามบัญชี: ${parts}`,
+  expenseDonut: parts => `ค่าใช้จ่ายรายเดือนแยกตามหมวด: ${parts}`,
+  compare: (e, s, p) => `ค่าใช้จ่ายรายปี ${e} เงินออมรายปี ${s} พอร์ตปัจจุบัน ${p}`,
+};
+
+// ---------- Input checks ----------
+// Errors make results misleading (red); warnings flag unusual values (amber). Nothing is blocked:
+// the projection still runs, but each problem is explained next to its field and listed above
+// the dashboard with a link to the section.
+const FIELD_SECTION = { currentAge: 'household', targetAge: 'household', incomeGrowthRate: 'household', withdrawalRate: 'household',
+  retirementRatio: 'household', inflationRate: 'household', annualIncome: 'household', annualExpenses: 'household',
+  planUntilAge: 'runway', wealthThailand: 'wealth', wealthUSA: 'wealth', wealthSG: 'wealth',
+  wealthThailandRate: 'wealth', wealthUSARate: 'wealth', wealthSGRate: 'wealth', events: 'events' };
+
+function collectInputIssues(){
+  const num = id => parseFloat($(id).value);
+  const issues = [];
+  const add = (id, msg, level) => issues.push({ id, msg, level: level || 'error' });
+  const cur = num('currentAge'), tgt = num('targetAge'), plan = num('planUntilAge');
+  if (!(cur >= 1 && cur <= 100)) add('currentAge', V24_TXT.ageRange);
+  if (cur >= 1 && !(tgt > cur)) add('targetAge', V24_TXT.targetLow(cur));
+  else if (plan > 0 && tgt >= plan) add('targetAge', V24_TXT.targetHigh(plan));
+  if (tgt > 0 && !(plan > tgt)) add('planUntilAge', V24_TXT.planLow(tgt));
+  else if (plan > 120) add('planUntilAge', V24_TXT.planHigh);
+  const wr = num('withdrawalRate');
+  if (!(wr > 0)) add('withdrawalRate', V24_TXT.withdrawalZero);
+  else if (wr > 10) add('withdrawalRate', V24_TXT.withdrawalHigh, 'warn');
+  if (!(num('retirementRatio') > 0)) add('retirementRatio', V24_TXT.ratioZero);
+  const inf = num('inflationRate');
+  if (inf < -5 || inf > 20) add('inflationRate', V24_TXT.inflation, 'warn');
+  const ig = num('incomeGrowthRate');
+  if (ig < -20 || ig > 30) add('incomeGrowthRate', V24_TXT.incomeGrowth, 'warn');
+  ['wealthThailandRate', 'wealthUSARate', 'wealthSGRate'].forEach((id, i) => {
+    const g = num(id);
+    if (g < -20 || g > 30) add(id, V24_TXT.growth(accountLabel(i)), 'warn');
+  });
+  ACCOUNT_BALANCE_IDS.forEach((id, i) => { if ((+accounts[i].balance || 0) < 0) add(id, V24_TXT.negBalance(accountLabel(i))); });
+  if (S.annualIncome < 0) add('annualIncome', V24_TXT.negAmount);
+  if (S.annualExpenses < 0) add('annualExpenses', V24_TXT.negAmount);
+  if (cur >= 1 && plan > cur){
+    const outside = lifeEvents.filter(e => e.amount > 0 && (e.age < cur || e.age > plan)).length;
+    if (outside) add('events', V24_TXT.events(outside), 'warn');
+  }
+  return issues;
+}
+function fieldLabelText(id){
+  if (id === 'events') return $('events') ? ($('events').querySelector('h2') || {}).textContent || '' : '';
+  const el = $(id);
+  if (!el) return id;
+  if (el.labels && el.labels.length) return el.labels[0].textContent.replace(/\s+/g, ' ').trim();
+  return el.getAttribute('aria-label') || id;
+}
+function showInputIssues(){
+  const issues = collectInputIssues();
+  const byId = {};
+  issues.forEach(x => { (byId[x.id] = byId[x.id] || []).push(x); });
+  // inline messages next to each field
+  document.querySelectorAll('.field-warn[data-for]').forEach(w => { if (!byId[w.dataset.for]) w.remove(); });
+  document.querySelectorAll('[aria-invalid="true"], .input-warn').forEach(el => {
+    if (!byId[el.id]){ el.removeAttribute('aria-invalid'); el.classList.remove('input-warn'); el.removeAttribute('aria-describedby'); }
+  });
+  Object.entries(byId).forEach(([id, list]) => {
+    const el = $(id);
+    if (!el || id === 'events') return;
+    const isError = list.some(x => x.level === 'error');
+    if (isError) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid');
+    el.classList.toggle('input-warn', !isError);
+    const host = el.closest('.input-wrap') || el;
+    if (host.parentElement && host.parentElement.classList.contains('wealth-row')) return;   // grid cell: summary only
+    let w = document.querySelector(`.field-warn[data-for="${id}"]`);
+    if (!w){ w = document.createElement('div'); w.className = 'field-warn'; w.dataset.for = id; w.id = 'warn-' + id; host.insertAdjacentElement('afterend', w); }
+    w.classList.toggle('warn', !isError);
+    w.textContent = list.map(x => x.msg).join(' ');
+    el.setAttribute('aria-describedby', w.id);
+  });
+  // summary above the dashboard
+  const box = $('inputIssues');
+  if (!issues.length){ box.hidden = true; box.innerHTML = ''; return; }
+  const hasError = issues.some(x => x.level === 'error');
+  box.className = 'alert ' + (hasError ? 'behind' : 'warnbox');
+  box.innerHTML = `<span class="ico-dot">●</span><div>${V24_TXT.summary(issues.length)}<ul>${issues.map(x =>
+    `<li><a href="#${FIELD_SECTION[x.id] || 'household'}" data-focus="${x.id}">${escHtml(fieldLabelText(x.id))}</a>: ${escHtml(x.msg)}</li>`).join('')}</ul></div>`;
+  box.hidden = false;
+}
+// Clicking an item in the summary jumps to the section (the existing link handler) and focuses the field.
+$('inputIssues').addEventListener('click', e => {
+  const a = e.target.closest('a[data-focus]');
+  if (!a) return;
+  const el = $(a.dataset.focus);
+  if (el) setTimeout(() => { el.focus({ preventScroll: true }); el.scrollIntoView({ block: 'center' }); }, 60);
+});
+
+// ---------- Accessible names for inputs ----------
+// Links each visible <label> to its input, and gives inputs without a visible label of their own
+// (table-like rows: wealth accounts, life events, recurring items, monthly expenses) a name.
+let a11ySeq = 0;
+function rowContextName(el){
+  const wr = el.closest('.wealth-row');
+  if (wr){
+    const i = [...wr.parentElement.querySelectorAll('.wealth-row')].indexOf(wr);
+    if (el.classList.contains('acct-name')) return `${V24_TXT.accName} ${i + 1}`;
+    if (el.classList.contains('acct-cur')) return `${accountLabel(i)}: ${V24_TXT.accCur}`;
+    if (/Rate$/.test(el.id)) return `${accountLabel(i)}: ${V24_TXT.rate}`;
+    if (/^savingsAlloc/.test(el.id)) return `${accountLabel(i)}: ${V24_TXT.alloc}`;
+    return `${accountLabel(i)}: ${V24_TXT.balance}`;
+  }
+  const ev = el.closest('.event-row');
+  if (ev){
+    const cat = (ev.querySelector('.ev-category') || {}).value || '';
+    if (el.classList.contains('ev-category')) return V24_TXT.colCategory;
+    if (el.classList.contains('ev-label')) return `${cat}: ${V24_TXT.colDescription}`;
+    if (el.classList.contains('ev-amount')) return `${cat}: ${V24_TXT.colAmount}`;
+    if (el.classList.contains('ev-age')) return `${cat}: ${V24_TXT.colAge}`;
+  }
+  const line = el.closest('.exp-line');
+  if (line){
+    const t = [...line.childNodes].map(n => n.nodeType === 3 ? n.textContent : (n.contains(el) ? '' : n.textContent)).join(' ').replace(/\s+/g, ' ').trim();
+    if (t) return t;
+  }
+  // rows under a header row (recurring items, staged income): "row label: column header"
+  const row = el.closest('.recur-row');
+  if (row){
+    let head = row.previousElementSibling;
+    while (head && !head.classList.contains('recur-head-row')) head = head.previousElementSibling;
+    if (!head){ const list = row.parentElement; head = list && list.previousElementSibling; while (head && !head.classList.contains('recur-head-row')) head = head.previousElementSibling; }
+    const cells = [...row.children];
+    const idx = cells.findIndex(c => c === el || c.contains(el));
+    const col = head && head.children[idx] ? head.children[idx].textContent.trim() : '';
+    const first = row.querySelector('input[type="text"]:not([inputmode])');
+    const rowName = first && first !== el && first.value ? first.value : '';
+    return [rowName, col].filter(Boolean).join(': ') || col;
+  }
+  return '';
+}
+function linkLabels(){
+  document.querySelectorAll('main input:not([type="hidden"]):not([type="file"]), main select, main textarea, .modal-card input:not([type="file"]), .modal-card select').forEach(el => {
+    if (el.labels && el.labels.length) return;
+    if (el.getAttribute('aria-labelledby')) return;
+    const field = el.closest('.field');
+    if (field){
+      const lab = [...field.querySelectorAll('label')].find(l => !l.htmlFor && !l.contains(el));
+      const inputs = field.querySelectorAll('input:not([type="hidden"]), select, textarea');
+      if (lab && inputs.length === 1){
+        if (!el.id) el.id = 'a11y-in-' + (++a11ySeq);
+        lab.htmlFor = el.id;
+        return;
+      }
+    }
+    if (el.getAttribute('aria-label')) return;
+    const name = rowContextName(el) || el.getAttribute('title') || el.getAttribute('placeholder') || '';
+    if (name) el.setAttribute('aria-label', name);
+  });
+  // icon-only buttons (×, ↻, ✕): use their tooltip as the accessible name
+  document.querySelectorAll('button').forEach(b => {
+    if (b.getAttribute('aria-label')) return;
+    const t = b.textContent.trim();
+    if (!/[\p{L}\p{N}]/u.test(t)) b.setAttribute('aria-label', b.getAttribute('title') || V24_TXT.remove);
+  });
+}
+let a11yTimer = null;
+new MutationObserver(() => { clearTimeout(a11yTimer); a11yTimer = setTimeout(linkLabels, 80); })
+  .observe(document.body, { childList: true, subtree: true });
+
+// ---------- Accessible names for charts ----------
+function setChartName(id, text){
+  const el = $(id);
+  if (!el) return;
+  el.setAttribute('role', 'img');
+  el.setAttribute('aria-label', text);
+}
+function nameCharts(rows, retireAge, depletedAge, annualExpenses, annualSavings, currentPortfolio){
+  if (rows && rows.length){
+    const a = rows[0].age, b = rows[rows.length - 1].age;
+    setChartName('runwaySvg', V24_TXT.runway(a, b, retireAge, depletedAge));
+    setChartName('appendixGrowthSvg', V24_TXT.byCountry(a, b, fmtMoney(Math.max(...rows.map(r => r.end)))));
+    setChartName('appendixSvg', V24_TXT.returnSpend(a, b, fmtMoney(Math.max(...rows.map(r => r.ret || 0))), fmtMoney(Math.max(...rows.map(r => r.outflow || r.expenses || 0)))));
+  }
+  const total = accountHome(0) + accountHome(1) + accountHome(2);
+  setChartName('wealthDonutSvg', V24_TXT.wealthDonut([0, 1, 2].map(i =>
+    `${accountLabel(i)} ${fmtMoney(accountHome(i))} (${total > 0 ? Math.round(accountHome(i) / total * 100) : 0}%)`).join(', ')));
+  const subs = expenseCategories.map(c => c.items.reduce((s, it) => s + it[1], 0));
+  const grand = subs.reduce((s, v) => s + v, 0);
+  setChartName('expenseDonutSvg', V24_TXT.expenseDonut(expenseCategories.map((c, i) =>
+    `${c.name} ${fmtMoney(subs[i])} (${grand > 0 ? Math.round(subs[i] / grand * 100) : 0}%)`).join(', ')));
+  setChartName('compareChart', V24_TXT.compare(fmtMoney(annualExpenses), fmtMoney(annualSavings), fmtMoney(currentPortfolio)));
+}
+
 // ---------- init ----------
 renderAmountInputs();
 renderAccountInputs();
@@ -5400,6 +5649,7 @@ refreshFxRates(false);
   await openSharedPlanFromHash();   // a #plan=… link opens as a new profile
   if (!profileStore) openProfileDialog('welcome');
 })();
+linkLabels();
 
 // scroll spy (desktop sidebar only — unaffected by mobile changes below)
 const navLinks = document.querySelectorAll('.nav a');
