@@ -888,6 +888,86 @@
     .pr-table tr{break-inside:avoid;}
     .pr-table.left2 th:nth-child(2),.pr-table.left2 td:nth-child(2){text-align:left;}
   }
+
+  /* ---------- v2.6 Compare plans ---------- */
+  :root{ --cmp-a-text:#2563a8; --cmp-b-text:#a8470a; }
+  html[data-theme="dark"]{ --cmp-a-text:var(--chart-cmp-0); --cmp-b-text:var(--chart-cmp-1); }
+  html.cmp-open, html.cmp-open body{overflow:hidden;}
+  #cmpView{position:fixed;inset:0;z-index:95;background:var(--bg);color:var(--text);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .cmp-top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;gap:14px;}
+  .cmp-top h1{font-size:18px;margin:0;font-weight:800;flex:1;}
+  .cmp-wrap{max-width:1100px;margin:0 auto;padding:22px 28px 40px;}
+  .cmp-pick{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;}
+  .cmp-slot{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--card);border-top:4px solid var(--c);min-width:0;}
+  .cmp-slot.a{--c:var(--chart-cmp-0);} .cmp-slot.b{--c:var(--chart-cmp-1);}
+  .cmp-lbl{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+  .cmp-lbl i{width:10px;height:10px;border-radius:50%;background:var(--c);display:inline-block;}
+  .cmp-sels{display:flex;gap:8px;}
+  .cmp-sels select{flex:1;min-width:0;padding:9px 10px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text);font:inherit;font-size:13.5px;}
+  .cmp-sels select[hidden]{display:none !important;}
+  .cmp-swap{height:40px;width:40px;justify-content:center;padding:0;}
+  .cmp-note{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5;}
+  .cmp-note b{color:var(--amber);font-weight:700;}
+  .cmp-res{width:100%;border-collapse:collapse;font-size:14px;}
+  .cmp-res thead th{font-size:12px;text-align:right;color:var(--muted);font-weight:700;padding:6px 10px;border-bottom:1px solid var(--border);}
+  .cmp-res thead th:first-child{text-align:left;}
+  .cmp-res tbody th{text-align:left;font-weight:500;padding:10px;border-bottom:1px solid var(--border);}
+  .cmp-res tbody th small{color:var(--muted);font-weight:500;}
+  .cmp-res td{padding:10px;border-bottom:1px solid var(--border);text-align:right;font-variant-numeric:tabular-nums;}
+  .cmp-res td.ca, .cmp-yy th.ca{color:var(--cmp-a-text);font-weight:700;}
+  .cmp-res td.cb, .cmp-yy th.cb{color:var(--cmp-b-text);font-weight:700;}
+  .cmp-pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12.5px;font-weight:700;white-space:nowrap;}
+  .cmp-pill.good{background:var(--green-bg);color:var(--green);}
+  .cmp-pill.bad{background:var(--red-bg);color:var(--red);}
+  .cmp-pill.neu{background:var(--tint-2);color:var(--muted);}
+  .cmp-tog{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;}
+  .cmp-tog button{border:0;background:var(--card);color:var(--muted);padding:6px 12px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;}
+  .cmp-tog button.on{background:var(--tint-strong);color:var(--text);}
+  .cmp-chart{position:relative;width:100%;}
+  .cmp-chart svg{display:block;touch-action:pan-y;}
+  .cmp-tip{position:absolute;pointer-events:none;background:var(--chart-tooltip-bg);color:var(--chart-tooltip-text);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.55;white-space:nowrap;box-shadow:var(--shadow);}
+  .cmp-tip i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;}
+  .cmp-tip i.la{background:var(--chart-cmp-0);} .cmp-tip i.lb{background:var(--chart-cmp-1);}
+  .cmp-leg{display:flex;gap:18px;font-size:12.5px;color:var(--muted);margin-top:8px;flex-wrap:wrap;}
+  .cmp-leg b{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:6px;}
+  .cmp-leg b.la{border-color:var(--chart-cmp-0);} .cmp-leg b.lb{border-color:var(--chart-cmp-1);border-top-style:dashed;}
+  .cmp-leg i.ld{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--muted);margin-right:6px;vertical-align:middle;}
+  .cmp-diff{display:grid;grid-template-columns:1fr auto auto auto;font-size:13.5px;}
+  .cmp-diff > div{padding:8px 10px;border-bottom:1px solid var(--border);}
+  .cmp-grp{grid-column:1/-1;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:var(--tint-1);}
+  .cmp-va{color:var(--cmp-a-text);font-weight:700;text-align:right;}
+  .cmp-vb{color:var(--cmp-b-text);font-weight:700;text-align:right;}
+  .cmp-ar{color:var(--muted);}
+  .cmp-empty{margin:0;color:var(--muted);font-size:13.5px;}
+  .cmp-yy-wrap{width:100%;overflow-x:auto;}
+  .cmp-yy{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;}
+  .cmp-yy th,.cmp-yy td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--border);}
+  .cmp-yy thead th{color:var(--muted);font-size:12px;}
+  .cmp-yy th:first-child{text-align:left;}
+  .cmp-yy tbody th{font-weight:600;}
+  .cmp-yy tr.ret th,.cmp-yy tr.ret td{background:var(--row-retiring);}
+  .cmp-res tbody tr:last-child th,.cmp-yy tbody tr:last-child th{border-bottom:none;}
+  .cmp-more{margin-top:12px;}
+  #scnCompareBtn{margin-left:8px;}
+  @media (max-width:900px){
+    .cmp-top{padding:10px 14px;} .cmp-top h1{font-size:16px;}
+    .cmp-wrap{padding:14px 16px 32px;}
+    .cmp-pick{grid-template-columns:1fr;}
+    .cmp-swap{justify-self:center;transform:rotate(90deg);}
+    .cmp-sels{flex-direction:column;}
+    .cmp-sels select{font-size:16px;width:100%;}
+    .cmp-res{font-size:13px;}
+    .cmp-res thead th{padding:6px;}
+    .cmp-res thead th:nth-child(4){display:none;}
+    .cmp-res tbody tr{display:grid;grid-template-columns:1fr minmax(64px,auto) minmax(64px,auto);border-bottom:1px solid var(--border);}
+    .cmp-res tbody th,.cmp-res td{border-bottom:0;padding:9px 6px;}
+    .cmp-res td.cd{grid-column:1/-1;text-align:left;padding-top:0;}
+    .cmp-res thead tr{display:grid;grid-template-columns:1fr minmax(64px,auto) minmax(64px,auto);}
+    .cmp-diff{grid-template-columns:1fr auto auto;}
+    .cmp-ar{display:none;}
+    #scnCompareBtn{margin-left:0;margin-top:8px;}
+  }
+  @media print{ #cmpView{display:none !important;} }
 </style>
 </head>
 <body>
@@ -1603,7 +1683,7 @@ const UI_ICON = { sun: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke=
 
 // Version shown in the sidebar, footer, PDF report and saved files. Numbering: MAJOR.MINOR[.PATCH]
 // (patch = fixes only, minor = new features, major = redesign or model change). See README.
-const APP_VERSION = '2.5';
+const APP_VERSION = '2.6';
 
 // ---------- Day / night mode ----------
 function applyThemeToggleLabel(){
@@ -5113,7 +5193,8 @@ function renderProfileMenu(){
     </button>`).join('');
   $('profileMenu').innerHTML = `${list}<hr>
     <button type="button" class="pm-item pm-link" data-act="new">${V22_TXT.menuNew}</button>
-    <button type="button" class="pm-item pm-link" data-act="manage">${V22_TXT.menuManage}</button>`;
+    <button type="button" class="pm-item pm-link" data-act="manage">${V22_TXT.menuManage}</button>
+    <button type="button" class="pm-item pm-link" data-act="compare">${V26_TXT.open}</button>`;
 }
 function toggleProfileMenu(show){
   const m = $('profileMenu');
@@ -5130,6 +5211,7 @@ $('profileMenu').addEventListener('click', e => {
   toggleProfileMenu(false);
   if (b.dataset.act === 'new') openProfileDialog('new');
   else if (b.dataset.act === 'manage') openProfileManager();
+  else if (b.dataset.act === 'compare') openCompare();
   else if (b.dataset.id && b.dataset.id !== profileStore.activeId) switchProfile(b.dataset.id);
 });
 
@@ -5800,6 +5882,523 @@ function refreshWideCharts(){
   if (stale) recalc();
 }
 
+// ---------- v2.6: Compare plans — a full-screen view comparing any two plans side by side ----------
+// A plan is a profile's current inputs or one of its saved scenarios. Each plan is projected in its
+// own home currency with its own exchange-rate settings (exactly as its planner shows it); Plan B's
+// money results are then converted into Plan A's currency at the live rate. The projection is linear
+// in money, so converting the results is the same as converting the inputs.
+const V26_TXT = {
+  title: 'เปรียบเทียบแผน',
+  back: 'กลับไปที่แผน',
+  open: 'เปรียบเทียบแผน',
+  openScn: 'เปิดหน้าเปรียบเทียบแบบเต็ม',
+  planA: 'แผน A', planB: 'แผน B',
+  profile: 'โปรไฟล์', plan: 'แผน',
+  swap: 'สลับแผน A และแผน B',
+  sameCur: c => `ทั้งสองแผนใช้สกุลเงิน ${c}`,
+  converted: (from, to, rate, when) => `แปลงแผน B จาก ${from} เป็น ${to} ที่อัตรา 1 ${from} = ${rate} ${to} (${when})`,
+  fallbackRate: 'อัตราในตัว — ไม่สามารถดึงอัตราล่าสุดได้',
+  samePlan: 'แผน A และแผน B เป็นแผนเดียวกัน — เลือกแผนอื่นสำหรับฝั่งใดฝั่งหนึ่ง',
+  headline: 'ผลลัพธ์หลัก', betterHint: 'สีเขียว = แผน B ดีกว่า, สีแดง = แย่กว่า',
+  colResult: 'ผลลัพธ์', colDiff: 'B เทียบกับ A',
+  rRetire: 'เกษียณได้ที่อายุ', rLasts: 'เงินพอใช้ถึงอายุ', rFire: 'เป้าหมาย FIRE (มูลค่าปัจจุบัน)',
+  rAtTarget: 'ยอดเงิน ณ อายุเกษียณเป้าหมาย', rEnd: 'เงินคงเหลือเมื่อสิ้นแผน', rScore: 'คะแนนความพร้อม',
+  notReached: 'ไม่ถึงเป้าหมาย', never: (age) => `${age}+`, neverTitle: 'เงินไม่หมดภายในช่วงของแผน',
+  same: 'เท่ากัน',
+  yrsLater: n => `ช้ากว่า ${n} ปี`, yrsEarlier: n => `เร็วกว่า ${n} ปี`,
+  yrsMore: n => `+${n} ปี`, yrsLess: n => `−${n} ปี`,
+  nowReaches: 'ถึงเป้าหมาย', noLonger: 'ไม่ถึงเป้าหมาย',
+  chartTitle: 'ตลอดช่วงเวลา', tBalance: 'ยอดเงิน', tSpend: 'ค่าใช้จ่ายรายปี',
+  retireDot: 'อายุเกษียณ (ถึงเป้าหมาย)', age: 'อายุ',
+  diffTitle: 'สิ่งที่แตกต่าง', diffHint: (n, of) => `แสดงเฉพาะข้อมูลที่ต่างกัน · ${n} จาก ${of}`,
+  noDiff: 'ทั้งสองแผนมีข้อมูลเหมือนกันทุกอย่าง',
+  balance: name => `${name} — ยอดเงิน`, growth: name => `${name} — อัตราการเติบโต`, alloc: name => `${name} — สัดส่วนเงินออมใหม่`,
+  perMonth: '/ เดือน',
+  addIncome: 'รายได้เพิ่มเติม', addExpense: 'ค่าใช้จ่ายเพิ่มเติม',
+  staged: 'ช่วงรายได้หลายช่วง', off: 'ไม่ใช้', periods: n => `${n} ช่วง`,
+  none: 'ไม่มี', items: (n, total) => `${n} รายการ · ${total}`,
+  yearTitle: 'รายปี', yearHintShort: 'ทุก 5 ปีและอายุสำคัญ · ไฮไลต์อายุเกษียณเป้าหมาย',
+  yearHintAll: 'ทุกปี · ไฮไลต์อายุเกษียณเป้าหมาย',
+  colAge: 'อายุ', colGap: 'ส่วนต่าง (B − A)',
+  showAll: 'แสดงทุกปี', showFewer: 'แสดงทุก 5 ปี',
+  depleted: 'เงินหมด',
+};
+
+const CMP_PCT_FIELDS = new Set(['withdrawalRate','retirementRatio','wealthThailandRate','wealthUSARate','wealthSGRate',
+  'savingsAllocThailand','savingsAllocUSA','savingsAllocSG','inflationRate','incomeGrowthRate','sensitivitySlider']);
+const CMP_ACC_FIELDS = { wealthThailandRate: [0, 'growth'], wealthUSARate: [1, 'growth'], wealthSGRate: [2, 'growth'],
+  savingsAllocThailand: [0, 'alloc'], savingsAllocUSA: [1, 'alloc'], savingsAllocSG: [2, 'alloc'] };
+const CMP_ICON = {
+  back: '<path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/>',
+  swap: '<path d="M7 4v14"/><path d="M3.5 14.5L7 18l3.5-3.5"/><path d="M17 20V6"/><path d="M13.5 9.5L17 6l3.5 3.5"/>',
+  chevDown: '<path d="M7 10l5 5 5-5"/>', chevUp: '<path d="M7 14l5-5 5 5"/>',
+  compare: '<path d="M4 19V9"/><path d="M9.5 19V5"/><path d="M14.5 19v-8"/><path d="M20 19V7"/>',
+};
+const cmpIco = k => `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${CMP_ICON[k]}</svg>`;
+
+let cmpSel = null;            // { a:{pid,key}, b:{pid,key} }
+let cmpMetric = 'balance';
+let cmpShowAll = false;
+let cmpLast = null;           // last computed { A, B, k } for chart redraws
+let cmpHover = null;
+let cmpPushed = false;        // true when opening added a #compare history entry that Back should undo
+
+function cmpWithCurrency(c, fn){ const s = currency; currency = c; try { return fn(); } finally { currency = s; } }
+function cmpLiveRate(from, to){
+  if (from === to) return 1;
+  const saved = fxManual; fxManual = null;
+  try { return fxConvert(1, from, to); } finally { fxManual = saved; }
+}
+
+// Every profile with its current plan and saved scenarios. The open profile uses its live inputs.
+function cmpSources(){
+  if (!profileStore) return [{ pid: '_', name: V21_TXT.scnCurrent, plans: [{ key: 'current', name: V21_TXT.scnCurrent, state: planSnapshot() }] }];
+  return profileStore.profiles.map(p => {
+    const active = p.id === profileStore.activeId;
+    const st = active ? planSnapshot() : (p.state || {});
+    const scn = active ? scenarios.map(s => ({ name: s.name, state: s.state })) : (Array.isArray(p.state && p.state.scenarios) ? p.state.scenarios : []);
+    const plans = [{ key: 'current', name: V21_TXT.scnCurrent, state: st }];
+    scn.forEach((s, i) => { if (s && s.state) plans.push({ key: 's' + i, name: String(s.name || ''), state: s.state }); });
+    return { pid: p.id, name: p.name, plans };
+  });
+}
+function cmpFind(src, sel){
+  const prof = src.find(p => p.pid === sel.pid) || src[0];
+  const plan = prof.plans.find(x => x.key === sel.key) || prof.plans[0];
+  return { prof, plan };
+}
+function cmpDefaultSel(src){
+  const activeId = profileStore ? profileStore.activeId : '_';
+  const act = src.find(p => p.pid === activeId) || src[0];
+  const a = { pid: act.pid, key: 'current' };
+  let b = a;
+  if (act.plans.length > 1) b = { pid: act.pid, key: act.plans[1].key };
+  else { const other = src.find(p => p.pid !== act.pid); if (other) b = { pid: other.pid, key: 'current' }; }
+  return { a, b: { ...b } };
+}
+
+// Projects one plan in its own currency with its own rate settings and scores it like the summary card.
+function cmpProject(stIn){
+  const st = normalizeState(stIn);
+  const savedFx = fxManual;
+  fxManual = (st.fx && st.fx.manual) || null;
+  try {
+    const p = projInputsFromState(st);
+    const proj = computeFullProjection(p, p.sensitivity);
+    const maxExtra = computeMaxAffordableExtraSpend(p, p.sensitivity);
+    const raw = proj.rows;
+    const rows = displayRows(raw, p.inflationRate);
+    const metRow = raw.find(r => r.met);
+    const atT = rows.find(r => r.age === p.targetAge);
+    const last = rows[rows.length - 1];
+
+    // Readiness score — the same four factors and weights as renderPlannerSummary().
+    const currentAge = raw.length ? raw[0].age : p.targetAge;
+    const yrsTo = Math.max(0, p.targetAge - currentAge);
+    const projInc = incomeAtAge(p.targetAge, currentAge, p.annualIncome, p.incomeGrowthRate, p.useStagedIncome, p.incomePeriods);
+    const projExp = p.annualExpenses * Math.pow(1 + (p.inflationRate || 0), yrsTo);
+    const savingsRatePct = projInc > 0 ? ((projInc - projExp) / projInc * 100) : 0;
+    const expRow = raw.find(r => r.age === p.targetAge) || raw[raw.length - 1];
+    const targetPct = (expRow && expRow.target > 0) ? (expRow.end / expRow.target * 100) : 0;
+    const yearsPlanned = Math.max(0, p.planUntilAge - p.targetAge + 1);
+    const yearsCovered = proj.depletedAge !== null ? Math.max(0, Math.min(yearsPlanned, proj.depletedAge - p.targetAge)) : yearsPlanned;
+    const extraPct = p.annualExpenses > 0 ? (maxExtra / p.annualExpenses * 100) : 0;
+    const clamp = v => Math.max(0, Math.min(10, v));
+    const w = clamp((targetPct - 50) / 10) * 0.30 + clamp(yearsPlanned > 0 ? yearsCovered / yearsPlanned * 10 : 10) * 0.30
+            + clamp(savingsRatePct / 3) * 0.20 + (proj.depletedAge !== null ? 0 : clamp(extraPct / 3)) * 0.20;
+
+    const bal = {}, spend = {};
+    rows.forEach(r => {
+      bal[r.age] = r.end;
+      spend[r.age] = r.retiring ? (r.withdrawal + r.incomeExtra) : (r.expenses + r.expenseExtra);
+    });
+    return {
+      st, p, cur: st.homeCurrency, bal, spend,
+      startAge: p.currentAge, endAge: p.planUntilAge,
+      retireAge: metRow ? metRow.age : null, depletedAge: proj.depletedAge,
+      fire: p.targetPortfolio, atTarget: atT ? atT.end : 0,
+      atEnd: proj.depletedAge !== null ? 0 : (last ? last.end : 0),
+      score: Math.max(1, Math.min(10, Math.round(w))),
+    };
+  } finally { fxManual = savedFx; }
+}
+function cmpScale(R, k){
+  if (k === 1) return R;
+  const sc = o => Object.fromEntries(Object.entries(o).map(([a, v]) => [a, v * k]));
+  return { ...R, bal: sc(R.bal), spend: sc(R.spend), fire: R.fire * k, atTarget: R.atTarget * k, atEnd: R.atEnd * k };
+}
+
+// ---------- DOM ----------
+function cmpBuildDom(){
+  const T = V26_TXT;
+  const v = document.createElement('div');
+  v.id = 'cmpView';
+  v.hidden = true;
+  v.setAttribute('role', 'dialog');
+  v.setAttribute('aria-modal', 'true');
+  v.setAttribute('aria-labelledby', 'cmpTitle');
+  const slot = (id, label, cls) => `
+      <div class="cmp-slot ${cls}">
+        <div class="cmp-lbl"><i></i>${label}</div>
+        <div class="cmp-sels">
+          <select id="cmp${id}Prof" aria-label="${label} — ${T.profile}"></select>
+          <select id="cmp${id}Plan" aria-label="${label} — ${T.plan}"></select>
+        </div>
+      </div>`;
+  v.innerHTML = `
+    <div class="cmp-top">
+      <button class="btn ghost" id="cmpBack" type="button">${cmpIco('back')}${T.back}</button>
+      <h1 id="cmpTitle">${T.title}</h1>
+    </div>
+    <div class="cmp-wrap">
+      <div class="card">
+        <div class="cmp-pick">
+          ${slot('A', T.planA, 'a')}
+          <button class="btn ghost cmp-swap" id="cmpSwap" type="button" title="${T.swap}" aria-label="${T.swap}">${cmpIco('swap')}</button>
+          ${slot('B', T.planB, 'b')}
+        </div>
+        <div class="cmp-note" id="cmpNote"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>${T.headline}</h2><div class="hint"><span class="basis-badge"></span>${T.betterHint}</div></div>
+        <table class="cmp-res" id="cmpRes"></table>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>${T.chartTitle}</h2>
+          <div class="cmp-tog" role="group" aria-label="${T.chartTitle}">
+            <button type="button" data-m="balance" class="on" aria-pressed="true">${T.tBalance}</button><button type="button" data-m="spend" aria-pressed="false">${T.tSpend}</button>
+          </div>
+        </div>
+        <div class="cmp-chart"><svg id="cmpSvg" width="100%" height="280" viewBox="0 0 1000 280" preserveAspectRatio="none"></svg><div class="cmp-tip" id="cmpTip" hidden></div></div>
+        <div class="cmp-leg" id="cmpLeg"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>${T.diffTitle}</h2><div class="hint" id="cmpDiffHint"></div></div>
+        <div class="cmp-diff" id="cmpDiff"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>${T.yearTitle}</h2><div class="hint" id="cmpYearHint"></div></div>
+        <div class="cmp-yy-wrap"><table class="cmp-yy" id="cmpYear"></table></div>
+        <button class="btn ghost cmp-more" id="cmpMore" type="button"></button>
+      </div>
+    </div>`;
+  document.body.appendChild(v);
+
+  $('cmpBack').addEventListener('click', closeCompare);
+  $('cmpSwap').addEventListener('click', () => { cmpSel = { a: cmpSel.b, b: cmpSel.a }; renderCompare(); });
+  ['A', 'B'].forEach(X => {
+    const k = X.toLowerCase();
+    $(`cmp${X}Prof`).addEventListener('change', e => { cmpSel[k] = { pid: e.target.value, key: 'current' }; renderCompare(); });
+    $(`cmp${X}Plan`).addEventListener('change', e => { cmpSel[k] = { ...cmpSel[k], key: e.target.value }; renderCompare(); });
+  });
+  v.querySelectorAll('.cmp-tog button').forEach(b => b.addEventListener('click', () => {
+    cmpMetric = b.dataset.m;
+    v.querySelectorAll('.cmp-tog button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    renderCompareChart();
+  }));
+  $('cmpMore').addEventListener('click', () => { cmpShowAll = !cmpShowAll; renderCompareYears(); });
+  const svg = $('cmpSvg');
+  svg.addEventListener('pointermove', cmpOnHover);
+  svg.addEventListener('pointerdown', cmpOnHover);
+  svg.addEventListener('pointerleave', () => { $('cmpTip').hidden = true; const g = svg.querySelector('.cmp-hover'); if (g) g.remove(); });
+  v.addEventListener('keydown', e => { if (e.key === 'Escape') closeCompare(); });
+}
+
+function openCompare(){
+  if (!$('cmpView')) return;
+  if (location.hash !== '#compare'){ cmpPushed = true; location.hash = 'compare'; return; }   // hashchange calls back in
+  if (!$('cmpView').hidden) return;
+  if (activeProfile()) flushAutosave();
+  const src = cmpSources();
+  if (!cmpSel || !src.some(p => p.pid === cmpSel.a.pid) || !src.some(p => p.pid === cmpSel.b.pid)) cmpSel = cmpDefaultSel(src);
+  $('cmpView').hidden = false;
+  document.documentElement.classList.add('cmp-open');
+  $('cmpView').scrollTop = 0;
+  renderCompare();
+  updateBasisUI();
+  $('cmpBack').focus();
+}
+function closeCompare(){
+  if (location.hash === '#compare'){
+    if (cmpPushed){ cmpPushed = false; history.back(); }
+    else { try { history.replaceState(null, '', location.pathname + location.search); } catch(e){} cmpHide(); }
+    return;
+  }
+  cmpHide();
+}
+function cmpHide(){
+  const v = $('cmpView');
+  if (!v || v.hidden) return;
+  v.hidden = true;
+  document.documentElement.classList.remove('cmp-open');
+  if ($('scnCompareBtn')) $('scnCompareBtn').focus({ preventScroll: true });
+}
+
+function cmpFillSelect(sel, items, value){
+  sel.innerHTML = items.map(([v, t]) => `<option value="${escHtml(v)}">${escHtml(t)}</option>`).join('');
+  sel.value = value;
+}
+
+function renderCompare(){
+  const T = V26_TXT;
+  const src = cmpSources();
+  const A = cmpFind(src, cmpSel.a), B = cmpFind(src, cmpSel.b);
+  cmpSel = { a: { pid: A.prof.pid, key: A.plan.key }, b: { pid: B.prof.pid, key: B.plan.key } };
+  const profItems = src.map(p => [p.pid, p.name]);
+  const planItems = prof => prof.plans.map(x => [x.key, x.name]);
+  cmpFillSelect($('cmpAProf'), profItems, cmpSel.a.pid);
+  cmpFillSelect($('cmpBProf'), profItems, cmpSel.b.pid);
+  cmpFillSelect($('cmpAPlan'), planItems(A.prof), cmpSel.a.key);
+  cmpFillSelect($('cmpBPlan'), planItems(B.prof), cmpSel.b.key);
+  const oneProfile = src.length < 2;
+  $('cmpAProf').hidden = $('cmpBProf').hidden = oneProfile;
+
+  const RA = cmpProject(A.plan.state);
+  const RBraw = cmpProject(B.plan.state);
+  const k = cmpLiveRate(RBraw.cur, RA.cur);
+  const RB = cmpScale(RBraw, k);
+  cmpLast = { A: RA, B: RB, k, curA: RA.cur, curB: RBraw.cur };
+
+  let note = RBraw.cur === RA.cur ? T.sameCur(RA.cur)
+    : T.converted(RBraw.cur, RA.cur, fmtRate(k), fxLive && fxLive.date ? fmtDay(fxLive.date) : T.fallbackRate);
+  if (cmpSel.a.pid === cmpSel.b.pid && cmpSel.a.key === cmpSel.b.key) note += ` <b>${T.samePlan}</b>`;
+  $('cmpNote').innerHTML = note;
+
+  cmpWithCurrency(RA.cur, () => { renderCompareResults(); renderCompareChart(); renderCompareDiff(); renderCompareYears(); });
+}
+
+// ---------- Headline results ----------
+function cmpPill(kind, text){ return `<span class="cmp-pill ${kind}">${text}</span>`; }
+function cmpMoneyDiff(a, b, higherBetter){
+  const d = b - a;
+  if (Math.abs(d) < Math.max(1, Math.abs(a)) * 0.0005) return cmpPill('neu', V26_TXT.same);
+  const good = higherBetter ? d > 0 : d < 0;
+  return cmpPill(good ? 'good' : 'bad', (d > 0 ? '+' : '−') + fmtCompact(Math.abs(d)));
+}
+function renderCompareResults(){
+  const T = V26_TXT, { A, B } = cmpLast;
+  const ageTxt = v => v === null ? T.notReached : v;
+  const lastsTxt = R => R.depletedAge === null ? `<span title="${T.neverTitle}">${T.never(R.endAge)}</span>` : R.depletedAge;
+  let retireDiff;
+  if (A.retireAge === null && B.retireAge === null) retireDiff = cmpPill('neu', T.same);
+  else if (A.retireAge === null) retireDiff = cmpPill('good', T.nowReaches);
+  else if (B.retireAge === null) retireDiff = cmpPill('bad', T.noLonger);
+  else { const d = B.retireAge - A.retireAge; retireDiff = d === 0 ? cmpPill('neu', T.same) : d > 0 ? cmpPill('bad', T.yrsLater(d)) : cmpPill('good', T.yrsEarlier(-d)); }
+  const la = A.depletedAge === null ? Infinity : A.depletedAge, lb = B.depletedAge === null ? Infinity : B.depletedAge;
+  let lastsDiff;
+  if (la === lb) lastsDiff = cmpPill('neu', T.same);
+  else if (la === Infinity) lastsDiff = cmpPill('bad', T.yrsLess(Math.max(0, A.endAge - lb + 1)));
+  else if (lb === Infinity) lastsDiff = cmpPill('good', T.yrsMore(Math.max(0, B.endAge - la + 1)));
+  else lastsDiff = lb > la ? cmpPill('good', T.yrsMore(lb - la)) : cmpPill('bad', T.yrsLess(la - lb));
+  const sd = B.score - A.score;
+  const scoreDiff = sd === 0 ? cmpPill('neu', T.same) : cmpPill(sd > 0 ? 'good' : 'bad', (sd > 0 ? '+' : '−') + Math.abs(sd));
+  const rows = [
+    [T.rRetire, ageTxt(A.retireAge), ageTxt(B.retireAge), retireDiff],
+    [T.rLasts, lastsTxt(A), lastsTxt(B), lastsDiff],
+    [T.rFire, fmtCompact(A.fire), fmtCompact(B.fire), cmpMoneyDiff(A.fire, B.fire, false)],
+    [T.rAtTarget + ` <small>(${A.p.targetAge}${A.p.targetAge !== B.p.targetAge ? ' / ' + B.p.targetAge : ''})</small>`, fmtCompact(A.atTarget), fmtCompact(B.atTarget), cmpMoneyDiff(A.atTarget, B.atTarget, true)],
+    [T.rEnd + ` <small>(${A.endAge}${A.endAge !== B.endAge ? ' / ' + B.endAge : ''})</small>`, fmtCompact(A.atEnd), fmtCompact(B.atEnd), cmpMoneyDiff(A.atEnd, B.atEnd, true)],
+    [T.rScore, `${A.score}/10`, `${B.score}/10`, scoreDiff],
+  ];
+  $('cmpRes').innerHTML = `<thead><tr><th scope="col">${T.colResult}</th><th scope="col" class="ca">${T.planA}</th><th scope="col" class="cb">${T.planB}</th><th scope="col">${T.colDiff}</th></tr></thead><tbody>`
+    + rows.map(r => `<tr><th scope="row">${r[0]}</th><td class="ca">${r[1]}</td><td class="cb">${r[2]}</td><td class="cd">${r[3]}</td></tr>`).join('') + '</tbody>';
+}
+
+// ---------- Chart ----------
+function cmpSeries(R, metric){
+  const src = metric === 'spend' ? R.spend : R.bal;
+  const pts = [];
+  for (let a = R.startAge; a <= R.endAge; a++){
+    if (src[a] !== undefined) pts.push([a, src[a]]);
+    else if (metric === 'balance' && R.depletedAge !== null && a > R.depletedAge) pts.push([a, 0]);
+  }
+  return pts;
+}
+function renderCompareChart(){
+  if (!cmpLast) return;
+  const svg = $('cmpSvg');
+  const { A, B } = cmpLast;
+  cmpWithCurrency(cmpLast.curA, () => {
+    const M = isMobileView();
+    const W = M ? measuredChartWidth(svg) : 1000;
+    const H = M ? 230 : 280;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('height', H);
+    const padL = M ? 46 : 70, padR = M ? 10 : 20, padT = 14, padB = 28;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const sa = cmpSeries(A, cmpMetric), sb = cmpSeries(B, cmpMetric);
+    const minAge = Math.min(A.startAge, B.startAge);
+    const maxAge = Math.max(A.endAge, B.endAge, minAge + 1);
+    const maxVal = Math.max(1, ...sa.map(p => p[1]), ...sb.map(p => p[1])) * 1.1;
+    const xAt = a => padL + ((a - minAge) / (maxAge - minAge)) * plotW;
+    const yAt = v => padT + plotH - (Math.max(0, v) / maxVal) * plotH;
+    let g = '';
+    for (let t = 0; t <= 4; t++){
+      const v = maxVal / 4 * t, yy = yAt(v);
+      g += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${W - padR}" y2="${yy.toFixed(1)}" stroke="var(--chart-gridline)" stroke-width="1"></line>
+        <text x="${padL - 8}" y="${(yy + 3.5).toFixed(1)}" text-anchor="end" font-size="10.5" fill="var(--chart-axislabel)">${fmtCompact(v)}</text>`;
+    }
+    const span = maxAge - minAge;
+    const step = [1, 2, 5, 10, 20].find(s => span / s <= (M ? 6 : 12)) || 20;
+    for (let a = Math.ceil(minAge / step) * step; a <= maxAge; a += step)
+      g += `<text x="${xAt(a).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="10.5" fill="var(--chart-axislabel)">${a}</text>`;
+    const path = (pts, c, dash) => pts.length ? `<path d="${pts.map((p, i) => `${i ? 'L' : 'M'}${xAt(p[0]).toFixed(1)},${yAt(p[1]).toFixed(1)}`).join(' ')}" fill="none" stroke="${c}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"${dash ? ' stroke-dasharray="7,4"' : ''}></path>` : '';
+    const dot = (R, pts, c) => {
+      if (R.retireAge === null) return '';
+      const p = pts.find(q => q[0] === R.retireAge);
+      return p ? `<circle cx="${xAt(p[0]).toFixed(1)}" cy="${yAt(p[1]).toFixed(1)}" r="5" fill="${c}" stroke="var(--card)" stroke-width="1.5"></circle>` : '';
+    };
+    svg.innerHTML = `${g}<line x1="${padL}" y1="${padT + plotH}" x2="${W - padR}" y2="${padT + plotH}" stroke="var(--chart-axisline)"></line>`
+      + path(sb, 'var(--chart-cmp-1)', true) + path(sa, 'var(--chart-cmp-0)', false)
+      + dot(B, sb, 'var(--chart-cmp-1)') + dot(A, sa, 'var(--chart-cmp-0)');
+    cmpHover = { xAt, yAt, minAge, maxAge, W, H, padT, plotH, sa, sb };
+    svg.setAttribute('role', 'img');
+    const T = V26_TXT;
+    svg.setAttribute('aria-label', `${T.planA}: ${T.rRetire} ${A.retireAge ?? T.notReached}; ${T.planB}: ${T.rRetire} ${B.retireAge ?? T.notReached}`);
+    const nameOf = s => { const src = cmpSources(); const f = cmpFind(src, s); return src.length > 1 ? `${f.prof.name} · ${f.plan.name}` : f.plan.name; };
+    $('cmpLeg').innerHTML = `<span><b class="la"></b>${T.planA} · ${escHtml(nameOf(cmpSel.a))}</span><span><b class="lb"></b>${T.planB} · ${escHtml(nameOf(cmpSel.b))}</span><span><i class="ld"></i>${T.retireDot}</span>`;
+  });
+  $('cmpTip').hidden = true;
+}
+function cmpOnHover(evt){
+  if (!cmpHover || !cmpLast) return;
+  const svg = $('cmpSvg');
+  const rect = svg.getBoundingClientRect();
+  const h = cmpHover;
+  const vx = (evt.clientX - rect.left) / rect.width * h.W;
+  const age = Math.round(h.minAge + (vx - h.xAt(h.minAge)) / (h.xAt(h.maxAge) - h.xAt(h.minAge)) * (h.maxAge - h.minAge));
+  if (age < h.minAge || age > h.maxAge) return;
+  const va = h.sa.find(p => p[0] === age), vb = h.sb.find(p => p[0] === age);
+  let g = svg.querySelector('.cmp-hover');
+  if (!g){ g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.setAttribute('class', 'cmp-hover'); svg.appendChild(g); }
+  const x = h.xAt(age).toFixed(1);
+  g.innerHTML = `<line x1="${x}" x2="${x}" y1="${h.padT}" y2="${h.padT + h.plotH}" stroke="var(--chart-refline)" stroke-width="1" stroke-dasharray="3,3"></line>`
+    + (va ? `<circle cx="${x}" cy="${h.yAt(va[1]).toFixed(1)}" r="4" fill="var(--chart-cmp-0)" stroke="var(--card)" stroke-width="1.5"></circle>` : '')
+    + (vb ? `<circle cx="${x}" cy="${h.yAt(vb[1]).toFixed(1)}" r="4" fill="var(--chart-cmp-1)" stroke="var(--card)" stroke-width="1.5"></circle>` : '');
+  const T = V26_TXT;
+  const tip = $('cmpTip');
+  tip.innerHTML = cmpWithCurrency(cmpLast.curA, () => `<b>${T.age} ${age}</b>`
+    + `<div><i class="la"></i>${T.planA}: ${va ? fmtCompact(va[1]) : '—'}</div>`
+    + `<div><i class="lb"></i>${T.planB}: ${vb ? fmtCompact(vb[1]) : '—'}</div>`);
+  tip.hidden = false;
+  const px = (h.xAt(age) / h.W) * rect.width;
+  const tw = tip.offsetWidth;
+  tip.style.left = Math.max(0, Math.min(rect.width - tw, px + 12 > rect.width - tw ? px - tw - 12 : px + 12)) + 'px';
+  tip.style.top = '8px';
+}
+
+// ---------- What's different ----------
+function cmpSectionTitle(el){
+  const sec = el && el.closest('section');
+  const h = sec && sec.querySelector('h2');
+  if (!h) return '';
+  return [...h.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(' ').replace(/\s+/g, ' ').trim();
+}
+function renderCompareDiff(){
+  const T = V26_TXT, { A, B, k } = cmpLast;
+  const sa = A.st, sb = B.st;
+  const fa = sa.fields || {}, fb = sb.fields || {};
+  const items = [];   // { group, label, a, b, differ }
+  const push = (anchorEl, label, a, b) => items.push({ group: cmpSectionTitle(anchorEl), label, a, b, differ: a !== b });
+  const accName = (st, i) => String((st.accounts[i] && st.accounts[i].name) || V22_TXT.accDefault[i]);
+  const fmtField = (id, v) => {
+    const n = +v || 0;
+    if (!CMP_PCT_FIELDS.has(id)) return String(n);
+    const s = (Math.round(n * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: 2 }) + '%';
+    return id === 'sensitivitySlider' && n > 0 ? '+' + s : s;
+  };
+  const moneyA = v => fmtMoney(+v || 0), moneyB = v => fmtMoney((+v || 0) * k);
+
+  idFields.forEach(id => {
+    const el = $(id);
+    let label = fieldLabelText(id);
+    if (CMP_ACC_FIELDS[id]){
+      const [i, kind] = CMP_ACC_FIELDS[id];
+      label = kind === 'growth' ? T.growth(accName(sa, i)) : T.alloc(accName(sa, i));
+    }
+    push(el, label, fmtField(id, fa[id]), fmtField(id, fb[id]));
+    if (id === 'targetAge'){
+      amountFields.forEach(aid => push($(aid), fieldLabelText(aid), moneyA((sa.amounts || {})[aid]), moneyB((sb.amounts || {})[aid])));
+    }
+  });
+  // Account balances (each in its own currency)
+  for (let i = 0; i < 3; i++){
+    const a = sa.accounts[i], b = sb.accounts[i];
+    const f = acc => acc ? cmpWithCurrency(acc.currency, () => fmtMoney(+acc.balance || 0)) : '—';
+    push($('wealthThailandRate'), T.balance(accName(sa, i)), f(a), f(b));
+  }
+  // Monthly expenses by category
+  const expSec = $('expenseAccordion');
+  expenseCategories.forEach((c, ci) => {
+    const tot = (st, mul) => (((st.expenses || [])[ci] || {}).items || []).reduce((s, v) => s + (+v || 0), 0) * mul;
+    push(expSec, `${c.name} ${T.perMonth}`, fmtMoney(tot(sa, 1)), fmtMoney(tot(sb, k)));
+  });
+  // Lists
+  const listTxt = (arr, mul) => arr && arr.length ? T.items(arr.length, fmtCompact(arr.reduce((s, e) => s + (+e.amount || 0), 0) * mul)) : T.none;
+  const evKey = (arr, mul) => (arr || []).map(e => `${e.category}|${e.age}|${Math.round((+e.amount || 0) * mul)}`).join(';');
+  const listItem = (anchor, label, la, lb, keyFn) => {
+    const ta = listTxt(la, 1), tb = listTxt(lb, k);
+    items.push({ group: cmpSectionTitle(anchor), label, a: ta, b: tb, differ: keyFn(la, 1) !== keyFn(lb, k) || ta !== tb });
+  };
+  listItem($('events'), cmpSectionTitle($('events')) || 'Life events', sa.lifeEvents, sb.lifeEvents, evKey);
+  const recKey = (arr, mul) => (arr || []).map(e => `${e.startAge}|${e.duration}|${Math.round((+e.amount || 0) * mul)}`).join(';');
+  listItem($('incomeList'), T.addIncome, sa.additionalIncome, sb.additionalIncome, recKey);
+  listItem($('expenseItemsList'), T.addExpense, sa.additionalExpenses, sb.additionalExpenses, recKey);
+  const stg = (st, mul) => (st.useStagedIncome && (st.incomePeriods || []).length) ? T.periods(st.incomePeriods.length) : T.off;
+  const stgKey = (st, mul) => (st.useStagedIncome ? (st.incomePeriods || []).map(p => `${p.years}|${Math.round((+p.amount || 0) * mul)}`).join(';') : 'off');
+  items.push({ group: cmpSectionTitle($('annualIncome')), label: T.staged, a: stg(sa, 1), b: stg(sb, k), differ: stgKey(sa, 1) !== stgKey(sb, k) });
+
+  const diff = items.filter(x => x.differ);
+  $('cmpDiffHint').textContent = T.diffHint(diff.length, items.length);
+  if (!diff.length){ $('cmpDiff').innerHTML = `<p class="cmp-empty">${T.noDiff}</p>`; return; }
+  const order = [];
+  diff.forEach(x => { if (!order.includes(x.group)) order.push(x.group); });
+  $('cmpDiff').innerHTML = order.map(gname => `<div class="cmp-grp">${escHtml(gname)}</div>`
+    + diff.filter(x => x.group === gname).map(x => `<div class="cmp-dl">${escHtml(x.label)}</div><div class="cmp-va">${escHtml(x.a)}</div><div class="cmp-ar" aria-hidden="true">→</div><div class="cmp-vb">${escHtml(x.b)}</div>`).join('')).join('');
+}
+
+// ---------- Year by year ----------
+function renderCompareYears(){
+  const T = V26_TXT;
+  if (!cmpLast) return;
+  const { A, B } = cmpLast;
+  cmpWithCurrency(cmpLast.curA, () => {
+    const minAge = Math.min(A.startAge, B.startAge), maxAge = Math.max(A.endAge, B.endAge);
+    const key = new Set([minAge, maxAge, A.retireAge, B.retireAge, A.p.targetAge, B.p.targetAge, A.depletedAge, B.depletedAge].filter(v => v !== null && v !== undefined));
+    const ages = [];
+    for (let a = minAge; a <= maxAge; a++) if (cmpShowAll || a % 5 === 0 || key.has(a)) ages.push(a);
+    const val = (R, a) => (a < R.startAge || a > R.endAge) ? null : (R.bal[a] !== undefined ? R.bal[a] : 0);
+    const retAges = new Set([A.p.targetAge, B.p.targetAge]);
+    $('cmpYear').innerHTML = `<thead><tr><th scope="col">${T.colAge}</th><th scope="col" class="ca">${T.planA}</th><th scope="col" class="cb">${T.planB}</th><th scope="col">${T.colGap}</th></tr></thead><tbody>`
+      + ages.map(a => {
+        const va = val(A, a), vb = val(B, a);
+        const d = (va === null || vb === null) ? null : vb - va;
+        const gap = d === null ? '—' : Math.abs(d) < 1 ? '0' : (d > 0 ? '+' : '−') + fmtCompact(Math.abs(d));
+        const cell = v => v === null ? '—' : fmtCompact(v);
+        return `<tr${retAges.has(a) ? ' class="ret"' : ''}><th scope="row">${a}</th><td>${cell(va)}</td><td>${cell(vb)}</td><td>${gap}</td></tr>`;
+      }).join('') + '</tbody>';
+  });
+  $('cmpYearHint').textContent = cmpShowAll ? T.yearHintAll : T.yearHintShort;
+  $('cmpMore').innerHTML = cmpIco(cmpShowAll ? 'chevUp' : 'chevDown') + (cmpShowAll ? T.showFewer : T.showAll);
+}
+
+// ---------- Entry points ----------
+cmpBuildDom();
+(function addScenarioLink(){
+  const box = document.querySelector('#scenarios .scn-actions');
+  if (!box) return;
+  const b = document.createElement('button');
+  b.className = 'btn ghost'; b.type = 'button'; b.id = 'scnCompareBtn';
+  b.innerHTML = cmpIco('compare') + V26_TXT.openScn;
+  b.addEventListener('click', openCompare);
+  box.insertBefore(b, $('scnNote'));
+})();
+window.addEventListener('hashchange', () => {
+  if (location.hash === '#compare') openCompare();
+  else { cmpPushed = false; cmpHide(); }
+});
+if (location.hash === '#compare') setTimeout(openCompare, 0);   // a #compare link opens the view once start-up has loaded the profiles
+window.addEventListener('resize', () => { if ($('cmpView') && !$('cmpView').hidden) renderCompareChart(); });
 // ---------- init ----------
 renderAmountInputs();
 renderAccountInputs();
