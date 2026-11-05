@@ -11,6 +11,11 @@
   })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#4f6fb0">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>FIRE Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -676,6 +681,65 @@
     .scn-name{font-size:16px;}
   }
 
+
+  /* ---------- v2.2: profiles, banners, home currency, accounts ---------- */
+  [hidden]{display:none !important;}      /* author display rules (e.g. .btn, .lang-switch) were beating the hidden attribute */
+  .head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-left:auto;}
+  @media (max-width:900px){ .head-actions{justify-content:flex-start;margin-left:0;width:100%;} }
+  .profile-switch{position:relative;}
+  .profile-btn{display:inline-flex;align-items:center;gap:6px;max-width:240px;}
+  .profile-btn #profileBtnName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;}
+  .profile-btn.dirty::after{content:'';width:7px;height:7px;border-radius:50%;background:var(--chart-needs);margin-left:2px;}
+  .profile-menu{position:absolute;top:calc(100% + 6px);left:0;z-index:60;width:290px;max-width:calc(100vw - 32px);
+    background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 14px 34px rgba(15,23,42,.18);padding:6px;}
+  .profile-menu hr{border:none;border-top:1px solid var(--border);margin:6px 0;}
+  .pm-item{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;
+    border-radius:8px;padding:9px 10px;font-family:inherit;font-size:13.5px;color:var(--text);cursor:pointer;}
+  .pm-item:hover{background:var(--tint-2);}
+  .pm-item.on{background:var(--tint-2);font-weight:700;}
+  .pm-item small{color:var(--muted-2);font-weight:600;font-size:11.5px;white-space:nowrap;}
+  .pm-item .pm-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .pm-link{color:var(--rust-dark);font-weight:700;}
+  .dirty-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--chart-needs);margin-left:7px;vertical-align:1px;}
+  #appBanners:empty{display:none;}
+  #appBanners{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+  .app-banner{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--red-bg);border:1px solid var(--border);
+    color:var(--text);border-radius:12px;padding:11px 14px;font-size:13px;line-height:1.5;}
+  .app-banner.info{background:var(--tint-2);}
+  .app-banner .ab-text{flex:1;min-width:220px;}
+  .btn.small{padding:6px 12px;font-size:12.5px;}
+  .modal-card.wide{max-width:720px;}
+  .pm-table{width:100%;border-collapse:collapse;margin:12px 0 4px;font-size:13.5px;}
+  .pm-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted-2);border-bottom:1px solid var(--border);padding:6px 8px;}
+  .pm-table td{border-bottom:1px solid var(--border);padding:8px;color:var(--text);vertical-align:middle;}
+  .pm-table tr.on td{background:var(--tint-1);}
+  .pm-rename{width:auto !important;min-width:0;max-width:200px;font-weight:700;padding:5px 8px !important;background:transparent !important;border-color:transparent !important;}
+  .pm-rename:hover,.pm-rename:focus{border-color:var(--border) !important;background:var(--card) !important;}
+  .pm-acts{text-align:right;white-space:nowrap;}
+  .tag{display:inline-block;font-size:11px;font-weight:700;border-radius:20px;padding:2px 8px;background:var(--tint-2);color:var(--muted);}
+  .tag.warn{background:var(--red-bg);color:var(--chart-needs);}
+  .tag.ok{background:var(--green-bg);color:var(--green);}
+  .pm-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px;}
+  .pm-foot .fx-note{margin-left:auto;}
+  .pd-cur{margin:6px 0 16px;display:inline-flex;}
+  #homeSeg{flex-shrink:0;}
+  .fx-status{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);}
+  .fx-status #fxText{color:var(--text);font-weight:600;}
+  .fx-src{color:var(--muted-2);font-size:12px;}
+  .wlabel{min-width:0;}
+  @media (min-width:901px){ .wealth-head-row,.wealth-row{grid-template-columns:minmax(230px,1.2fr) 1fr 110px 110px;} }
+  .wlabel .acct-name{flex:1;min-width:0;width:auto;padding:6px 8px;font-weight:600;}
+  .wlabel .acct-cur{flex-shrink:0;font-family:inherit;font-size:13px;border:1px solid var(--border);border-radius:8px;padding:6px 4px;
+    background:var(--tint-1);color:var(--text);}
+  .acct-conv{font-size:11.5px;color:var(--muted-2);margin-top:3px;min-height:0;}
+  .acct-conv:empty{display:none;}
+  @media (max-width:900px){
+    .profile-btn{max-width:200px;}
+    .pm-table th:nth-child(3),.pm-table td:nth-child(3){display:none;}
+    .pm-rename{max-width:130px;font-size:16px;}
+    .wlabel .acct-cur{font-size:16px;}
+  }
+
   /* ---------- Print / PDF report ---------- */
   @page{size:A4 landscape;margin:12mm;}
   @media print{
@@ -826,6 +890,7 @@
 </aside>
 
 <main class="main">
+  <div id="appBanners" aria-live="polite"></div>
 
   <section id="overview">
     <div class="page-head">
@@ -833,28 +898,35 @@
         <h1>Retirement Dashboard</h1>
         <p>Your path to Financial Independence, Retire Early — updated live from your inputs below.</p>
       </div>
+      <div class="head-actions">
+      <div class="profile-switch" id="profileSwitch">
+        <button class="lang-switch profile-btn" id="profileBtn" type="button" aria-haspopup="true" aria-expanded="false">👤 <span id="profileBtnName"></span> ▾</button>
+        <div class="profile-menu" id="profileMenu" hidden></div>
+      </div>
       <div id="headerStatus" class="status-pill">On track</div>
+      <button class="lang-switch" id="installBtn" type="button" hidden></button>
       <button id="themeToggle" class="lang-switch" onclick="toggleTheme()" type="button">🌙 Dark</button>
       <a class="lang-switch" href="fire_estimator_TH.html">🌐 ไทย</a>
+      </div>
     </div>
 
     <div class="currency-bar">
       <div class="currency-bar-row1">
-        <div class="seg">
-          <button id="curTHB" class="active" onclick="setCurrency('THB')">฿ THB</button>
-          <button id="curUSD" onclick="setCurrency('USD')">$ USD</button>
+        <div class="fx-field"><span>Home currency</span>
+          <div class="seg" id="homeSeg" role="group" aria-label="Home currency">
+            <button id="homeTHB" type="button">฿ THB</button><button id="homeUSD" type="button">$ USD</button><button id="homeEUR" type="button">€ EUR</button>
+          </div>
         </div>
-        <div class="fx-field">
-          <span>1 USD =</span>
-          <input type="number" id="fxRateInput" value="33" step="0.01">
-          <span>THB</span>
+        <div class="fx-status" id="fxStatus"><span id="fxText"></span><span class="fx-src" id="fxSrc"></span>
+          <button class="link-btn" id="fxRefresh" type="button" title="Use the latest ECB rates" aria-label="Use the latest ECB rates">↻</button>
+          <button class="link-btn" id="fxEdit" type="button">Edit</button>
         </div>
         <div class="seg" id="basisSeg" role="group" aria-label="Show amounts as">
           <button id="basisFuture" class="active" type="button">Future value</button>
           <button id="basisToday" type="button">Today's value</button>
         </div>
       </div>
-      <div class="fx-note">All figures are stored in THB. Toggle currency to view your own USD conversion — everything recalculates instantly.</div>
+      <div class="fx-note">Amounts are in this profile's home currency. Accounts held in other currencies are converted at the rates shown.</div>
       <div class="currency-actions">
         <button class="btn ghost" id="exportBtn">⬇ Save data</button>
         <button class="btn ghost" id="importBtn">⬆ Load data</button>
@@ -897,6 +969,57 @@
       </div>
     </div>
 
+    <div id="profilesOverlay" class="modal-overlay" style="display:none;">
+      <div class="modal-card wide">
+        <h3>User profiles on this device</h3>
+        <div class="fx-note">Saved in this browser only. Back up to keep a copy on your computer; restore to move profiles to another device or into the installed app.</div>
+        <div style="overflow-x:auto;"><table class="pm-table">
+          <thead><tr><th>Name</th><th>Home currency</th><th>Last edited</th><th>Backup</th><th></th></tr></thead>
+          <tbody id="profilesBody"></tbody>
+        </table></div>
+        <div class="pm-foot">
+          <button class="btn" id="profilesNew" type="button">+ New profile</button>
+          <button class="btn ghost" id="profilesBackup" type="button">⬇ Back up all profiles</button>
+          <button class="btn ghost" id="profilesRestore" type="button">⬆ Restore from backup…</button>
+          <span class="fx-note" id="profilesLastBackup"></span>
+        </div>
+        <div class="modal-actions" style="margin-top:14px;"><button class="btn ghost" id="profilesClose" type="button">Close</button></div>
+      </div>
+    </div>
+    <input type="file" id="restoreFile" accept="application/json,.json" style="display:none;">
+
+    <div id="profileDialogOverlay" class="modal-overlay" style="display:none;">
+      <div class="modal-card">
+        <h3 id="pdTitle"></h3>
+        <span id="pdTitleWelcome" hidden>Welcome to FIRE Planner</span><span id="pdTitleNew" hidden>New user profile</span>
+        <span id="pdOkWelcome" hidden>Start planning</span><span id="pdOkNew" hidden>Create profile</span>
+        <p id="pdIntro" style="color:var(--muted);">Your data stays on this device; nothing is sent to a server. Back it up to your computer from time to time, and install the app so the browser keeps it safe. You start with an example plan; replace its numbers with your own.</p>
+        <div class="field"><label for="pdName">Profile name</label><input type="text" id="pdName" maxlength="40"></div>
+        <div class="field" style="margin-bottom:4px;"><label>Home currency</label>
+          <div class="seg pd-cur" role="group" aria-label="Home currency"><button id="pdCurTHB" type="button">฿ THB</button><button id="pdCurUSD" type="button">$ USD</button><button id="pdCurEUR" type="button">€ EUR</button></div>
+        </div>
+        <div class="fx-note" id="pdNewNote" style="margin:-6px 0 16px;">New profiles start with standard assumptions and no amounts. To copy an existing plan, use Duplicate in Manage profiles.</div>
+        <div class="modal-actions" style="align-items:center;">
+          <button class="link-btn" id="pdRestore" type="button" style="margin-right:auto;">Restore a backup instead</button>
+          <button class="btn ghost" id="pdCancel" type="button">Cancel</button>
+          <button class="btn" id="pdOk" type="button"></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="fxEditOverlay" class="modal-overlay" style="display:none;">
+      <div class="modal-card">
+        <h3>Exchange rates</h3>
+        <p style="color:var(--muted);">Type your own rates. They're saved with this profile and aren't replaced by live rates.</p>
+        <div id="fxEditRows"></div>
+        <div class="modal-actions" style="align-items:center;">
+          <button class="link-btn" id="fxEditLive" type="button" style="margin-right:auto;">Use live rates</button>
+          <button class="btn ghost" id="fxEditCancel" type="button">Cancel</button>
+          <button class="btn" id="fxEditSave" type="button">Save</button>
+        </div>
+      </div>
+    </div>
+
     <div id="v21ConfirmOverlay" class="modal-overlay" style="display:none;">
       <div class="modal-card">
         <h3 id="v21ConfirmTitle"></h3>
@@ -908,7 +1031,7 @@
       </div>
     </div>
     <span id="sharedOpenTitle" hidden>Open shared plan?</span>
-    <span id="sharedOpenBody" hidden>This replaces the plan saved in this browser with the one in the link. Use Save data first if you want to keep your current numbers.</span>
+    <span id="sharedOpenBody" hidden>It's added as a new user profile. Nothing on this device is replaced.</span>
     <span id="sharedOpenOk" hidden>Open plan</span>
 
     <div id="shareLinkOverlay" class="modal-overlay" style="display:none;">
@@ -951,7 +1074,7 @@
           </a>
           <a class="step-row" href="#wealth">
             <span class="step-num">2</span>
-            <span class="step-text"><b>Sources of Wealth</b> — your balances in Thailand, USA, and Singapore, plus expected returns</span>
+            <span class="step-text"><b>Sources of Wealth</b> — your balances in up to three accounts (THB, USD or EUR), plus expected returns</span>
           </a>
           <a class="step-row" href="#expenses">
             <span class="step-num">3</span>
@@ -1117,35 +1240,35 @@
     <div class="card">
       <div class="card-head">
         <h2>Sources of Wealth</h2>
-        <div class="hint">One clear growth rate per country — for what you already have, and for new savings</div>
+        <div class="hint">One clear growth rate per account — for what you already have, and for new savings</div>
       </div>
       <div class="insight" style="margin-bottom:18px;">
-        Each country below has <b>one growth rate</b>, applied consistently. Your <b>current balance</b> in that country compounds at that rate, and any share of your <b>new annual savings</b> you allocate there compounds at the same rate too — no separate assumption elsewhere. How much you spend in retirement is unaffected by this split; it's calculated the same way regardless of where the money sits.
+        Each account below has <b>one growth rate</b>, applied consistently. Your <b>current balance</b> in that account compounds at that rate, and any share of your <b>new annual savings</b> you allocate there compounds at the same rate too — no separate assumption elsewhere. How much you spend in retirement is unaffected by this split; it's calculated the same way regardless of where the money sits.
       </div>
 
       <div class="wealth-head-row">
-        <div></div><div>Current Balance</div><div>Growth Rate</div><div>New Savings %</div><div></div>
+        <div>Account</div><div>Current Balance</div><div>Growth Rate</div><div>New Savings %</div><div></div>
       </div>
       <div class="wealth-row" data-loc="thailand">
-        <div class="wlabel"><span class="wdot" style="background:var(--chart-thailand);"></span>Thailand</div>
-        <div class="input-wrap has-prefix"><span class="prefix curSym">฿</span><input type="text" inputmode="decimal" id="wealthThailand"></div>
+        <div class="wlabel"><span class="wdot" style="background:var(--chart-thailand);"></span><input type="text" class="acct-name" id="acctName0" maxlength="30" aria-label="Account name"><select class="acct-cur" id="acctCur0" aria-label="Currency"><option>THB</option><option>USD</option><option>EUR</option></select></div>
+        <div><div class="input-wrap has-prefix"><span class="prefix" id="acctSym0">฿</span><input type="text" inputmode="decimal" id="wealthThailand"></div><div class="acct-conv" id="acctConv0"></div></div>
         <div class="input-wrap has-suffix"><input type="number" step="0.1" id="wealthThailandRate" value="3.3"><span class="suffix">%</span></div>
         <div class="input-wrap has-suffix"><input type="number" step="1" id="savingsAllocThailand" value="100"><span class="suffix">%</span></div>
       </div>
       <div class="wealth-row" data-loc="usa">
-        <div class="wlabel"><span class="wdot" style="background:var(--chart-blue);"></span>USA</div>
-        <div class="input-wrap has-prefix"><span class="prefix">$</span><input type="text" inputmode="decimal" id="wealthUSA"></div>
+        <div class="wlabel"><span class="wdot" style="background:var(--chart-blue);"></span><input type="text" class="acct-name" id="acctName1" maxlength="30" aria-label="Account name"><select class="acct-cur" id="acctCur1" aria-label="Currency"><option>THB</option><option>USD</option><option>EUR</option></select></div>
+        <div><div class="input-wrap has-prefix"><span class="prefix" id="acctSym1">฿</span><input type="text" inputmode="decimal" id="wealthUSA"></div><div class="acct-conv" id="acctConv1"></div></div>
         <div class="input-wrap has-suffix"><input type="number" step="0.1" id="wealthUSARate" value="6.0"><span class="suffix">%</span></div>
         <div class="input-wrap has-suffix"><input type="number" step="1" id="savingsAllocUSA" value="0"><span class="suffix">%</span></div>
       </div>
       <div class="wealth-row" data-loc="singapore">
-        <div class="wlabel"><span class="wdot" style="background:var(--chart-singapore);"></span>Singapore</div>
-        <div class="input-wrap has-prefix"><span class="prefix">$</span><input type="text" inputmode="decimal" id="wealthSG"></div>
+        <div class="wlabel"><span class="wdot" style="background:var(--chart-singapore);"></span><input type="text" class="acct-name" id="acctName2" maxlength="30" aria-label="Account name"><select class="acct-cur" id="acctCur2" aria-label="Currency"><option>THB</option><option>USD</option><option>EUR</option></select></div>
+        <div><div class="input-wrap has-prefix"><span class="prefix" id="acctSym2">฿</span><input type="text" inputmode="decimal" id="wealthSG"></div><div class="acct-conv" id="acctConv2"></div></div>
         <div class="input-wrap has-suffix"><input type="number" step="0.1" id="wealthSGRate" value="4.0"><span class="suffix">%</span></div>
         <div class="input-wrap has-suffix"><input type="number" step="1" id="savingsAllocSG" value="0"><span class="suffix">%</span></div>
       </div>
       <div class="mix-total" id="savingsAllocTotal">New Savings % total: 100%</div>
-      <div class="fx-note" style="margin:8px 0 16px 0;">USA and Singapore balances are always entered in USD, converted to THB internally using your FX rate. "New Savings %" splits your annual savings across the three each year and should add up to 100%.</div>
+      <div class="fx-note" style="margin:8px 0 16px 0;">Each account has its own currency; balances are converted to the home currency at the rates in the currency bar. "New Savings %" splits your annual savings across the three each year and should add up to 100%.</div>
 
       <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;">
         <div style="flex:2;min-width:260px;">
@@ -1347,7 +1470,7 @@
     <div class="card">
       <div class="card-head">
         <h2>Appendix: Portfolio Growth by Country</h2>
-        <div class="hint">Balance by age, split across Thailand / USA / Singapore — hover for the exact breakdown</div>
+        <div class="hint">Balance by age, split across your three accounts — hover for the exact breakdown</div>
       </div>
       <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
         <div class="field" style="flex:1;min-width:240px;max-width:420px;margin-bottom:0;">
@@ -1360,9 +1483,9 @@
         <svg id="appendixGrowthSvg" width="100%" height="480" viewBox="0 0 1000 480" preserveAspectRatio="none" style="cursor:crosshair;"></svg>
       </div>
       <div class="legend">
-        <span><span class="swatch" style="background:var(--chart-thailand);"></span>Thailand</span>
-        <span><span class="swatch" style="background:var(--chart-blue);"></span>USA</span>
-        <span><span class="swatch" style="background:var(--chart-singapore);"></span>Singapore</span>
+        <span><span class="swatch" style="background:var(--chart-thailand);"></span><span id="legendAcct0">Thailand</span></span>
+        <span><span class="swatch" style="background:var(--chart-blue);"></span><span id="legendAcct1">USA</span></span>
+        <span><span class="swatch" style="background:var(--chart-singapore);"></span><span id="legendAcct2">Singapore</span></span>
         <span><span class="swatch" style="background:var(--chart-combined-total);"></span>Combined total (log scale only)</span>
         <span><span class="swatch" style="background:var(--chart-withdraw);"></span>Withdrawal (separate panel, own scale)</span>
         <span><span class="swatch" style="background:var(--chart-refline);opacity:.35;"></span>Target portfolio line</span>
@@ -1400,7 +1523,7 @@ const $ = id => document.getElementById(id);
 
 // Version shown in the sidebar, footer, PDF report and saved files. Numbering: MAJOR.MINOR[.PATCH]
 // (patch = fixes only, minor = new features, major = redesign or model change). See README.
-const APP_VERSION = '2.1.1';
+const APP_VERSION = '2.2';
 
 // ---------- Day / night mode ----------
 function applyThemeToggleLabel(){
@@ -1471,14 +1594,16 @@ function formatStatic(n){
 }
 
 
-let currency = 'THB'; // 'THB' or 'USD'
-let fxRate = 33; // THB per 1 USD
-
-function toDisplay(thb){ return currency === 'USD' ? thb / fxRate : thb; }
-function toBase(displayVal){ return currency === 'USD' ? displayVal * fxRate : displayVal; }
+// Home currency of the open user profile (THB, USD or EUR). Every plan amount is stored in it,
+// so what's shown is what's stored. Accounts in other currencies are converted with fxConvert().
+let currency = 'THB';
+const CUR_SYM = { THB: '฿', USD: '$', EUR: '€' };
+function curSymbol(c){ return CUR_SYM[c] || c; }
+function toDisplay(v){ return v; }
+function toBase(v){ return v; }
 
 function fmtMoney(thb){
-  const symbol = currency === 'USD' ? '$' : '฿';
+  const symbol = curSymbol(currency);
   const val = toDisplay(thb);
   const sign = val < 0 ? '-' : '';
   return sign + symbol + Math.abs(Math.round(val)).toLocaleString();
@@ -1497,11 +1622,11 @@ function roundToSigFigs(num, sig){
 // Compact "hover" formatting: THB rounds to 3 significant figures (e.g. ฿700M, ฿12.3M),
 // USD shows 2 decimal places (e.g. $21.23M) — always expressed in millions.
 function fmtCompact(thb){
-  const symbol = currency === 'USD' ? '$' : '฿';
+  const symbol = curSymbol(currency);
   const val = toDisplay(thb);
   const sign = val < 0 ? '-' : '';
   const millions = Math.abs(val) / 1e6;
-  if (currency === 'USD'){
+  if (currency !== 'THB'){
     return sign + symbol + millions.toFixed(2) + 'M';
   }
   const rounded = roundToSigFigs(millions, 3);
@@ -1520,50 +1645,17 @@ function shortDateTimeFilename(prefix){
   return `${prefix}_${day}${month}${year}_${hh}${mm}`;
 }
 
-function setCurrency(c){
-  currency = c;
-  $('curTHB').classList.toggle('active', c==='THB');
-  $('curUSD').classList.toggle('active', c==='USD');
-  document.querySelectorAll('.curSym').forEach(el => el.textContent = c==='USD' ? '$' : '฿');
-  renderAmountInputs();
-  renderExpenseInputs();
-  renderEventAmounts();
-  incomeList.renderAmounts();
-  expenseItemsList.renderAmounts();
-  recalc();
-}
-
-$('fxRateInput').addEventListener('input', ()=>{
-  const v = parseFloat($('fxRateInput').value);
-  if (v > 0) fxRate = v;
-  renderAmountInputs();
-  renderExpenseInputs();
-  renderEventAmounts();
-  incomeList.renderAmounts();
-  expenseItemsList.renderAmounts();
-  recalc();
-});
+// (v2.2: the THB/USD display switch and FX input were replaced by the profile's home currency
+// and live exchange rates; see setHomeCurrency / refreshFxRates.)
 
 // ---------- Base amounts (always stored in THB) ----------
 const S = {
   annualIncome: 1650000,
   annualExpenses: 1221000,
-  wealthThailand: 3300000,
 };
-const amountFields = ['annualIncome','annualExpenses','wealthThailand'];
+const amountFields = ['annualIncome','annualExpenses'];
 
-// USA / Singapore are always entered in USD, independent of the currency toggle.
-const wealthFixedUSD = { wealthUSA: 0, wealthSG: 0 };
-function renderFixedWealthInputs(){
-  Object.keys(wealthFixedUSD).forEach(id => { $(id).value = formatStatic(wealthFixedUSD[id]); });
-}
-Object.keys(wealthFixedUSD).forEach(id => {
-  $(id).addEventListener('input', () => {
-    commafyInput($(id));
-    wealthFixedUSD[id] = parseNum($(id).value);
-    recalc();
-  });
-});
+// Account balances (name, currency, balance) live in `accounts` — see the v2.2 block.
 ['wealthThailandRate','wealthUSARate','wealthSGRate'].forEach(id => {
   $(id).addEventListener('input', recalc);
 });
@@ -1573,7 +1665,7 @@ function renderAmountInputs(){
     const el = $(id);
     if (!el) return;
     const dv = toDisplay(S[id]);
-    const rounded = currency === 'USD' ? Math.round(dv*100)/100 : Math.round(dv);
+    const rounded = currency !== 'THB' ? Math.round(dv*100)/100 : Math.round(dv);
     el.value = formatStatic(rounded);
   });
 }
@@ -1596,7 +1688,7 @@ const expenseCategories = [
 function buildAccordion(){
   const root = $('expenseAccordion');
   root.innerHTML = '';
-  const symbol = currency === 'USD' ? '$' : '฿';
+  const symbol = curSymbol(currency);
   expenseCategories.forEach((cat, ci) => {
     const item = document.createElement('div');
     item.className = 'accordion-item';
@@ -1799,7 +1891,7 @@ function renderEvents(){
         <option value="__new__">+ New category…</option>
       </select>
       <input type="text" class="label-input ev-label" placeholder="e.g., Down payment on house" value="${ev.label}">
-      <div class="input-wrap has-prefix"><span class="prefix curSym">${currency==='USD'?'$':'฿'}</span><input type="text" inputmode="decimal" class="ev-amount" value="${formatStatic(toDisplay(ev.amount))}"></div>
+      <div class="input-wrap has-prefix"><span class="prefix curSym">${curSymbol(currency)}</span><input type="text" inputmode="decimal" class="ev-amount" value="${formatStatic(toDisplay(ev.amount))}"></div>
       <input type="number" class="ev-age" value="${ev.age}" title="Age this happens">
       <button class="del-btn" title="Remove">×</button>
     </div>
@@ -1849,7 +1941,7 @@ function renderEventAmounts(){
     const id = +row.dataset.id;
     const ev = lifeEvents.find(e => e.id === id);
     if (!ev) return;
-    row.querySelector('.prefix').textContent = currency==='USD' ? '$' : '฿';
+    row.querySelector('.prefix').textContent = curSymbol(currency);
     row.querySelector('.ev-amount').value = formatStatic(toDisplay(ev.amount));
   });
 }
@@ -1883,7 +1975,7 @@ function makeRecurringList(config){
     root.innerHTML = items.map(it => `
       <div class="recur-row" data-id="${it.id}">
         <input type="text" class="label-input recur-label" placeholder="${placeholder}" value="${it.label}">
-        <div class="input-wrap has-prefix"><span class="prefix curSym">${currency==='USD'?'$':'฿'}</span><input type="text" inputmode="decimal" class="recur-amount" value="${formatStatic(toDisplay(it.amount))}"></div>
+        <div class="input-wrap has-prefix"><span class="prefix curSym">${curSymbol(currency)}</span><input type="text" inputmode="decimal" class="recur-amount" value="${formatStatic(toDisplay(it.amount))}"></div>
         <input type="number" class="recur-start" value="${it.startAge}" title="Start age">
         <input type="number" class="recur-duration" value="${it.duration}" min="1" title="Number of years">
         <button class="del-btn" title="Remove">×</button>
@@ -1929,7 +2021,7 @@ function makeRecurringList(config){
       const id = +row.dataset.id;
       const it = itemsRef().find(x => x.id === id);
       if (!it) return;
-      row.querySelector('.prefix').textContent = currency==='USD' ? '$' : '฿';
+      row.querySelector('.prefix').textContent = curSymbol(currency);
       row.querySelector('.recur-amount').value = formatStatic(toDisplay(it.amount));
     });
   }
@@ -1986,7 +2078,7 @@ function renderStagedIncomeModal(){
         <div class="period-title" style="font-weight:700;">Period ${i+1}</div>
         <div class="period-subtitle" style="color:var(--muted-2);">${p.years > 0 ? `Covers ages ${p.startAge}–${p.endAge}` : 'Enter years below'}</div>
       </div>
-      <div class="input-wrap has-prefix"><span class="prefix curSym">${currency==='USD'?'$':'฿'}</span><input type="text" inputmode="decimal" class="staged-amount" value="${p.amount ? formatStatic(toDisplay(p.amount)) : ''}"></div>
+      <div class="input-wrap has-prefix"><span class="prefix curSym">${curSymbol(currency)}</span><input type="text" inputmode="decimal" class="staged-amount" value="${p.amount ? formatStatic(toDisplay(p.amount)) : ''}"></div>
       <input type="number" class="staged-years" value="${p.years || ''}" min="1" placeholder="Years">
       <button class="del-btn" title="Remove">×</button>
     </div>
@@ -2118,9 +2210,9 @@ $('stagedIncomeApplyBtn').addEventListener('click', () => {
 function renderWealthComposition(thailandAmt, usaAmt, sgAmt, thailandRate, usaRate, sgRate){
   const total = thailandAmt + usaAmt + sgAmt;
   const segs = [
-    { label:'Thailand', val:thailandAmt, color:'var(--chart-thailand)' },
-    { label:'USA', val:usaAmt, color:'var(--chart-blue)' },
-    { label:'Singapore', val:sgAmt, color:'var(--chart-singapore)' },
+    { label:accountLabel(0), val:thailandAmt, color:'var(--chart-thailand)' },
+    { label:accountLabel(1), val:usaAmt, color:'var(--chart-blue)' },
+    { label:accountLabel(2), val:sgAmt, color:'var(--chart-singapore)' },
   ];
   const bar = $('wealthBar');
   bar.innerHTML = segs.map(s => {
@@ -2351,18 +2443,18 @@ function recalc(){
   const impliedAnnualSavings = annualIncome - annualExpenses;
   const savingsEl = $('impliedSavingsDisplay');
   if (savingsEl){
-    savingsEl.textContent = formatStatic(toDisplay(impliedAnnualSavings)).replace(/^/, currency==='USD'?'$':'฿');
+    savingsEl.textContent = formatStatic(toDisplay(impliedAnnualSavings)).replace(/^/, curSymbol(currency));
     savingsEl.className = 'value-inline ' + (impliedAnnualSavings >= 0 ? 'green' : 'red');
   }
 
   const thailandRate = (+$('wealthThailandRate').value || 0) / 100;
   const usaRate = (+$('wealthUSARate').value || 0) / 100;
   const sgRate = (+$('wealthSGRate').value || 0) / 100;
-  const thailandAmt = S.wealthThailand;
-  const usaAmt = wealthFixedUSD.wealthUSA * fxRate;
-  const sgAmt = wealthFixedUSD.wealthSG * fxRate;
+  const thailandAmt = accountHome(0);   // three accounts, each converted to the home currency
+  const usaAmt = accountHome(1);
+  const sgAmt = accountHome(2);
   const currentPortfolio = thailandAmt + usaAmt + sgAmt;
-  $('currentPortfolioTotal').textContent = formatStatic(toDisplay(currentPortfolio)).replace(/^/, currency==='USD'?'$':'฿');
+  $('currentPortfolioTotal').textContent = formatStatic(toDisplay(currentPortfolio)).replace(/^/, curSymbol(currency));
 
   const alloc = normalizeSavingsAlloc();
   const allocThailand = alloc.t / 100, allocUSA = alloc.u / 100, allocSG = alloc.s / 100;
@@ -3135,7 +3227,7 @@ function renderRetirementChart(fullRowsIn, conservativeRowsIn, optimisticRowsIn,
     : '';
 
   const subBaseline = `<line x1="${padL}" y1="${subMid.toFixed(1)}" x2="${W-padR}" y2="${subMid.toFixed(1)}" stroke="var(--chart-axisline)" stroke-width="1"></line>`;
-  const subLabel = `<text x="${padL-10}" y="${(subMid+4).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--chart-axislabel)">฿0</text>
+  const subLabel = `<text x="${padL-10}" y="${(subMid+4).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--chart-axislabel)">${curSymbol(currency)}0</text>
     <text x="${padL-10}" y="${(subY0+10).toFixed(1)}" text-anchor="end" font-size="9.5" fill="var(--chart-axislabel)">Return</text>
     <text x="${padL-10}" y="${(subY1-2).toFixed(1)}" text-anchor="end" font-size="9.5" fill="var(--chart-axislabel)">Spend</text>`;
 
@@ -3440,9 +3532,9 @@ function onAppendixGrowthHover(evt){
   crosshair.style.display = 'block';
 
   const titleLine = `Age ${row.age}${row.retiring ? ' — Retired' : ''}`;
-  const thLine = `Thailand: ${fmtMoney(row.breakdown.thailand)}`;
-  const usLine = `USA: ${fmtMoney(row.breakdown.usa)}`;
-  const sgLine = `Singapore: ${fmtMoney(row.breakdown.singapore)}`;
+  const thLine = `${accountLabel(0)}: ${fmtMoney(row.breakdown.thailand)}`;
+  const usLine = `${accountLabel(1)}: ${fmtMoney(row.breakdown.usa)}`;
+  const sgLine = `${accountLabel(2)}: ${fmtMoney(row.breakdown.singapore)}`;
   const totalLine = `Total: ${fmtMoney(row.end)}`;
   const withdrawLine = row.retiring && row.withdrawal > 0 ? `Withdrawn this year: -${fmtMoney(row.withdrawal)}` : '';
 
@@ -3672,14 +3764,15 @@ function collectState(){
   const simple = {};
   idFields.forEach(id => simple[id] = $(id).value);
   return {
-    version: 5,
+    version: 6,
     appVersion: APP_VERSION,
     moneyBasis,
     scenarios: scenarios.map(sc => ({ name: sc.name, savedAt: sc.savedAt, state: sc.state })),
-    currency, fxRate,
+    homeCurrency: currency, currency,
+    accounts: accounts.map(a => ({ name: a.name, currency: a.currency, balance: a.balance })),
+    fx: { manual: fxManual },
     fields: simple,
     amounts: {...S},
-    fixedUSD: {...wealthFixedUSD},
     expenses: expenseCategories.map(c => ({ name:c.name, items: c.items.map(i => i[1]) })),
     eventCategories: [...eventCategories],
     lifeEvents: lifeEvents.map(e => ({ category:e.category, label:e.label, amount:e.amount, age:e.age })),
@@ -3696,14 +3789,14 @@ function blankState(){
   const zeroFields = {};
   idFields.forEach(id => { zeroFields[id] = 0; });
   return {
-    version: 5,
+    version: 6,
     moneyBasis: 'future',
     scenarios: [],
-    currency: 'THB',
-    fxRate: 33,
+    homeCurrency: currency, currency,          // a reset keeps the profile's currency and account names
+    accounts: accounts.map(a => ({ name: a.name, currency: a.currency, balance: 0 })),
+    fx: { manual: fxManual },
     fields: zeroFields,
-    amounts: { annualIncome: 0, annualExpenses: 0, wealthThailand: 0 },
-    fixedUSD: { wealthUSA: 0, wealthSG: 0 },
+    amounts: { annualIncome: 0, annualExpenses: 0 },
     expenses: expenseCategories.map(c => ({ name: c.name, items: c.items.map(() => 0) })),
     eventCategories: ['Home','Car','Medical Care','Inheritance / Gift','Education','Other'],
     lifeEvents: [],
@@ -3715,27 +3808,23 @@ function blankState(){
 
 function applyState(data){
   if (!data) return;
+  data = normalizeState(data);         // upgrades plans saved by earlier versions
   if (data.moneyBasis){ moneyBasis = data.moneyBasis === 'today' ? 'today' : 'future'; updateBasisUI(); }
   if (Array.isArray(data.scenarios)){
     scenarios = data.scenarios.slice(0, MAX_SCENARIOS).filter(sc => sc && sc.state).map(sc => ({
       id: 's' + (scenarioIdSeq++), name: String(sc.name || V21_TXT.scnDefaultName(scenarioIdSeq)).slice(0, 40),
       savedAt: sc.savedAt || '', state: sc.state }));
   }
-  if (data.currency) currency = data.currency;
-  if (data.fxRate) fxRate = data.fxRate;
-  $('fxRateInput').value = fxRate;
-  $('curTHB').classList.toggle('active', currency==='THB');
-  $('curUSD').classList.toggle('active', currency==='USD');
-  document.querySelectorAll('.curSym').forEach(el => el.textContent = currency==='USD' ? '$' : '฿');
+  if (data.homeCurrency) currency = data.homeCurrency;
+  if (Array.isArray(data.accounts)) accounts = data.accounts.map(a => ({ ...a }));
+  fxManual = (data.fx && data.fx.manual) || null;
+  renderCurrencyUI();
 
   if (data.fields){
     idFields.forEach(id => { if (data.fields[id] !== undefined) $(id).value = data.fields[id]; });
   }
   if (data.amounts){
     Object.keys(S).forEach(k => { if (data.amounts[k] !== undefined) S[k] = data.amounts[k]; });
-  }
-  if (data.fixedUSD){
-    Object.keys(wealthFixedUSD).forEach(k => { if (data.fixedUSD[k] !== undefined) wealthFixedUSD[k] = data.fixedUSD[k]; });
   }
   if (data.expenses){
     data.expenses.forEach((cat, ci) => {
@@ -3761,7 +3850,7 @@ function applyState(data){
   useStagedIncome = !!data.useStagedIncome && incomePeriods.length > 0;
 
   renderAmountInputs();
-  renderFixedWealthInputs();
+  renderAccountInputs();
   buildAccordion();
   renderEvents();
   incomeList.render();
@@ -3774,7 +3863,8 @@ function currentAgeFallback(){ return +$('currentAge').value || 35; }
 
 function saveLocal(){
   try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
+    if (!activeProfile()) return;            // first visit: nothing to save until a profile exists
+    if (!profilesSave()) throw new Error('storage unavailable');
     $('autosaveNote').textContent = 'Autosaved to this browser just now.';
   }catch(e){
     $('autosaveNote').textContent = "Autosave isn't available in this view — use \"Save data\" to keep a copy.";
@@ -3832,8 +3922,8 @@ async function exportToExcel(){
     wb.creator = 'FIRE Planner';
     wb.created = new Date();
 
-    const symbolLabel = currency === 'USD' ? 'USD ($)' : 'THB (฿)';
-    const numFmt = currency === 'USD' ? '#,##0.00' : '#,##0';
+    const symbolLabel = `${currency} (${curSymbol(currency)})`;
+    const numFmt = currency !== 'THB' ? '#,##0.00' : '#,##0';
 
     // ---- Summary sheet ----
     const sum = wb.addWorksheet('Summary');
@@ -3843,7 +3933,7 @@ async function exportToExcel(){
     titleRow.getCell(1).font = { bold: true, size: 14, color: { argb: 'FF0F1A2E' } };
     sum.addRow(['Generated', new Date().toLocaleString()]);
     sum.addRow(['Figures shown in', symbolLabel]);
-    sum.addRow(['FX rate (THB per 1 USD)', fxRate]);
+    sum.addRow([V22_TXT.xlRates, fxDescribe()]);
     sum.addRow(['App version', 'v' + APP_VERSION]);
     sum.addRow(['Amounts basis', moneyBasis === 'today' ? V21_TXT.basisToday : V21_TXT.basisFuture]);
     sum.addRow([]);
@@ -3858,12 +3948,12 @@ async function exportToExcel(){
       ['Annual expense inflation rate (%)', +$('inflationRate').value],
       ['Annual income growth rate (%)', +$('incomeGrowthRate').value],
       ['Sensitivity applied (%)', +$('sensitivitySlider').value],
-      ['Thailand growth rate (%)', +$('wealthThailandRate').value],
-      ['USA growth rate (%)', +$('wealthUSARate').value],
-      ['Singapore growth rate (%)', +$('wealthSGRate').value],
-      ['New savings allocated to Thailand (%)', +$('savingsAllocThailand').value],
-      ['New savings allocated to USA (%)', +$('savingsAllocUSA').value],
-      ['New savings allocated to Singapore (%)', +$('savingsAllocSG').value],
+      [`${accountLabel(0)} growth rate (%)`, +$('wealthThailandRate').value],
+      [`${accountLabel(1)} growth rate (%)`, +$('wealthUSARate').value],
+      [`${accountLabel(2)} growth rate (%)`, +$('wealthSGRate').value],
+      [`New savings allocated to ${accountLabel(0)} (%)`, +$('savingsAllocThailand').value],
+      [`New savings allocated to ${accountLabel(1)} (%)`, +$('savingsAllocUSA').value],
+      [`New savings allocated to ${accountLabel(2)} (%)`, +$('savingsAllocSG').value],
     ];
     assumptionRows.forEach(r => sum.addRow(r));
     sum.getColumn(1).font = { bold: false };
@@ -3879,7 +3969,7 @@ async function exportToExcel(){
       'Age','Year','Phase','Begin Balance','Return','Income','Net Savings','Additional Income',
       'Expenses (incl. Inflation)','Inflation Cost','Additional Expense','Withdrawal',
       'Life Events Total','Life Event Detail',
-      'Thailand Balance','USA Balance','Singapore Balance','End Balance',
+      `${accountLabel(0)} Balance`,`${accountLabel(1)} Balance`,`${accountLabel(2)} Balance`,'End Balance',
       'Cumulative Contributions','Cumulative Growth','Target Met?',
     ];
     const headerRow = sheet.addRow(headers);
@@ -4176,7 +4266,7 @@ const V21_TXT = {
   rptTitle: 'Retirement plan report',
   rptFor: 'Prepared for', rptBy: 'Prepared by', rptDate: 'Date',
   rptBasis: (cur, today) => `Amounts in ${cur}, ${today ? "today's value (adjusted for inflation)" : 'future value (not adjusted for inflation)'}.`,
-  rptAssumptions: a => `Assumptions: current age ${a.currentAge}, target retirement age ${a.targetAge}, plan until ${a.planUntilAge}; inflation ${a.inflation}%; withdrawal rate ${a.withdrawal}%; growth Thailand ${a.th}%, USA ${a.us}%, Singapore ${a.sg}% (sensitivity ${a.sens}).`,
+  rptAssumptions: a => `Assumptions: current age ${a.currentAge}, target retirement age ${a.targetAge}, plan until ${a.planUntilAge}; inflation ${a.inflation}%; withdrawal rate ${a.withdrawal}%; growth ${a.n0} ${a.th}%, ${a.n1} ${a.us}%, ${a.n2} ${a.sg}% (sensitivity ${a.sens}).`,
   rptSummary: 'Summary',
   rptRunway: 'Portfolio growth & retirement runway',
   rptSensitivity: 'Sensitivity: what if growth is higher or lower?',
@@ -4275,7 +4365,7 @@ function clearPlanHash(){
   try { history.replaceState(null, '', location.pathname + location.search); } catch(e){ location.hash = ''; }
 }
 $('shareLinkBtn').addEventListener('click', async () => {
-  const url = location.href.split('#')[0] + '#plan=' + await encodePlan(collectState());
+  const url = location.href.split('#')[0] + '#plan=' + await encodePlan(sharePayload());
   try {
     await navigator.clipboard.writeText(url);
     $('autosaveNote').textContent = V21_TXT.linkCopied;
@@ -4297,12 +4387,15 @@ async function openSharedPlanFromHash(){
   try { data = await decodePlan(m[1]); }
   catch(e){ clearPlanHash(); $('autosaveNote').textContent = V21_TXT.sharedBad; return; }
   const open = () => {
-    applyState(data);
+    if (activeProfile()) flushAutosave();
+    const name = String(data.profileName || V22_TXT.sharedName).slice(0, 40);
+    delete data.profileName;
+    createProfile(name, data);           // a shared plan always opens as a new profile
     clearPlanHash();
     // shown after the autosave note that applyState triggers, so it isn't overwritten
     setTimeout(() => { $('autosaveNote').textContent = V21_TXT.sharedOpened; }, 600);
   };
-  if (!hadSavedPlanAtStart){ open(); return; }
+  if (!profileStore || !profileStore.profiles.length){ open(); return; }
   v21Confirm($('sharedOpenTitle').textContent, $('sharedOpenBody').textContent, $('sharedOpenOk').textContent, open,
     { onCancel: clearPlanHash });
 }
@@ -4322,13 +4415,15 @@ function planSnapshot(){
 // Builds the same projection inputs recalc() builds, but from a saved state object instead of
 // the on-screen inputs, so a scenario is projected exactly as it would be if it were loaded.
 function projInputsFromState(st){
+  st = normalizeState(st);
   const f = st.fields || {};
   const num = id => +f[id] || 0;
   const currentAge = num('currentAge');
   const withdrawalRate = num('withdrawalRate') / 100;
   const retirementRatio = num('retirementRatio') / 100;
   const amounts = st.amounts || {}, fixed = st.fixedUSD || {};
-  const fx = st.fxRate || fxRate;
+  const home = st.homeCurrency || currency, accs = st.accounts || [];
+  const accHome = i => accs[i] ? fxConvert(+accs[i].balance || 0, accs[i].currency, home) : 0;
   const annualExpenses = amounts.annualExpenses || 0;
   const annualSupport = annualExpenses * retirementRatio;
   let ev = 1;
@@ -4346,9 +4441,9 @@ function projInputsFromState(st){
     thailandRate: num('wealthThailandRate') / 100,
     usaRate: num('wealthUSARate') / 100,
     sgRate: num('wealthSGRate') / 100,
-    thailandAmt: amounts.wealthThailand || 0,
-    usaAmt: (fixed.wealthUSA || 0) * fx,
-    sgAmt: (fixed.wealthSG || 0) * fx,
+    thailandAmt: accHome(0),
+    usaAmt: accHome(1),
+    sgAmt: accHome(2),
     allocThailand: num('savingsAllocThailand') / 100,
     allocUSA: num('savingsAllocUSA') / 100,
     allocSG: num('savingsAllocSG') / 100,
@@ -4361,6 +4456,8 @@ function projInputsFromState(st){
   };
 }
 function projectState(st){
+  st = normalizeState(st);
+  if (st.homeCurrency !== currency) st = convertStateCurrency(st, currency);   // compare in the open profile's currency
   const p = projInputsFromState(st);
   const proj = computeFullProjection(p, p.sensitivity);
   const metRow = proj.rows.find(r => r.met);
@@ -4515,6 +4612,7 @@ function refreshMeasuredCharts(){
 var forceDesktopLayout = false;   // var: isMobileView() can run before this block executes
 let reportReady = false;
 const REPORT_BY_KEY = 'firePlannerReportBy', REPORT_FOR_KEY = 'firePlannerReportFor';
+let reportForName = null;   // set by the PDF dialog for one print; otherwise the profile name
 function lsGet(k){ try { return localStorage.getItem(k) || ''; } catch(e){ return ''; } }
 function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
 
@@ -4544,7 +4642,7 @@ function buildPrintReport(){
 
   const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const by = lsGet(REPORT_BY_KEY).trim();
-  const forName = lsGet(REPORT_FOR_KEY).trim();
+  const forName = String(reportForName !== null ? reportForName : activeProfileName()).trim();
   const today = new Date();
   const dateStr = today.toLocaleDateString(document.documentElement.lang === 'th' ? 'th-TH' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   const v = id => $(id).value;
@@ -4576,9 +4674,10 @@ function buildPrintReport(){
       </div>
       <div class="pr-meta">${meta.join('')}</div>
     </header>
-    <p class="pr-note">${V21_TXT.rptBasis(currency, moneyBasis === 'today')}<br>${esc(V21_TXT.rptAssumptions({
+    <p class="pr-note">${V21_TXT.rptBasis(currency, moneyBasis === 'today')} ${esc(V22_TXT.xlRates)}: ${esc(fxDescribe())}.<br>${esc(V21_TXT.rptAssumptions({
       currentAge: v('currentAge'), targetAge: v('targetAge'), planUntilAge: v('planUntilAge'),
       inflation: v('inflationRate'), withdrawal: v('withdrawalRate'),
+      n0: accountLabel(0), n1: accountLabel(1), n2: accountLabel(2),
       th: v('wealthThailandRate'), us: v('wealthUSARate'), sg: v('wealthSGRate'),
       sens: (sens >= 0 ? '+' : '') + sens.toFixed(1) + '%' }))}</p>
 
@@ -4618,16 +4717,16 @@ function buildPrintReport(){
 }
 // Ctrl/Cmd+P or the browser's Print menu builds the report too (with the remembered names).
 window.addEventListener('beforeprint', () => { if (!reportReady) buildPrintReport(); });
-window.addEventListener('afterprint', () => { reportReady = false; });
+window.addEventListener('afterprint', () => { reportReady = false; reportForName = null; });
 
 $('reportBtn').addEventListener('click', () => {
-  $('reportFor').value = lsGet(REPORT_FOR_KEY);
+  $('reportFor').value = activeProfileName();
   $('reportBy').value = lsGet(REPORT_BY_KEY);
   $('reportOverlay').style.display = 'flex';
 });
 $('reportCancel').addEventListener('click', () => { $('reportOverlay').style.display = 'none'; });
 $('reportPrint').addEventListener('click', () => {
-  lsSet(REPORT_FOR_KEY, $('reportFor').value.trim());
+  reportForName = $('reportFor').value.trim();
   lsSet(REPORT_BY_KEY, $('reportBy').value.trim());
   $('reportOverlay').style.display = 'none';
   buildPrintReport();
@@ -4637,19 +4736,630 @@ $('reportPrint').addEventListener('click', () => {
 // ---------- Version label ----------
 document.querySelectorAll('.app-version').forEach(el => { el.textContent = 'v' + APP_VERSION; });
 
+// =====================================================================================
+// v2.2 — User profiles, backups, home currency + live exchange rates, installable app
+// =====================================================================================
+// UI text for the v2.2 features. Only this block differs between the EN and TH editions.
+const V22_TXT = {
+  accDefault: ['Thailand', 'USA', 'Singapore'],
+  homeDefaultName: { THB: 'Thailand', USD: 'USA', EUR: 'Europe' },
+  defaultProfileName: 'My plan',
+  sharedName: 'Shared plan',
+  newProfileName: n => `Profile ${n}`,
+  copyOf: name => `${name} (copy)`,
+  today: 'today', yesterday: 'yesterday', daysAgo: n => `${n} days ago`,
+  menuNew: '+ New profile',
+  menuManage: 'Manage profiles, back up, restore…',
+  notBackedUp: 'Changes not backed up',
+  tagOpen: 'open', tagChanged: 'changed', tagBacked: 'backed up',
+  open: 'Open', duplicate: 'Duplicate', del: 'Delete',
+  lastBackup: d => `Last backup: ${d}`, neverBackedUp: 'Not backed up yet',
+  deleteTitle: name => `Delete profile "${name}"?`,
+  deleteBody: "Its plan and scenarios are removed from this device. This can't be undone unless you have a backup.",
+  deleteOk: 'Delete profile',
+  bannerBackup: (n, days, never) => `<b>Back up your profiles.</b> ${n} profile${n === 1 ? ' has' : 's have'} changes that aren't saved to your computer yet (${never ? 'not backed up yet' : `last backup ${days} day${days === 1 ? '' : 's'} ago`}). Browser data can be lost if it's cleared or the site isn't used for a while.`,
+  backupNow: 'Back up all now', later: 'Later',
+  backedUp: n => `Backed up ${n} profile${n === 1 ? '' : 's'} to your Downloads folder.`,
+  restoreTitle: n => `Restore ${n} profile${n === 1 ? '' : 's'}?`,
+  restoreBody: (replace, add) => [replace.length ? `Replaced (same name): ${replace.join(', ')}.` : '', add.length ? `Added: ${add.join(', ')}.` : ''].filter(Boolean).join(' '),
+  restoreOk: 'Restore',
+  restored: n => `Restored ${n} profile${n === 1 ? '' : 's'}.`,
+  restoreBad: "That file isn't a FIRE Planner backup or data file.",
+  sharedTitle: 'Open shared plan?',
+  sharedBody: "It's added as a new user profile. Nothing on this device is replaced.",
+  homeTitle: c => `Change home currency to ${c}?`,
+  homeBody: (c, rate) => `Every amount in this profile, including scenarios, is converted at ${rate}. Account balances stay in their own currencies.`,
+  homeOk: 'Convert',
+  fxSourceLive: d => `ECB via Frankfurter · ${d}`,
+  fxSourceManual: 'Manual rates',
+  fxSourceFallback: "Default rates (couldn't fetch live rates)",
+  fxRefreshTitle: 'Use the latest ECB rates',
+  fxFetchFailed: "Couldn't reach the exchange-rate service. Using the last saved rates.",
+  xlRates: 'Exchange rates',
+  install: '⬇ Install app',
+  installBanner: '<b>Install FIRE Planner</b> so it opens offline and the browser keeps your data safe.',
+  installIOS: '<b>Install FIRE Planner:</b> tap <b>Share</b> → <b>Add to Home Screen</b>. The installed app keeps its own data, separate from Safari, so use Back up → Restore to move your profiles into it.',
+  notNow: 'Not now',
+  updateBanner: '<b>A new version of FIRE Planner is available.</b> Your data is kept.',
+  reload: 'Reload',
+};
+
+// Dialogs live inside the Overview section in the markup; on phones that section is hidden on
+// other tabs, which hid any dialog opened from them. Move every dialog to <body>.
+document.querySelectorAll('.modal-overlay').forEach(m => document.body.appendChild(m));
+
+// ---------- Currencies and exchange rates ----------
+const CURRENCIES = ['THB', 'USD', 'EUR'];
+const FX_FALLBACK = { USD: 1, THB: 33, EUR: 0.92 };     // used only if live rates were never fetched
+const FX_CACHE_KEY = 'firePlannerFxRates';
+const FX_URL = 'https://api.frankfurter.dev/v1/latest?base=USD&symbols=THB,EUR';
+let fxLive = null;      // { rates:{THB,EUR} per 1 USD, date, fetchedAt } — shared by all profiles
+let fxManual = null;    // this profile's own rates { THB?, EUR? } per 1 USD, or null for live
+let fxFetchFailed = false;
+try { const c = JSON.parse(localStorage.getItem(FX_CACHE_KEY) || 'null'); if (c && c.rates && c.rates.THB > 0) fxLive = c; } catch(e){}
+
+function fxRates(){
+  const live = (fxLive && fxLive.rates) || {}, m = fxManual || {};
+  return { USD: 1, THB: +m.THB || +live.THB || FX_FALLBACK.THB, EUR: +m.EUR || +live.EUR || FX_FALLBACK.EUR };
+}
+function fxConvert(v, from, to){
+  if (!v || from === to) return v || 0;
+  const r = fxRates();
+  return v * r[to] / r[from];
+}
+function fmtRate(v){ return v >= 10 ? v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : v.toLocaleString('en-US', { maximumFractionDigits: 4 }); }
+function fxPairsText(home){
+  return CURRENCIES.filter(c => c !== home).map(c => {
+    const v = fxConvert(1, c, home);
+    return v >= 0.1 ? `1 ${c} = ${fmtRate(v)} ${home}` : `1 ${home} = ${fmtRate(fxConvert(1, home, c))} ${c}`;
+  }).join(' · ');
+}
+function fxSourceText(){
+  if (fxManual && (fxManual.THB || fxManual.EUR)) return V22_TXT.fxSourceManual;
+  if (fxLive) return V22_TXT.fxSourceLive(fmtDay(fxLive.date));
+  return V22_TXT.fxSourceFallback;
+}
+function fmtDay(iso){
+  const d = new Date(String(iso) + 'T00:00:00');
+  return isNaN(d) ? String(iso) : d.toLocaleDateString(document.documentElement.lang === 'th' ? 'th-TH' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function fxDescribe(){ return `${fxPairsText(currency)} (${fxSourceText()})`; }
+function renderFxStatus(){
+  if (!$('fxText')) return;
+  $('fxText').textContent = fxPairsText(currency);
+  $('fxSrc').textContent = fxSourceText();
+}
+async function refreshFxRates(force){
+  if (!force && fxLive && Date.now() - fxLive.fetchedAt < 6 * 3600e3) return;
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 8000);
+  try {
+    const res = await fetch(FX_URL, { signal: ctl.signal, cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const j = await res.json();
+    if (!(j.rates && j.rates.THB > 0 && j.rates.EUR > 0)) throw new Error('bad data');
+    fxLive = { rates: { THB: j.rates.THB, EUR: j.rates.EUR }, date: j.date, fetchedAt: Date.now() };
+    lsSet(FX_CACHE_KEY, JSON.stringify(fxLive));
+    fxFetchFailed = false;
+    renderAccountInputs(); renderFxStatus(); recalc();
+  } catch(e){
+    fxFetchFailed = true;
+    renderFxStatus();
+    if (force) $('autosaveNote').textContent = V22_TXT.fxFetchFailed;
+  } finally { clearTimeout(timer); }
+}
+$('fxRefresh').addEventListener('click', () => {
+  if (fxManual){ fxManual = null; renderAccountInputs(); renderFxStatus(); recalc(); }
+  refreshFxRates(true);
+});
+
+// Manual rates: entered as "1 X = … home currency", stored per 1 USD.
+$('fxEdit').addEventListener('click', () => {
+  const others = CURRENCIES.filter(c => c !== currency);
+  $('fxEditRows').innerHTML = others.map(c => `<div class="field"><label for="fxIn${c}">1 ${c} = … ${currency}</label>
+    <div class="input-wrap has-suffix"><input type="number" step="any" min="0" id="fxIn${c}" value="${+fmtRate(fxConvert(1, c, currency)).replace(/,/g,'')}"><span class="suffix">${currency}</span></div></div>`).join('');
+  $('fxEditOverlay').style.display = 'flex';
+});
+$('fxEditCancel').addEventListener('click', () => { $('fxEditOverlay').style.display = 'none'; });
+$('fxEditLive').addEventListener('click', () => {
+  $('fxEditOverlay').style.display = 'none';
+  fxManual = null; renderAccountInputs(); renderFxStatus(); recalc(); refreshFxRates(true);
+});
+$('fxEditSave').addEventListener('click', () => {
+  const k = {};
+  CURRENCIES.filter(c => c !== currency).forEach(c => { k[c] = parseFloat($('fxIn' + c).value); });
+  if (Object.values(k).some(v => !(v > 0))) return;
+  const rHome = currency === 'USD' ? 1 : k.USD;          // home units per 1 USD
+  const m = {};
+  CURRENCIES.filter(c => c !== 'USD').forEach(c => { m[c] = c === currency ? rHome : rHome / k[c]; });
+  fxManual = { THB: m.THB, EUR: m.EUR };
+  $('fxEditOverlay').style.display = 'none';
+  renderAccountInputs(); renderFxStatus(); recalc();
+});
+
+// ---------- Wealth accounts: three, each with its own name and currency ----------
+const ACCOUNT_BALANCE_IDS = ['wealthThailand', 'wealthUSA', 'wealthSG'];
+let accounts = [
+  { name: V22_TXT.accDefault[0], currency: 'THB', balance: 3300000 },
+  { name: V22_TXT.accDefault[1], currency: 'USD', balance: 0 },
+  { name: V22_TXT.accDefault[2], currency: 'USD', balance: 0 },
+];
+function accountLabel(i){ return (accounts[i] && String(accounts[i].name || '').trim()) || V22_TXT.accDefault[i]; }
+function accountHome(i){ const a = accounts[i]; return a ? fxConvert(+a.balance || 0, a.currency, currency) : 0; }
+function renderAccountConv(i){
+  const a = accounts[i], el = $('acctConv' + i);
+  if (el) el.textContent = (a.currency !== currency && a.balance) ? '≈ ' + fmtMoney(accountHome(i)) : '';
+}
+function updateAccountLabels(){
+  for (let i = 0; i < 3; i++){ const el = $('legendAcct' + i); if (el) el.textContent = accountLabel(i); }
+}
+function renderAccountInputs(){
+  accounts.forEach((a, i) => {
+    if (document.activeElement !== $('acctName' + i)) $('acctName' + i).value = a.name;
+    $('acctCur' + i).value = a.currency;
+    $('acctSym' + i).textContent = curSymbol(a.currency);
+    const bal = +a.balance || 0;
+    if (document.activeElement !== $(ACCOUNT_BALANCE_IDS[i])) $(ACCOUNT_BALANCE_IDS[i]).value = formatStatic(a.currency === 'THB' ? Math.round(bal) : Math.round(bal * 100) / 100);
+    renderAccountConv(i);
+  });
+  updateAccountLabels();
+}
+accounts.forEach((_, i) => {
+  $('acctName' + i).addEventListener('input', e => { accounts[i].name = e.target.value.slice(0, 30); updateAccountLabels(); recalc(); });
+  $('acctCur' + i).addEventListener('change', e => {
+    accounts[i].currency = CURRENCIES.includes(e.target.value) ? e.target.value : 'THB';
+    $('acctSym' + i).textContent = curSymbol(accounts[i].currency);
+    renderAccountConv(i); recalc();
+  });
+  $(ACCOUNT_BALANCE_IDS[i]).addEventListener('input', e => {
+    commafyInput(e.target);
+    accounts[i].balance = parseNum(e.target.value);
+    renderAccountConv(i); recalc();
+  });
+});
+
+// ---------- Home currency ----------
+function renderCurrencyUI(){
+  CURRENCIES.forEach(c => $('home' + c).classList.toggle('active', c === currency));
+  document.querySelectorAll('.curSym').forEach(el => { el.textContent = curSymbol(currency); });
+  renderFxStatus();
+}
+// Converts every home-currency amount in a saved state (and its scenarios) to another currency.
+function convertStateCurrency(st, to){
+  const s = normalizeState(st);
+  const from = s.homeCurrency || 'THB';
+  if (from !== to){
+    const f = fxConvert(1, from, to);
+    const mul = v => (+v || 0) * f;
+    if (s.amounts) Object.keys(s.amounts).forEach(k => { s.amounts[k] = mul(s.amounts[k]); });
+    (s.expenses || []).forEach(c => { c.items = (c.items || []).map(mul); });
+    (s.lifeEvents || []).forEach(e => { e.amount = mul(e.amount); });
+    (s.additionalIncome || []).forEach(e => { e.amount = mul(e.amount); });
+    (s.additionalExpenses || []).forEach(e => { e.amount = mul(e.amount); });
+    (s.incomePeriods || []).forEach(e => { e.amount = mul(e.amount); });
+    s.homeCurrency = to; s.currency = to;
+  }
+  (s.scenarios || []).forEach(sc => { if (sc && sc.state) sc.state = convertStateCurrency(sc.state, to); });
+  return s;
+}
+function setHomeCurrency(c){
+  if (!CURRENCIES.includes(c) || c === currency) return;
+  v21Confirm(V22_TXT.homeTitle(c), V22_TXT.homeBody(c, fxPairsText(c)), V22_TXT.homeOk, () => {
+    applyState(convertStateCurrency(collectState(), c));
+  });
+}
+CURRENCIES.forEach(c => $('home' + c).addEventListener('click', () => setHomeCurrency(c)));
+
+// Upgrades a saved plan from any earlier version to the current format. v2.1 and older stored
+// everything in THB with one THB balance and two USD balances; those become three accounts.
+function normalizeState(st){
+  if (!st || typeof st !== 'object') return st;
+  const s = JSON.parse(JSON.stringify(st));
+  if (!Array.isArray(s.accounts)){
+    const a = s.amounts || {}, f = s.fixedUSD || {};
+    const usd = (+f.wealthUSA || 0) + (+f.wealthSG || 0);
+    s.accounts = [
+      { name: V22_TXT.accDefault[0], currency: 'THB', balance: +a.wealthThailand || 0 },
+      { name: V22_TXT.accDefault[1], currency: 'USD', balance: +f.wealthUSA || 0 },
+      { name: V22_TXT.accDefault[2], currency: 'USD', balance: +f.wealthSG || 0 },
+    ];
+    s.homeCurrency = 'THB';
+    // Keep the old plan's own USD rate so its numbers don't move; "↻" switches it to live rates.
+    if (!s.fx) s.fx = { manual: (usd > 0 && +s.fxRate > 0) ? { THB: +s.fxRate } : null };
+    if (s.amounts) delete s.amounts.wealthThailand;
+    delete s.fixedUSD; delete s.fxRate;
+  }
+  s.accounts = s.accounts.slice(0, 3).map((x, i) => ({
+    name: String((x && x.name) || V22_TXT.accDefault[i]).slice(0, 30),
+    currency: CURRENCIES.includes(x && x.currency) ? x.currency : 'THB',
+    balance: +(x && x.balance) || 0 }));
+  while (s.accounts.length < 3) s.accounts.push({ name: V22_TXT.accDefault[s.accounts.length], currency: 'USD', balance: 0 });
+  if (!CURRENCIES.includes(s.homeCurrency)) s.homeCurrency = 'THB';
+  s.currency = s.homeCurrency;
+  if (Array.isArray(s.scenarios)) s.scenarios.forEach(sc => { if (sc && sc.state) sc.state = normalizeState(sc.state); });
+  return s;
+}
+
+// ---------- User profiles ----------
+// One store holds every profile on this device: { activeId, profiles:[{id,name,createdAt,updatedAt,
+// backedUpAt,state}], lastBackupAt, snoozeUntil, createdAt }. The old single-plan autosave
+// (fireEstimatorV4) is migrated into a first profile and left in place untouched.
+const PROFILE_KEY = 'firePlannerProfilesV1';
+const BACKUP_EVERY_DAYS = 5;
+const DAY = 86400e3;
+let profileStore = null;
+let defaultPlanState = null;        // demo inputs as shipped, captured at start-up
+let profileStorageOk = true;
+
+function readProfileStore(){
+  try { const s = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); return (s && Array.isArray(s.profiles) && s.profiles.length) ? s : null; }
+  catch(e){ return null; }
+}
+function writeProfileStore(){
+  if (!profileStore) return;
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profileStore)); profileStorageOk = true; }
+  catch(e){ profileStorageOk = false; }
+}
+function activeProfile(){ return profileStore && profileStore.profiles.find(p => p.id === profileStore.activeId); }
+function activeProfileName(){ const p = activeProfile(); return p ? p.name : ''; }
+function newProfileId(){ return 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function isDirty(p){ return (p.updatedAt || 0) > (p.backedUpAt || 0); }
+
+// Called by the (debounced) autosave after every recalc.
+function profilesSave(){
+  const p = activeProfile();
+  if (!p) return false;
+  const st = collectState();
+  if (JSON.stringify(st) !== JSON.stringify(p.state)){ p.state = st; p.updatedAt = Date.now(); }
+  writeProfileStore();
+  renderProfileUI();
+  return profileStorageOk;
+}
+function flushAutosave(){ clearTimeout(window._saveTimer); saveLocal(); }
+
+function createProfile(name, state, opts){
+  if (!profileStore) profileStore = { activeId: null, profiles: [], lastBackupAt: null, snoozeUntil: 0, createdAt: Date.now() };
+  const now = Date.now();
+  const p = { id: newProfileId(), name: String(name || V22_TXT.defaultProfileName).trim().slice(0, 40) || V22_TXT.defaultProfileName,
+              createdAt: now, updatedAt: now, backedUpAt: (opts && opts.backedUp) ? now : 0, state: normalizeState(state) };
+  profileStore.profiles.push(p);
+  if (!opts || opts.activate !== false) switchProfile(p.id, { skipFlush: true });
+  else writeProfileStore();
+  try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
+  return p;
+}
+function switchProfile(id, opts){
+  const p = profileStore && profileStore.profiles.find(x => x.id === id);
+  if (!p) return;
+  if (!(opts && opts.skipFlush) && activeProfile()) flushAutosave();
+  profileStore.activeId = id;
+  applyState(JSON.parse(JSON.stringify(p.state)));
+  p.state = collectState();           // baseline in the current format, so opening isn't an "edit"
+  writeProfileStore();
+  $('scnNote').textContent = '';
+  renderProfileUI();
+}
+// A profile's starting point: the shipped assumptions with every money amount cleared.
+function emptyPlanState(home){
+  const s = normalizeState(defaultPlanState);
+  s.amounts = { annualIncome: 0, annualExpenses: 0 };
+  (s.expenses || []).forEach(c => { c.items = (c.items || []).map(() => 0); });
+  s.lifeEvents = []; s.additionalIncome = []; s.additionalExpenses = []; s.incomePeriods = []; s.useStagedIncome = false;
+  s.scenarios = [];
+  s.accounts = s.accounts.map(a => ({ ...a, balance: 0 }));
+  return withHomeCurrency(s, home);
+}
+// Sets a fresh plan's home currency; the first account follows it so a EUR user doesn't start with "Thailand (THB)".
+function withHomeCurrency(s, home){
+  const out = convertStateCurrency(s, home);
+  if (home !== 'THB' && out.accounts[0].currency === 'THB'){
+    out.accounts[0] = { name: V22_TXT.homeDefaultName[home], currency: home, balance: fxConvert(out.accounts[0].balance, 'THB', home) };
+  }
+  return out;
+}
+
+function relTime(ts){
+  if (!ts) return '–';
+  const d = Math.floor((Date.now() - ts) / DAY);
+  if (d <= 0) return V22_TXT.today;
+  if (d === 1) return V22_TXT.yesterday;
+  if (d < 30) return V22_TXT.daysAgo(d);
+  return new Date(ts).toLocaleDateString(document.documentElement.lang === 'th' ? 'th-TH' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+const escHtml = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
+function renderProfileUI(){
+  const p = activeProfile();
+  $('profileBtnName').textContent = p ? p.name : '—';
+  $('profileBtn').classList.toggle('dirty', !!(profileStore && profileStore.profiles.some(isDirty)));
+  if (!$('profileMenu').hidden) renderProfileMenu();
+  if ($('profilesOverlay').style.display === 'flex') renderProfileManager();
+  renderBanners();
+}
+function renderProfileMenu(){
+  const list = (profileStore ? profileStore.profiles : []).map(p => `
+    <button type="button" class="pm-item${p.id === profileStore.activeId ? ' on' : ''}" data-id="${p.id}">
+      <span class="pm-name">${escHtml(p.name)}${isDirty(p) ? `<span class="dirty-dot" title="${V22_TXT.notBackedUp}"></span>` : ''}</span>
+      <small>${(p.state && p.state.homeCurrency) || 'THB'} · ${relTime(p.updatedAt)}</small>
+    </button>`).join('');
+  $('profileMenu').innerHTML = `${list}<hr>
+    <button type="button" class="pm-item pm-link" data-act="new">${V22_TXT.menuNew}</button>
+    <button type="button" class="pm-item pm-link" data-act="manage">${V22_TXT.menuManage}</button>`;
+}
+function toggleProfileMenu(show){
+  const m = $('profileMenu');
+  const open = show === undefined ? m.hidden : show;
+  if (open) renderProfileMenu();
+  m.hidden = !open;
+  $('profileBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+$('profileBtn').addEventListener('click', e => { e.stopPropagation(); toggleProfileMenu(); });
+document.addEventListener('click', e => { if (!e.target.closest('#profileSwitch')) toggleProfileMenu(false); });
+$('profileMenu').addEventListener('click', e => {
+  const b = e.target.closest('.pm-item');
+  if (!b) return;
+  toggleProfileMenu(false);
+  if (b.dataset.act === 'new') openProfileDialog('new');
+  else if (b.dataset.act === 'manage') openProfileManager();
+  else if (b.dataset.id && b.dataset.id !== profileStore.activeId) switchProfile(b.dataset.id);
+});
+
+// ----- Manager -----
+function renderProfileManager(){
+  const ps = profileStore ? profileStore.profiles : [];
+  $('profilesBody').innerHTML = ps.map(p => {
+    const on = p.id === profileStore.activeId;
+    return `<tr class="${on ? 'on' : ''}">
+      <td><input class="pm-rename" data-id="${p.id}" value="${escHtml(p.name)}" maxlength="40" aria-label="${escHtml(p.name)}">${on ? ` <span class="tag">${V22_TXT.tagOpen}</span>` : ''}</td>
+      <td>${(p.state && p.state.homeCurrency) || 'THB'}</td>
+      <td>${relTime(p.updatedAt)}</td>
+      <td><span class="tag ${isDirty(p) ? 'warn' : 'ok'}">${isDirty(p) ? V22_TXT.tagChanged : V22_TXT.tagBacked}</span></td>
+      <td class="pm-acts">${on ? '' : `<button class="link-btn" data-act="open" data-id="${p.id}">${V22_TXT.open}</button>`}
+        <button class="link-btn" data-act="dup" data-id="${p.id}">${V22_TXT.duplicate}</button>
+        ${ps.length > 1 ? `<button class="link-btn danger" data-act="del" data-id="${p.id}">${V22_TXT.del}</button>` : ''}</td>
+    </tr>`;
+  }).join('');
+  const lb = profileStore && profileStore.lastBackupAt;
+  $('profilesLastBackup').textContent = lb ? V22_TXT.lastBackup(new Date(lb).toLocaleDateString(document.documentElement.lang === 'th' ? 'th-TH' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' })) : V22_TXT.neverBackedUp;
+}
+function openProfileManager(){ flushAutosave(); renderProfileManager(); $('profilesOverlay').style.display = 'flex'; }
+$('profilesClose').addEventListener('click', () => { $('profilesOverlay').style.display = 'none'; });
+$('profilesBody').addEventListener('change', e => {
+  const inp = e.target.closest('.pm-rename');
+  if (!inp) return;
+  const p = profileStore.profiles.find(x => x.id === inp.dataset.id);
+  const name = inp.value.trim().slice(0, 40);
+  if (p && name){ p.name = name; p.updatedAt = Date.now(); writeProfileStore(); renderProfileUI(); }
+});
+$('profilesBody').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]');
+  if (!b) return;
+  const p = profileStore.profiles.find(x => x.id === b.dataset.id);
+  if (!p) return;
+  if (b.dataset.act === 'open'){ switchProfile(p.id); renderProfileManager(); }
+  else if (b.dataset.act === 'dup'){
+    flushAutosave();
+    createProfile(V22_TXT.copyOf(p.name), p.state, { activate: false });
+    renderProfileManager(); renderProfileUI();
+  } else if (b.dataset.act === 'del'){
+    $('profilesOverlay').style.display = 'none';
+    v21Confirm(V22_TXT.deleteTitle(p.name), V22_TXT.deleteBody, V22_TXT.deleteOk, () => {
+      profileStore.profiles = profileStore.profiles.filter(x => x !== p);
+      if (profileStore.activeId === p.id) switchProfile(profileStore.profiles[0].id, { skipFlush: true });
+      else writeProfileStore();
+      renderProfileUI(); openProfileManager();
+    }, { danger: true, onCancel: openProfileManager });
+  }
+});
+$('profilesNew').addEventListener('click', () => { $('profilesOverlay').style.display = 'none'; openProfileDialog('new'); });
+
+// ----- New profile / first visit -----
+let profileDialogMode = 'new', profileDialogCurrency = 'THB';
+function openProfileDialog(mode){
+  profileDialogMode = mode;
+  profileDialogCurrency = mode === 'welcome' ? 'THB' : currency;
+  $('pdTitle').textContent = mode === 'welcome' ? $('pdTitleWelcome').textContent : $('pdTitleNew').textContent;
+  $('pdIntro').hidden = mode !== 'welcome';
+  $('pdRestore').hidden = mode !== 'welcome';
+  $('pdCancel').hidden = mode === 'welcome';
+  $('pdNewNote').hidden = mode === 'welcome';
+  $('pdOk').textContent = mode === 'welcome' ? $('pdOkWelcome').textContent : $('pdOkNew').textContent;
+  let n = (profileStore ? profileStore.profiles.length : 0) + 1;
+  $('pdName').value = mode === 'welcome' ? '' : V22_TXT.newProfileName(n);
+  $('pdName').placeholder = V22_TXT.defaultProfileName;
+  renderPdCurrency();
+  $('profileDialogOverlay').style.display = 'flex';
+  setTimeout(() => { $('pdName').focus(); $('pdName').select(); }, 30);
+}
+function renderPdCurrency(){ CURRENCIES.forEach(c => $('pdCur' + c).classList.toggle('active', c === profileDialogCurrency)); }
+CURRENCIES.forEach(c => $('pdCur' + c).addEventListener('click', () => { profileDialogCurrency = c; renderPdCurrency(); }));
+$('pdCancel').addEventListener('click', () => { $('profileDialogOverlay').style.display = 'none'; });
+$('pdOk').addEventListener('click', () => {
+  const name = $('pdName').value.trim() || V22_TXT.defaultProfileName;
+  $('profileDialogOverlay').style.display = 'none';
+  if (profileDialogMode === 'welcome'){
+    createProfile(name, withHomeCurrency(normalizeState(defaultPlanState), profileDialogCurrency));
+  } else {
+    flushAutosave();
+    createProfile(name, emptyPlanState(profileDialogCurrency));
+  }
+  window.scrollTo({ top: 0, behavior: 'auto' });
+});
+$('pdName').addEventListener('keydown', e => { if (e.key === 'Enter') $('pdOk').click(); });
+$('pdRestore').addEventListener('click', () => $('restoreFile').click());
+
+// ----- Backup / restore -----
+function downloadJson(obj, filename){
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function backupAllProfiles(){
+  if (!profileStore) return;
+  flushAutosave();
+  const now = Date.now();
+  downloadJson({
+    type: 'fire-planner-backup', backupVersion: 1, appVersion: APP_VERSION, exportedAt: new Date(now).toISOString(),
+    profiles: profileStore.profiles.map(p => ({ name: p.name, createdAt: p.createdAt, updatedAt: p.updatedAt, state: p.state })),
+  }, shortDateTimeFilename('FIRE-profiles-backup') + '.json');
+  profileStore.profiles.forEach(p => { p.backedUpAt = now; });
+  profileStore.lastBackupAt = now; profileStore.snoozeUntil = 0;
+  writeProfileStore(); renderProfileUI();
+  $('autosaveNote').textContent = V22_TXT.backedUp(profileStore.profiles.length);
+}
+$('profilesBackup').addEventListener('click', backupAllProfiles);
+$('profilesRestore').addEventListener('click', () => $('restoreFile').click());
+$('restoreFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    let data;
+    try { data = JSON.parse(ev.target.result); } catch(err){ data = null; }
+    let items = null;
+    if (data && data.type === 'fire-planner-backup' && Array.isArray(data.profiles)) items = data.profiles.filter(x => x && x.state);
+    else if (data && data.fields) items = [{ name: file.name.replace(/\.json$/i, ''), state: data }];   // a single "Save data" file
+    if (!items || !items.length){ $('autosaveNote').textContent = V22_TXT.restoreBad; return; }
+    const existing = name => profileStore && profileStore.profiles.find(p => p.name === name);
+    const replace = items.filter(x => existing(x.name)).map(x => x.name);
+    const add = items.filter(x => !existing(x.name)).map(x => x.name);
+    $('profilesOverlay').style.display = 'none';
+    $('profileDialogOverlay').style.display = 'none';
+    const doRestore = () => {
+      flushAutosave();
+      let activeReplaced = false, firstId = null;
+      items.forEach(x => {
+        const p = existing(x.name);
+        if (p){
+          p.state = normalizeState(x.state); p.updatedAt = x.updatedAt || Date.now(); p.backedUpAt = Date.now();
+          if (p.id === profileStore.activeId) activeReplaced = true;
+          firstId = firstId || p.id;
+        } else {
+          const np = createProfile(x.name, x.state, { activate: false, backedUp: true });
+          firstId = firstId || np.id;
+        }
+      });
+      if (!profileStore.activeId || !activeProfile()) switchProfile(firstId, { skipFlush: true });
+      else if (activeReplaced) switchProfile(profileStore.activeId, { skipFlush: true });
+      writeProfileStore(); renderProfileUI();
+      $('autosaveNote').textContent = V22_TXT.restored(items.length);
+    };
+    if (!profileStore || !profileStore.profiles.length){ doRestore(); return; }
+    v21Confirm(V22_TXT.restoreTitle(items.length), V22_TXT.restoreBody(replace, add), V22_TXT.restoreOk, doRestore);
+  };
+  reader.readAsText(file);
+});
+
+// ----- Banners: backup reminder, install, update -----
+const INSTALL_DISMISS_KEY = 'firePlannerInstallDismissed';
+let deferredInstall = null, swWaiting = null;
+const isStandalone = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+function backupDue(){
+  if (!profileStore) return null;
+  const dirty = profileStore.profiles.filter(isDirty);
+  if (!dirty.length) return null;
+  const since = profileStore.lastBackupAt || profileStore.createdAt || Date.now();
+  const days = Math.floor((Date.now() - since) / DAY);
+  if (days < BACKUP_EVERY_DAYS) return null;
+  if (profileStore.snoozeUntil && Date.now() < profileStore.snoozeUntil) return null;
+  return { count: dirty.length, days, never: !profileStore.lastBackupAt };
+}
+function renderBanners(){
+  const out = [];
+  if (swWaiting) out.push(`<div class="app-banner info"><span>↻</span><span class="ab-text">${V22_TXT.updateBanner}</span><button class="btn small" data-b="reload">${V22_TXT.reload}</button></div>`);
+  const due = backupDue();
+  if (due) out.push(`<div class="app-banner"><span>⚠</span><span class="ab-text">${V22_TXT.bannerBackup(due.count, due.days, due.never)}</span><button class="btn small" data-b="backup">${V22_TXT.backupNow}</button><button class="link-btn" data-b="later">${V22_TXT.later}</button></div>`);
+  const dismissed = +lsGet(INSTALL_DISMISS_KEY) > Date.now();
+  if (profileStore && !isStandalone() && !dismissed){
+    if (deferredInstall) out.push(`<div class="app-banner info"><span>📲</span><span class="ab-text">${V22_TXT.installBanner}</span><button class="btn small" data-b="install">${V22_TXT.install.replace(/^⬇\s*/, '')}</button><button class="link-btn" data-b="notnow">${V22_TXT.notNow}</button></div>`);
+    else if (isIOS()) out.push(`<div class="app-banner info"><span>📲</span><span class="ab-text">${V22_TXT.installIOS}</span><button class="link-btn" data-b="notnow">${V22_TXT.notNow}</button></div>`);
+  }
+  $('appBanners').innerHTML = out.join('');
+  $('installBtn').hidden = !(deferredInstall && !isStandalone());
+}
+$('appBanners').addEventListener('click', e => {
+  const b = e.target.closest('[data-b]');
+  if (!b) return;
+  const act = b.dataset.b;
+  if (act === 'backup') backupAllProfiles();
+  else if (act === 'later'){ profileStore.snoozeUntil = Date.now() + DAY; writeProfileStore(); renderBanners(); }
+  else if (act === 'install') promptInstall();
+  else if (act === 'notnow'){ lsSet(INSTALL_DISMISS_KEY, String(Date.now() + 30 * DAY)); renderBanners(); }
+  else if (act === 'reload' && swWaiting){ swReloadRequested = true; swWaiting.postMessage('skipWaiting'); }
+});
+
+// ----- Installable app (service worker + install prompt) -----
+async function promptInstall(){
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  try { await deferredInstall.userChoice; } catch(e){}
+  deferredInstall = null;
+  renderBanners();
+}
+$('installBtn').textContent = V22_TXT.install;
+$('installBtn').addEventListener('click', promptInstall);
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; renderBanners(); });
+window.addEventListener('appinstalled', () => {
+  deferredInstall = null; renderBanners();
+  try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
+});
+let swReloadRequested = false;
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    const check = () => { if (reg.waiting && navigator.serviceWorker.controller){ swWaiting = reg.waiting; renderBanners(); } };
+    check();
+    reg.addEventListener('updatefound', () => {
+      const w = reg.installing;
+      if (w) w.addEventListener('statechange', () => { if (w.state === 'installed') check(); });
+    });
+    setInterval(() => reg.update().catch(() => {}), 3600e3);
+  }).catch(() => {});
+  // Reload only when the user asked for the new version (not on the very first install).
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (swReloadRequested){ swReloadRequested = false; location.reload(); } });
+}
+
+// Shared links carry the profile's name so the new profile is labelled sensibly.
+function sharePayload(){ const s = collectState(); s.profileName = activeProfileName(); return s; }
+
 // ---------- init ----------
 renderAmountInputs();
-renderFixedWealthInputs();
+renderAccountInputs();
 buildAccordion();
 renderEvents();
 incomeList.render();
 expenseItemsList.render();
 normalizeSavingsAlloc();
 initInfoToggles();
-hadSavedPlanAtStart = loadLocal();
+// Start-up: remember the shipped demo inputs, then open the last-used user profile (migrating the
+// pre-v2.2 single-plan autosave into a first profile). First-time visitors get the welcome dialog.
+defaultPlanState = collectState();
+profileStore = readProfileStore();
+if (!profileStore){
+  let legacy = null;
+  try { legacy = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch(e){}
+  if (legacy && legacy.fields) createProfile(V22_TXT.defaultProfileName, legacy);
+}
+if (profileStore){
+  if (!activeProfile()) profileStore.activeId = profileStore.profiles[0].id;
+  switchProfile(profileStore.activeId, { skipFlush: true });
+  hadSavedPlanAtStart = true;
+}
 updateBasisUI();
+renderCurrencyUI();
+renderAccountInputs();
 recalc();
-openSharedPlanFromHash();   // a #plan=… link opens that plan (asks first if this browser already has one)
+renderProfileUI();
+refreshFxRates(false);
+(async () => {
+  await openSharedPlanFromHash();   // a #plan=… link opens as a new profile
+  if (!profileStore) openProfileDialog('welcome');
+})();
 
 // scroll spy (desktop sidebar only — unaffected by mobile changes below)
 const navLinks = document.querySelectorAll('.nav a');
