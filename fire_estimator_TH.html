@@ -644,6 +644,10 @@
 
   /* ---------- v2.1 ---------- */
   .currency-actions{flex-wrap:wrap;}
+  /* The generic input{width:100%} rule was beating .fx-field input{width:90px}; in Safari the FX
+     field then collapsed and the Future/Today switch was drawn over the "THB" label. */
+  #fxRateInput{width:96px;flex:0 0 96px;}
+  #basisSeg{flex-shrink:0;}
   .basis-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;
     background:var(--tint-2);color:var(--muted);margin-right:6px;vertical-align:1px;white-space:nowrap;}
   .basis-badge.today{background:var(--chart-scale-badge-bg);color:var(--chart-blue);}
@@ -667,6 +671,7 @@
   #printReport{display:none;}
   @media (max-width:900px){
     .currency-actions .btn{flex:1 1 30%;}
+    #fxRateInput{flex:1 1 auto;width:auto;min-width:0;}
     .scn-metrics{grid-template-columns:repeat(2,1fr);}
     .scn-name{font-size:16px;}
   }
@@ -816,7 +821,7 @@
     <a href="#projection"><span class="dot">▲</span>ตารางประมาณการ</a>
   </nav>
   <div class="sidebar-foot">
-    Every figure recalculates instantly as you edit inputs.<br>Nothing here leaves your browser.
+    ทุกตัวเลขคำนวณใหม่ทันทีเมื่อคุณแก้ไขข้อมูล<br>ข้อมูลทั้งหมดอยู่ในเบราว์เซอร์ของคุณเท่านั้น
   </div>
 </aside>
 
@@ -1395,7 +1400,7 @@ const $ = id => document.getElementById(id);
 
 // Version shown in the sidebar, footer, PDF report and saved files. Numbering: MAJOR.MINOR[.PATCH]
 // (patch = fixes only, minor = new features, major = redesign or model change). See README.
-const APP_VERSION = '2.1';
+const APP_VERSION = '2.1.1';
 
 // ---------- Day / night mode ----------
 function applyThemeToggleLabel(){
@@ -1653,7 +1658,7 @@ function refreshExpenseTotals(){
     if (cell) cell.textContent = fmtMoney(sub);
     grand += sub;
   });
-  $('monthlyTotalHint').textContent = `Total: ${fmtMoney(grand)} / mo · ${fmtMoney(grand*12)} / yr`;
+  $('monthlyTotalHint').textContent = `รวม: ${fmtMoney(grand)} / เดือน · ${fmtMoney(grand*12)} / ปี`;
   renderExpenseDonut();
 
   const annualFromMonthly = grand * 12;
@@ -2077,7 +2082,7 @@ function updateStagedIncomeStatusBadge(){
   if (useStagedIncome && incomePeriods.length > 0){
     const withAges = computeIncomePeriodAges(incomePeriods);
     el.style.display = 'block';
-    el.textContent = `Using ${incomePeriods.length} staged income period${incomePeriods.length===1?'':'s'} (age ${withAges[0].startAge}–${withAges[withAges.length-1].endAge}) instead of a constant growth rate.`;
+    el.textContent = `ใช้รายได้แบบแบ่งช่วง ${incomePeriods.length} ช่วง (อายุ ${withAges[0].startAge}–${withAges[withAges.length-1].endAge}) แทนอัตราการเติบโตคงที่`;
     growthField.style.opacity = '0.5';
     growthField.querySelector('input').disabled = true;
   } else {
@@ -2534,8 +2539,12 @@ function renderPlannerSummary(p){
   const targetAchievementPct = (expRow && expRow.target > 0) ? (expRow.end / expRow.target * 100) : 0;
 
   // Years of retirement the expected scenario actually funds, out of the years planned
-  const yearsPlanned = Math.max(0, planUntilAge - targetAge);
-  const yearsCovered = depletedAge !== null ? Math.max(0, depletedAge - targetAge) : yearsPlanned;
+  // Retirement years are counted inclusively (target age through plan-until age), matching the
+  // projection, which pays a withdrawal in every one of those years. A year in which the money
+  // runs out is not counted as funded, so running out in the very last year no longer shows as
+  // "fully funded" while Extra Spending Capacity says 0%.
+  const yearsPlanned = Math.max(0, planUntilAge - targetAge + 1);
+  const yearsCovered = depletedAge !== null ? Math.max(0, Math.min(yearsPlanned, depletedAge - targetAge)) : yearsPlanned;
   const fundedNote = depletedAge !== null
     ? `รองรับได้ ${yearsCovered} จาก ${yearsPlanned} ปีที่วางแผนไว้ในช่วงเกษียณ ก่อนที่เงินจะหมด`
     : `รองรับได้ตลอด ${yearsPlanned} ปีที่วางแผนไว้ในช่วงเกษียณโดยไม่หมดก่อน`;
@@ -3763,9 +3772,9 @@ function currentAgeFallback(){ return +$('currentAge').value || 35; }
 function saveLocal(){
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
-    $('autosaveNote').textContent = 'Autosaved to this browser just now.';
+    $('autosaveNote').textContent = 'บันทึกอัตโนมัติในเบราว์เซอร์นี้แล้ว';
   }catch(e){
-    $('autosaveNote').textContent = "Autosave isn't available in this view — use \"Save data\" to keep a copy.";
+    $('autosaveNote').textContent = 'บันทึกอัตโนมัติใช้ไม่ได้ในหน้านี้ — กด “บันทึกข้อมูล” เพื่อเก็บสำเนา';
   }
 }
 
@@ -3774,7 +3783,7 @@ function loadLocal(){
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return false;
     applyState(JSON.parse(raw));
-    $('autosaveNote').textContent = 'Restored your last saved entries from this browser.';
+    $('autosaveNote').textContent = 'กู้คืนข้อมูลที่บันทึกไว้ล่าสุดจากเบราว์เซอร์นี้แล้ว';
     return true;
   }catch(e){
     return false;
@@ -3810,7 +3819,7 @@ async function exportToExcel(){
   const note = $('exportExcelNote');
   const originalLabel = btn.textContent;
   btn.disabled = true;
-  btn.textContent = 'Preparing…';
+  btn.textContent = 'กำลังเตรียม…';
   try {
     if (typeof ExcelJS === 'undefined'){
       await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js');
@@ -3956,10 +3965,12 @@ $('importFile').addEventListener('change', (e)=>{
   reader.onload = ev => {
     try{
       const data = JSON.parse(ev.target.result);
+      // A file saved before v2.1 has no scenarios: start it with none rather than keeping this browser's.
+      if (data && !Array.isArray(data.scenarios)) data.scenarios = [];
       applyState(data);
-      $('autosaveNote').textContent = 'Loaded data from file.';
+      $('autosaveNote').textContent = 'โหลดข้อมูลจากไฟล์แล้ว';
     }catch(err){
-      $('autosaveNote').textContent = "Couldn't read that file — is it a FIRE Planner export?";
+      $('autosaveNote').textContent = 'อ่านไฟล์นี้ไม่ได้ — ใช่ไฟล์ที่ส่งออกจาก FIRE Planner หรือไม่?';
     }
   };
   reader.readAsText(file);
@@ -3979,7 +3990,7 @@ $('resetConfirmOverlay').addEventListener('click', (e) => {
 $('resetConfirmBtn').addEventListener('click', () => {
   applyState(blankState());
   $('resetConfirmOverlay').style.display = 'none';
-  $('autosaveNote').textContent = 'All data reset — starting fresh.';
+  $('autosaveNote').textContent = 'ล้างข้อมูลทั้งหมดแล้ว — เริ่มต้นใหม่';
 });
 
 // ---------- Click-to-toggle info buttons (not hover — works on mobile too) ----------
@@ -3999,7 +4010,7 @@ function initInfoToggles(){
 const GS_KEY = 'fireEstimatorGettingStartedHidden';
 function setGettingStartedVisibility(hidden){
   $('gettingStartedBody').style.display = hidden ? 'none' : '';
-  $('toggleGettingStarted').textContent = hidden ? 'Show' : 'Hide';
+  $('toggleGettingStarted').textContent = hidden ? 'แสดง' : 'ซ่อน';
   try { localStorage.setItem(GS_KEY, hidden ? '1' : '0'); } catch(e){}
 }
 $('toggleReadinessBreakdown').addEventListener('click', () => {

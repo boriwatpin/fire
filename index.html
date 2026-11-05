@@ -644,6 +644,10 @@
 
   /* ---------- v2.1 ---------- */
   .currency-actions{flex-wrap:wrap;}
+  /* The generic input{width:100%} rule was beating .fx-field input{width:90px}; in Safari the FX
+     field then collapsed and the Future/Today switch was drawn over the "THB" label. */
+  #fxRateInput{width:96px;flex:0 0 96px;}
+  #basisSeg{flex-shrink:0;}
   .basis-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;
     background:var(--tint-2);color:var(--muted);margin-right:6px;vertical-align:1px;white-space:nowrap;}
   .basis-badge.today{background:var(--chart-scale-badge-bg);color:var(--chart-blue);}
@@ -667,6 +671,7 @@
   #printReport{display:none;}
   @media (max-width:900px){
     .currency-actions .btn{flex:1 1 30%;}
+    #fxRateInput{flex:1 1 auto;width:auto;min-width:0;}
     .scn-metrics{grid-template-columns:repeat(2,1fr);}
     .scn-name{font-size:16px;}
   }
@@ -1395,7 +1400,7 @@ const $ = id => document.getElementById(id);
 
 // Version shown in the sidebar, footer, PDF report and saved files. Numbering: MAJOR.MINOR[.PATCH]
 // (patch = fixes only, minor = new features, major = redesign or model change). See README.
-const APP_VERSION = '2.1';
+const APP_VERSION = '2.1.1';
 
 // ---------- Day / night mode ----------
 function applyThemeToggleLabel(){
@@ -2534,8 +2539,12 @@ function renderPlannerSummary(p){
   const targetAchievementPct = (expRow && expRow.target > 0) ? (expRow.end / expRow.target * 100) : 0;
 
   // Years of retirement the expected scenario actually funds, out of the years planned
-  const yearsPlanned = Math.max(0, planUntilAge - targetAge);
-  const yearsCovered = depletedAge !== null ? Math.max(0, depletedAge - targetAge) : yearsPlanned;
+  // Retirement years are counted inclusively (target age through plan-until age), matching the
+  // projection, which pays a withdrawal in every one of those years. A year in which the money
+  // runs out is not counted as funded, so running out in the very last year no longer shows as
+  // "fully funded" while Extra Spending Capacity says 0%.
+  const yearsPlanned = Math.max(0, planUntilAge - targetAge + 1);
+  const yearsCovered = depletedAge !== null ? Math.max(0, Math.min(yearsPlanned, depletedAge - targetAge)) : yearsPlanned;
   const fundedNote = depletedAge !== null
     ? `funds ${yearsCovered} of the ${yearsPlanned} planned retirement years before being exhausted`
     : `funds the full ${yearsPlanned}-year planned retirement period without running out`;
@@ -3959,6 +3968,8 @@ $('importFile').addEventListener('change', (e)=>{
   reader.onload = ev => {
     try{
       const data = JSON.parse(ev.target.result);
+      // A file saved before v2.1 has no scenarios: start it with none rather than keeping this browser's.
+      if (data && !Array.isArray(data.scenarios)) data.scenarios = [];
       applyState(data);
       $('autosaveNote').textContent = 'Loaded data from file.';
     }catch(err){
