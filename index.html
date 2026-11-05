@@ -72,6 +72,11 @@
     /* Chart tooltips are intentionally the same dark box in both themes (not overridden below). */
     --chart-tooltip-bg: #1f2c46;
     --chart-tooltip-text: #ffffff;
+    /* Scenario comparison lines: current plan + up to 3 saved scenarios */
+    --chart-cmp-0: #2563a8;
+    --chart-cmp-1: #c2570f;
+    --chart-cmp-2: #0d9488;
+    --chart-cmp-3: #7c3aed;
   }
   html[data-theme="dark"]{
     --navy:#0d1420;
@@ -124,6 +129,10 @@
     --chart-needs: #fb923c;
     --chart-combined-total: #c7cad6;
     --chart-scale-badge-bg: rgba(56,163,209,.15);
+    --chart-cmp-0: #38a3d1;
+    --chart-cmp-1: #fb923c;
+    --chart-cmp-2: #2dd4bf;
+    --chart-cmp-3: #a78bfa;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -632,6 +641,125 @@
     .period-title{font-size:14px;}
     .period-subtitle{font-size:12.5px;}
   }
+
+  /* ---------- v2.1 ---------- */
+  .currency-actions{flex-wrap:wrap;}
+  .basis-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;
+    background:var(--tint-2);color:var(--muted);margin-right:6px;vertical-align:1px;white-space:nowrap;}
+  .basis-badge.today{background:var(--chart-scale-badge-bg);color:var(--chart-blue);}
+  .link-btn.danger{color:var(--red);}
+  .scn-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+  .scn-actions .btn.is-full{opacity:.55;}
+  #scnList{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+  .scn-row{border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--card);}
+  .scn-row.current{background:var(--tint-1);}
+  .scn-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .scn-swatch{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+  .scn-name-static{font-weight:700;color:var(--text);font-size:13.5px;}
+  .scn-name{flex:1;min-width:0;font-family:inherit;font-weight:700;font-size:13.5px;color:var(--text);
+    background:transparent;border:1px solid transparent;border-radius:6px;padding:3px 6px;}
+  .scn-name:hover,.scn-name:focus{border-color:var(--border);background:var(--card);outline:none;}
+  .scn-btns{display:flex;gap:2px;margin-left:auto;flex-shrink:0;}
+  .scn-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .scn-metrics span{display:block;font-size:11px;color:var(--muted-2);font-weight:600;}
+  .scn-metrics b{font-size:14px;color:var(--text);}
+  .app-footer{text-align:center;font-size:12px;color:var(--muted-2);padding:18px 0 6px;}
+  #printReport{display:none;}
+  @media (max-width:900px){
+    .currency-actions .btn{flex:1 1 30%;}
+    .scn-metrics{grid-template-columns:repeat(2,1fr);}
+    .scn-name{font-size:16px;}
+  }
+
+  /* ---------- Print / PDF report ---------- */
+  @page{size:A4 landscape;margin:12mm;}
+  @media print{
+    html[data-theme="dark"]{
+      --navy:#eaeef5;
+      --navy-2:#dde3ee;
+      --bg:#f4f6fa;
+      --card:#ffffff;
+      --border:#e4e8f0;
+      --text:#111827;
+      --muted:#64748b;
+      --muted-2:#94a1b5;
+      --rust:#4f6fb0;
+      --rust-dark:#3d5a94;
+      --cream:#ded4c2;
+      --green:#1e7a46;
+      --green-bg:#e3f5e9;
+      --red:#c0392b;
+      --red-bg:#fbe7e4;
+      --amber:#a9761f;
+      --amber-bg:#f7ecd9;
+      --radius:14px;
+      --shadow: 0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.06);
+  
+      --tint-1: rgba(15,23,42,.035);
+      --tint-2: rgba(15,23,42,.055);
+      --tint-strong: rgba(15,23,42,.13);
+  
+      --row-hl:#eef0fa;
+      --row-gift:#fdecea;
+      --row-retiring:#fdf3e0;
+  
+      --sidebar-text:#475569;
+      --sidebar-text-dim:#64748b;
+      --sidebar-text-dimmer:#94a3b8;
+  
+      --chart-gridline: rgba(15,23,42,0.08);
+      --chart-axisline: rgba(15,23,42,0.16);
+      --chart-baseline: rgba(15,23,42,0.25);
+      --chart-refline: #475569;
+      --chart-axislabel: #6b7686;
+      --chart-dotfill: #1e293b;
+      --chart-dotring: #ffffff;
+      --chart-pillbg: #ffffff;
+      --chart-pilltext: #64748b;
+      --chart-thailand: #64748b;
+      --chart-blue: #2563a8;
+      --chart-singapore: #0d9488;
+      --chart-withdraw: #dc2626;
+      --chart-danger: #e11d48;
+      --chart-return: #15803d;
+      --chart-good: #16a34a;
+      --chart-needs: #c2570f;
+      --chart-combined-total: #475569;
+      --chart-scale-badge-bg: rgba(37,99,168,.10);
+      /* Chart tooltips are intentionally the same dark box in both themes (not overridden below). */
+      --chart-tooltip-bg: #1f2c46;
+      --chart-tooltip-text: #ffffff;
+    }
+    html, body{background:#fff !important;}
+    body{display:block !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body > *:not(#printReport){display:none !important;}
+    #printReport{display:block !important;color:var(--text);font-size:11pt;}
+    .pr-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;border-bottom:2px solid #4f6fb0;padding-bottom:8px;margin-bottom:8px;}
+    .pr-brand{font-size:10pt;font-weight:700;color:#4f6fb0;}
+    .pr-brand span{color:var(--muted-2);font-weight:600;}
+    .pr-head h1{margin:2px 0 0;font-size:20pt;}
+    .pr-meta{display:flex;gap:22px;text-align:right;}
+    .pr-meta span{display:block;font-size:8.5pt;color:var(--muted-2);}
+    .pr-meta b{font-size:11pt;}
+    .pr-note{font-size:9pt;color:var(--muted);margin:0 0 12px;line-height:1.5;}
+    .pr-block{break-inside:avoid;page-break-inside:avoid;margin-bottom:14px;}
+    .pr-break{break-before:page;page-break-before:always;}
+    .pr-block h2{font-size:13pt;margin:0 0 8px;}
+    .pr-status{font-size:10.5pt;margin-bottom:8px;}
+    .pr-readiness{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;}
+    .pr-readiness b{font-size:16pt;color:#4f6fb0;}
+    .pr-narrative{font-size:10pt;line-height:1.55;margin:0 0 10px;}
+    #printReport .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+    #printReport .stat-card{box-shadow:none;border:1px solid var(--border);padding:8px 10px;}
+    #printReport svg{display:block;width:100%;}
+    #printReport .legend{font-size:8.5pt;margin-top:6px;}
+    .pr-table{width:100%;border-collapse:collapse;font-size:9pt;}
+    .pr-table th{text-align:right;border-bottom:1.5px solid var(--text);padding:4px 6px;font-size:8.5pt;}
+    .pr-table td{text-align:right;border-bottom:1px solid var(--border);padding:3.5px 6px;}
+    .pr-table th:first-child,.pr-table td:first-child{text-align:left;}
+    .pr-table tr.key td{background:var(--row-hl);font-weight:700;}
+    .pr-disclaimer{font-size:8.5pt;color:var(--muted-2);margin:12px 0 0;}
+  }
 </style>
 </head>
 <body>
@@ -672,7 +800,7 @@
       </svg>
     </div>
     <div class="brand-text">
-      <div class="name">FIRE Planner</div>
+      <div class="name">FIRE Planner<span class="app-version"></span></div>
       <div class="sub">Financial Independence, Retire Early</div>
     </div>
   </div>
@@ -684,6 +812,7 @@
     <a href="#events"><span class="dot">✦</span>Life Events &amp; Income</a>
     <a href="#sensitivity"><span class="dot">≈</span>Sensitivity</a>
     <a href="#runway"><span class="dot">➝</span>Growth &amp; Runway</a>
+    <a href="#scenarios"><span class="dot">⇄</span>Compare scenarios</a>
     <a href="#projection"><span class="dot">▲</span>Projection</a>
   </nav>
   <div class="sidebar-foot">
@@ -715,12 +844,18 @@
           <input type="number" id="fxRateInput" value="33" step="0.01">
           <span>THB</span>
         </div>
+        <div class="seg" id="basisSeg" role="group" aria-label="Show amounts as">
+          <button id="basisFuture" class="active" type="button">Future value</button>
+          <button id="basisToday" type="button">Today's value</button>
+        </div>
       </div>
       <div class="fx-note">All figures are stored in THB. Toggle currency to view your own USD conversion — everything recalculates instantly.</div>
       <div class="currency-actions">
         <button class="btn ghost" id="exportBtn">⬇ Save data</button>
         <button class="btn ghost" id="importBtn">⬆ Load data</button>
         <input type="file" id="importFile" accept="application/json" style="display:none;">
+        <button class="btn ghost" id="shareLinkBtn">🔗 Copy link</button>
+        <button class="btn ghost" id="reportBtn">🖨 PDF report</button>
         <button class="btn danger" id="resetDataBtn">⟲ Reset data</button>
       </div>
     </div>
@@ -757,8 +892,45 @@
       </div>
     </div>
 
+    <div id="v21ConfirmOverlay" class="modal-overlay" style="display:none;">
+      <div class="modal-card">
+        <h3 id="v21ConfirmTitle"></h3>
+        <p id="v21ConfirmBody"></p>
+        <div class="modal-actions">
+          <button class="btn ghost" id="v21ConfirmCancel" type="button">Cancel</button>
+          <button class="btn" id="v21ConfirmOk" type="button"></button>
+        </div>
+      </div>
+    </div>
+    <span id="sharedOpenTitle" hidden>Open shared plan?</span>
+    <span id="sharedOpenBody" hidden>This replaces the plan saved in this browser with the one in the link. Use Save data first if you want to keep your current numbers.</span>
+    <span id="sharedOpenOk" hidden>Open plan</span>
+
+    <div id="shareLinkOverlay" class="modal-overlay" style="display:none;">
+      <div class="modal-card">
+        <h3>Share link</h3>
+        <p id="shareLinkNote"></p>
+        <textarea id="shareLinkField" readonly rows="4" style="width:100%;font-family:inherit;font-size:12px;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);margin-bottom:14px;"></textarea>
+        <div class="modal-actions"><button class="btn" id="shareLinkClose" type="button">Done</button></div>
+      </div>
+    </div>
+
+    <div id="reportOverlay" class="modal-overlay" style="display:none;">
+      <div class="modal-card">
+        <h3>PDF report</h3>
+        <p>Prints a summary, the main charts and a condensed year-by-year table on A4 landscape. In the print dialog, choose “Save as PDF” to keep a file.</p>
+        <div class="field"><label for="reportFor">Prepared for (optional)</label><input type="text" id="reportFor" maxlength="80"></div>
+        <div class="field"><label for="reportBy">Prepared by (optional)</label><input type="text" id="reportBy" maxlength="80"></div>
+        <div class="fx-note" style="margin:-4px 0 16px;">Names are remembered in this browser only.</div>
+        <div class="modal-actions">
+          <button class="btn ghost" id="reportCancel" type="button">Cancel</button>
+          <button class="btn" id="reportPrint" type="button">Print / Save PDF</button>
+        </div>
+      </div>
+    </div>
+
     <div class="fx-note" id="autosaveNote" style="margin:-10px 0 12px 2px;"></div>
-    <div class="fx-note" style="margin:-2px 0 18px 2px;">📌 Amounts are in today's dollars. Investments grow at real rates; expenses rise with inflation each year.</div>
+    <div class="fx-note" style="margin:-2px 0 18px 2px;">📌 Balances grow at the growth rates you enter (normal returns, before inflation). Spending and your target rise with inflation each year. Life events and additional income/expenses are used exactly as typed, in that year's money. Switch to <b>Today's value</b> to see every amount in today's purchasing power.</div>
 
     <div class="card" id="gettingStarted">
       <div class="card-head">
@@ -829,7 +1001,7 @@
       <div class="stats" id="plannerStats" style="margin-bottom:0;"></div>
     </div>
 
-    <div class="stats">
+    <div class="stats" id="overviewStats">
       <div class="stat-card">
         <div class="label">Estimated Retirement Age</div>
         <div class="value" id="statRetireAge">—</div>
@@ -838,7 +1010,7 @@
       <div class="stat-card">
         <div class="label">Target Portfolio Needed</div>
         <div class="value" id="statTargetPortfolio">—</div>
-        <div class="sub">to sustain retirement</div>
+        <div class="sub">in today's value; grows with inflation</div>
       </div>
       <div class="stat-card">
         <div class="label">Additional Needed</div>
@@ -1077,7 +1249,7 @@
     <div class="card">
       <div class="card-head">
         <h2>Portfolio Growth &amp; Retirement Runway<button class="info-btn" data-target="info-runway" aria-expanded="false">?</button></h2>
-        <div class="hint">Your full lifetime in one chart — hover to see your balance at any age. Axis switches to log only when the shown range gets too wide for linear to stay readable</div>
+        <div class="hint"><span class="basis-badge"></span>Your full lifetime in one chart — hover to see your balance at any age. Axis switches to log only when the shown range gets too wide for linear to stay readable</div>
       </div>
       <div class="info-panel" id="info-runway">The top panel is your balance: rust while you're still working and saving, red once you're withdrawing in retirement. The shaded band is the conservative-to-optimistic range from your Sensitivity setting. The bottom panel shows the actual cash moving each year — green bars for investment return, red bars for whatever's going out (expenses or withdrawal), and a dashed grey line for your full cost of living. Drag "Show chart through age" to focus on a shorter window — the axis will automatically switch back to linear once the range is narrow enough to read comfortably, and to log if you stretch it out across the full decades-long horizon.</div>
       <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-end;margin-bottom:4px;">
@@ -1101,7 +1273,7 @@
       <div class="chart-wrap">
         <svg id="runwaySvg" width="100%" height="370" viewBox="0 0 1000 370" preserveAspectRatio="none" style="cursor:crosshair;"></svg>
       </div>
-      <div class="legend">
+      <div class="legend" id="runwayLegend">
         <span><span class="swatch" style="background:var(--chart-thailand);"></span>Balance: accumulating</span>
         <span><span class="swatch" style="background:var(--chart-withdraw);"></span>Balance: withdrawing</span>
         <span><span class="swatch" style="background:var(--chart-refline);opacity:.35;"></span>Retirement age</span>
@@ -1119,11 +1291,30 @@
     </div>
   </section>
 
+  <section id="scenarios">
+    <div class="card">
+      <div class="card-head">
+        <h2>Compare scenarios<button class="info-btn" data-target="info-scenarios" aria-expanded="false">?</button></h2>
+        <div class="hint"><span class="basis-badge"></span>Save up to 3 versions of your plan and see them side by side</div>
+      </div>
+      <div class="info-panel" id="info-scenarios">A scenario is a full copy of every input at the moment you save it. Change your inputs, save again, and compare. <b>Load</b> puts a scenario's inputs back on screen so you can edit them; <b>Update</b> overwrites a scenario with your current inputs. Dots mark the age each plan can retire. Each plan uses its own growth sensitivity setting. Scenarios are kept with your autosave, the data file and share links.</div>
+      <div class="scn-actions">
+        <button class="btn" id="scnSaveBtn" type="button">+ Save current plan as scenario</button>
+        <span class="fx-note" id="scnNote"></span>
+      </div>
+      <div class="chart-wrap">
+        <svg id="scenarioSvg" width="100%" height="260" viewBox="0 0 1000 260" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="legend"><span>Solid line: current plan · Dashed: saved scenarios · ● age the plan can retire</span></div>
+      <div id="scnList"></div>
+    </div>
+  </section>
+
   <section id="projection">
     <div class="card">
       <div class="card-head">
         <h2>Year-by-year projection</h2>
-        <div class="hint">Full lifetime — accumulation, then retirement drawdown with inflation-adjusted spending</div>
+        <div class="hint"><span class="basis-badge"></span>Full lifetime — accumulation, then retirement drawdown with inflation-adjusted spending</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
         <button class="btn" id="exportExcelBtn">⬇ Export to Excel</button>
@@ -1195,10 +1386,16 @@
 
 
 
+  <footer class="app-footer">FIRE Planner <span class="app-version"></span> · Nothing here leaves your browser.</footer>
 </main>
+<div id="printReport" aria-hidden="true"></div>
 
 <script>
 const $ = id => document.getElementById(id);
+
+// Version shown in the sidebar, footer, PDF report and saved files. Numbering: MAJOR.MINOR[.PATCH]
+// (patch = fixes only, minor = new features, major = redesign or model change). See README.
+const APP_VERSION = '2.1';
 
 // ---------- Day / night mode ----------
 function applyThemeToggleLabel(){
@@ -2031,8 +2228,11 @@ function computeFullProjection(p, sensOverride, extraSpend){
   let fCumulativeContrib = thailandAmt + usaAmt + sgAmt;
   const fullRows = [];
   const fAppliedEventIds = new Set();
-  const fActiveEvents = lifeEvents.filter(e => e.amount > 0 && e.age >= currentAge && e.age <= currentAge+fullMaxY);
+  const fActiveEvents = (p.lifeEvents || lifeEvents).filter(e => e.amount > 0 && e.age >= currentAge && e.age <= currentAge+fullMaxY);
   let depletedAge = null;
+  // Scenarios pass their own lists; the live plan uses the on-screen ones.
+  const addIncomeList = p.additionalIncomeItems || additionalIncomeItems;
+  const addExpenseList = p.additionalExpenseItems || additionalExpenseItems;
 
   for (let y = 0; y <= fullMaxY; y++){
     const age = currentAge + y;
@@ -2044,10 +2244,10 @@ function computeFullProjection(p, sensOverride, extraSpend){
     const incomeThisYear = retiring ? 0 : incomeAtAge(age, currentAge, annualIncome, incomeGrowthRate, useStagedIncome, incomePeriods);
 
     // Recurring additional income / expenses active this specific year (time-limited)
-    const incomeExtra = additionalIncomeItems
+    const incomeExtra = addIncomeList
       .filter(it => age >= it.startAge && age < it.startAge + it.duration)
       .reduce((s,it) => s + it.amount, 0);
-    const expenseExtra = additionalExpenseItems
+    const expenseExtra = addExpenseList
       .filter(it => age >= it.startAge && age < it.startAge + it.duration)
       .reduce((s,it) => s + it.amount, 0);
 
@@ -2085,11 +2285,14 @@ function computeFullProjection(p, sensOverride, extraSpend){
     if (fCumulativeContrib > end) fCumulativeContrib = end;
     const cumulativeGrowth = end - fCumulativeContrib;
 
-    const met = end >= targetPortfolio;
+    // The target is entered in today's money; the projection runs in future money, so the
+    // target grows with inflation too and "met" compares like with like.
+    const target = targetPortfolio * inflationFactor;
+    const met = end >= target;
     fullRows.push({
       age, year:y, begin, ret, save, withdrawal, outflow, income:incomeThisYear, incomeExtra, expenseExtra,
       expenses:expensesThisYear, inflationCost, gift:eventTotal, eventDetails:eventsThisYear,
-      end, met, retiring, totalBeforeEvents,
+      end, met, target, retiring, totalBeforeEvents,
       breakdown: { thailand:tEnd, usa:uEnd, singapore:sEnd },
       cumulativeContrib:fCumulativeContrib, cumulativeGrowth,
     });
@@ -2195,7 +2398,11 @@ function recalc(){
   const conservative = computeFullProjection(projInputs, y => sensitivity - bandWidth * bandTaper(y));
   const optimistic = computeFullProjection(projInputs, y => sensitivity + bandWidth * bandTaper(y));
   const fullRows = expected.rows;
-  lastFullRows = fullRows;
+  // What the charts and table show: future money as computed, or deflated to today's value.
+  const dExpected = displayRows(expected.rows, inflationRate);
+  const dConservative = displayRows(conservative.rows, inflationRate);
+  const dOptimistic = displayRows(optimistic.rows, inflationRate);
+  lastFullRows = dExpected;
   const depletedAge = expected.depletedAge;
   const maxExtraSpend = computeMaxAffordableExtraSpend(projInputs, sensitivity);
 
@@ -2241,18 +2448,19 @@ function recalc(){
     }
   }
 
-  renderTable(fullRows);
-  renderAppendixGrowthChart(fullRows, targetPortfolio, planUntilAge);
-  renderAppendixChart(fullRows);
+  renderTable(dExpected);
+  renderAppendixGrowthChart(dExpected, targetPortfolio, planUntilAge);
+  renderAppendixChart(dExpected);
   renderCompareChart(annualExpenses, impliedAnnualSavings, currentPortfolio);
-  renderRetirementChart(expected.rows, conservative.rows, optimistic.rows, targetAge, depletedAge, planUntilAge);
+  renderRetirementChart(dExpected, dConservative, dOptimistic, targetAge, depletedAge, planUntilAge);
+  renderScenarios();
   renderPlannerSummary({
     minRetireAge, targetAge, annualIncome, incomeGrowthRate, inflationRate,
     targetPortfolio, expectedRows: expected.rows, conservativeRows: conservative.rows, depletedAge, planUntilAge,
     annualExpenses, maxExtraSpend, useStagedIncome, incomePeriods,
   });
 
-  const retireRow = expected.rows.find(r => r.age === targetAge) || expected.rows[expected.rows.length - 1];
+  const retireRow = dExpected.find(r => r.age === targetAge) || dExpected[dExpected.length - 1];
   if (retireRow && retireRow.end > 0){
     const growthPct = retireRow.cumulativeGrowth / retireRow.end * 100;
     $('runwayGrowthInsight').innerHTML = `By age <b>${retireRow.age}</b>, about <b>${growthPct.toFixed(0)}%</b> of your balance (${fmtMoney(retireRow.cumulativeGrowth)}) comes from investment growth rather than money you contributed (${fmtMoney(retireRow.cumulativeContrib)}).`;
@@ -2323,7 +2531,7 @@ function renderPlannerSummary(p){
   const savingsRatePct = projectedIncome > 0 ? (projectedSavings / projectedIncome * 100) : 0;
 
   const expRow = expectedRows.find(r => r.age === targetAge) || expectedRows[expectedRows.length - 1];
-  const targetAchievementPct = (expRow && targetPortfolio > 0) ? (expRow.end / targetPortfolio * 100) : 0;
+  const targetAchievementPct = (expRow && expRow.target > 0) ? (expRow.end / expRow.target * 100) : 0;
 
   // Years of retirement the expected scenario actually funds, out of the years planned
   const yearsPlanned = Math.max(0, planUntilAge - targetAge);
@@ -3011,7 +3219,9 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
   const xAt = i => padL + (n <= 1 ? 0 : (i/(n-1)) * plotW);
 
   // ---- Main panel: linear by default, auto-switch to log once the visible range is too wide ----
-  const allVals = [...rows.map(r=>r.end), targetPortfolio];
+  const targetAt = r => (r && typeof r.target === 'number') ? r.target : targetPortfolio;
+  const targetRefRow = rows.find(r => r.retiring) || rows[rows.length - 1];
+  const allVals = [...rows.map(r=>r.end), targetAt(targetRefRow)];
   const maxVal = Math.max(...allVals, 1) * 1.15;
   const positiveVals = allVals.filter(v => v > 0);
   const minVal = Math.max(1, positiveVals.length ? Math.min(...positiveVals) : 1);
@@ -3105,10 +3315,12 @@ function renderAppendixGrowthChart(fullRowsIn, targetPortfolio, planUntilAge){
 
   // Target line + label rendered AFTER bars (below, in draw order) so it's never obscured
   // by a tall bar reaching up near the target — this used to sit behind the bars.
-  const targetY = yAt(targetPortfolio).toFixed(1);
-  const targetLabelText = `Target ${yLabel(targetPortfolio)}`;
+  const lastTarget = targetAt(rows[rows.length - 1]);
+  const targetY = Math.max(mainY0, yAt(lastTarget)).toFixed(1);
+  const targetPts = rows.map((r, i) => `${xAt(i).toFixed(1)},${Math.max(mainY0, yAt(targetAt(r))).toFixed(1)}`).join(' ');
+  const targetLabelText = `Target ${yLabel(lastTarget)}`;
   const targetLabelW = targetLabelText.length * 6.2 + 10;
-  const targetLine = `<line x1="${padL}" y1="${targetY}" x2="${W-padR}" y2="${targetY}" stroke="var(--chart-refline)" stroke-opacity="0.32" stroke-width="1.5" stroke-dasharray="6,4"></line>
+  const targetLine = `<polyline points="${targetPts}" fill="none" stroke="var(--chart-refline)" stroke-opacity="0.32" stroke-width="1.5" stroke-dasharray="6,4"></polyline>
     <rect x="${(W-padR-targetLabelW).toFixed(1)}" y="${(+targetY-20).toFixed(1)}" width="${targetLabelW.toFixed(1)}" height="16" fill="var(--chart-pillbg)" fill-opacity="0.9" rx="3"></rect>
     <text x="${W-padR}" y="${(+targetY-8).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--chart-pilltext)">${targetLabelText}</text>`;
 
@@ -3452,6 +3664,9 @@ function collectState(){
   idFields.forEach(id => simple[id] = $(id).value);
   return {
     version: 5,
+    appVersion: APP_VERSION,
+    moneyBasis,
+    scenarios: scenarios.map(sc => ({ name: sc.name, savedAt: sc.savedAt, state: sc.state })),
     currency, fxRate,
     fields: simple,
     amounts: {...S},
@@ -3473,6 +3688,8 @@ function blankState(){
   idFields.forEach(id => { zeroFields[id] = 0; });
   return {
     version: 5,
+    moneyBasis: 'future',
+    scenarios: [],
     currency: 'THB',
     fxRate: 33,
     fields: zeroFields,
@@ -3489,6 +3706,12 @@ function blankState(){
 
 function applyState(data){
   if (!data) return;
+  if (data.moneyBasis){ moneyBasis = data.moneyBasis === 'today' ? 'today' : 'future'; updateBasisUI(); }
+  if (Array.isArray(data.scenarios)){
+    scenarios = data.scenarios.slice(0, MAX_SCENARIOS).filter(sc => sc && sc.state).map(sc => ({
+      id: 's' + (scenarioIdSeq++), name: String(sc.name || V21_TXT.scnDefaultName(scenarioIdSeq)).slice(0, 40),
+      savedAt: sc.savedAt || '', state: sc.state }));
+  }
   if (data.currency) currency = data.currency;
   if (data.fxRate) fxRate = data.fxRate;
   $('fxRateInput').value = fxRate;
@@ -3612,6 +3835,8 @@ async function exportToExcel(){
     sum.addRow(['Generated', new Date().toLocaleString()]);
     sum.addRow(['Figures shown in', symbolLabel]);
     sum.addRow(['FX rate (THB per 1 USD)', fxRate]);
+    sum.addRow(['App version', 'v' + APP_VERSION]);
+    sum.addRow(['Amounts basis', moneyBasis === 'today' ? V21_TXT.basisToday : V21_TXT.basisFuture]);
     sum.addRow([]);
     const assumptionHeader = sum.addRow(['Assumption', 'Value']);
     assumptionHeader.eachCell(c => { c.font = { bold: true, color: { argb: 'FFFFFFFF' } }; c.fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FF0F1A2E'} }; });
@@ -3805,7 +4030,7 @@ const mobileTabGroups = {
   household: ['household', 'expenses'],
   wealth: ['wealth'],
   events: ['events'],
-  runway: ['runway', 'sensitivity'],
+  runway: ['runway', 'sensitivity', 'scenarios'],
   projection: ['projection'],
 };
 const sectionToTab = {};
@@ -3814,6 +4039,7 @@ Object.entries(mobileTabGroups).forEach(([tab, ids]) => ids.forEach(id => { sect
 let currentMobileTab = 'overview';
 
 function isMobileView(){
+  if (forceDesktopLayout) return false;   // PDF report draws charts in desktop layout
   return window.innerWidth <= MOBILE_BREAKPOINT;
 }
 
@@ -3845,7 +4071,7 @@ function showMobileTab(tab, opts){
   currentMobileTab = tab;
   applyMobileVisibility();
   setMobileTabbarActive();
-  refreshSensitivityIfResized(); // chart was drawn while hidden; redraw at its real width
+  refreshMeasuredCharts(); // charts drawn while hidden; redraw at their real width
   if (!opts || !opts.skipScroll) window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
@@ -3896,12 +4122,510 @@ window.addEventListener('resize', () => {
       lastWasMobile = nowMobile;
       recalc();
     } else if (nowMobile){
-      refreshSensitivityIfResized();
+      refreshMeasuredCharts();
     }
   }, 150);
 });
 applyMobileVisibility();
 setMobileTabbarActive();
+// =====================================================================================
+// v2.1 — Today's-money view, share links, scenarios, PDF report
+// =====================================================================================
+// UI text used by the v2.1 features. This block is the only part that differs between the
+// EN and TH editions; everything below it is identical code.
+const V21_TXT = {
+  basisFuture: 'Future value',
+  basisToday: "Today's value",
+  basisBadgeFuture: 'Future value',
+  basisBadgeToday: "Today's value",
+  linkCopied: 'Link copied. Anyone with this link can open these numbers, so share it only with people you trust.',
+  linkFailed: "Couldn't copy automatically. Select the link below and copy it.",
+  sharedOpened: 'Opened the shared plan.',
+  sharedBad: "That shared link couldn't be read. It may be incomplete.",
+  scnDefaultName: n => `Scenario ${n}`,
+  scnCurrent: 'Current plan',
+  scnMax: n => `You can keep up to ${n} scenarios. Update or delete one first.`,
+  scnSaved: name => `Saved "${name}".`,
+  scnUpdated: name => `Updated "${name}" with your current inputs.`,
+  scnLoaded: name => `Loaded "${name}". Your edits now change the current plan.`,
+  scnLoadTitle: name => `Load "${name}"?`,
+  scnLoadBody: 'This replaces every current input with the scenario. Save the current plan as a scenario first if you want to keep it.',
+  scnLoadOk: 'Load scenario',
+  scnDeleteTitle: name => `Delete "${name}"?`,
+  scnDeleteBody: "This can't be undone.",
+  scnDeleteOk: 'Delete',
+  scnUpdateTitle: name => `Update "${name}"?`,
+  scnUpdateBody: 'This overwrites the scenario with your current inputs.',
+  scnUpdateOk: 'Update',
+  scnLoad: 'Load', scnUpdate: 'Update', scnDelete: 'Delete',
+  mTargetAge: 'Target age', mRetire: 'Can retire at', mRunsOut: 'Money lasts to', mBalance: 'Balance at target age',
+  notReached: 'Not reached', never: 'Never runs out', neverShort: 'Never',
+  ageAxis: 'Age',
+  cancel: 'Cancel',
+  rptTitle: 'Retirement plan report',
+  rptFor: 'Prepared for', rptBy: 'Prepared by', rptDate: 'Date',
+  rptBasis: (cur, today) => `Amounts in ${cur}, ${today ? "today's value (adjusted for inflation)" : 'future value (not adjusted for inflation)'}.`,
+  rptAssumptions: a => `Assumptions: current age ${a.currentAge}, target retirement age ${a.targetAge}, plan until ${a.planUntilAge}; inflation ${a.inflation}%; withdrawal rate ${a.withdrawal}%; growth Thailand ${a.th}%, USA ${a.us}%, Singapore ${a.sg}% (sensitivity ${a.sens}).`,
+  rptSummary: 'Summary',
+  rptRunway: 'Portfolio growth & retirement runway',
+  rptSensitivity: 'Sensitivity: what if growth is higher or lower?',
+  rptByCountry: 'Portfolio growth by country',
+  rptTable: 'Year-by-year projection (every 5 years and key ages)',
+  rptCols: ['Age', 'Year', 'Begin', 'Return', 'Income in', 'Outflow', 'Life events', 'End balance', 'Target met'],
+  yes: 'Yes', no: 'No',
+  rptFooter: (v, d) => `FIRE Planner v${v} · ${d} · Projections are estimates based on the assumptions above, not financial advice.`,
+};
+
+// ---------- Money basis: future (nominal) vs today's value ----------
+// The engine works in future money: balances grow at the rates entered, spending rises with
+// inflation, and the target grows with inflation too. "Today's value" divides every amount
+// in a projection year by (1 + inflation)^year, so it reads in today's purchasing power.
+let moneyBasis = 'future';
+const ROW_MONEY_FIELDS = ['begin','ret','save','withdrawal','outflow','income','incomeExtra','expenseExtra',
+  'expenses','inflationCost','gift','end','totalBeforeEvents','cumulativeContrib','cumulativeGrowth','target'];
+function deflateRows(rows, inflationRate){
+  return rows.map(r => {
+    const f = Math.pow(1 + (inflationRate || 0), r.year);
+    const o = { ...r };
+    ROW_MONEY_FIELDS.forEach(k => { if (typeof o[k] === 'number') o[k] = o[k] / f; });
+    if (r.breakdown) o.breakdown = { thailand: r.breakdown.thailand / f, usa: r.breakdown.usa / f, singapore: r.breakdown.singapore / f };
+    if (r.eventDetails) o.eventDetails = r.eventDetails.map(e => ({ ...e, amount: e.amount / f }));
+    return o;
+  });
+}
+function displayRows(rows, inflationRate){
+  return moneyBasis === 'today' ? deflateRows(rows, inflationRate) : rows;
+}
+function updateBasisUI(){
+  const today = moneyBasis === 'today';
+  $('basisFuture').classList.toggle('active', !today);
+  $('basisToday').classList.toggle('active', today);
+  document.querySelectorAll('.basis-badge').forEach(el => {
+    el.textContent = today ? V21_TXT.basisBadgeToday : V21_TXT.basisBadgeFuture;
+    el.classList.toggle('today', today);
+  });
+}
+function setMoneyBasis(b){
+  moneyBasis = b === 'today' ? 'today' : 'future';
+  updateBasisUI();
+  recalc();
+}
+$('basisFuture').addEventListener('click', () => setMoneyBasis('future'));
+$('basisToday').addEventListener('click', () => setMoneyBasis('today'));
+
+// ---------- Generic confirm dialog (scenarios, shared links) ----------
+function v21Confirm(title, body, okText, onOk, opts){
+  $('v21ConfirmTitle').textContent = title;
+  $('v21ConfirmBody').textContent = body;
+  const ok = $('v21ConfirmOk');
+  ok.textContent = okText;
+  ok.className = 'btn' + (opts && opts.danger ? ' danger-solid' : '');
+  $('v21ConfirmOverlay').style.display = 'flex';
+  const close = () => { $('v21ConfirmOverlay').style.display = 'none'; ok.onclick = null; $('v21ConfirmCancel').onclick = null; };
+  ok.onclick = () => { close(); onOk(); };
+  $('v21ConfirmCancel').onclick = () => { close(); if (opts && opts.onCancel) opts.onCancel(); };
+}
+
+// ---------- Share link (plan packed into the URL after #, never sent to a server) ----------
+function bytesToB64url(bytes){
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function b64urlToBytes(s){
+  const b64 = s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4);
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+async function encodePlan(obj){
+  const bytes = new TextEncoder().encode(JSON.stringify(obj));
+  if (window.CompressionStream){
+    try {
+      const stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+      return 'z' + bytesToB64url(new Uint8Array(await new Response(stream).arrayBuffer()));
+    } catch(e){}
+  }
+  return 'j' + bytesToB64url(bytes);
+}
+async function decodePlan(code){
+  const kind = code[0], bytes = b64urlToBytes(code.slice(1));
+  let json;
+  if (kind === 'z'){
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    json = new TextDecoder().decode(await new Response(stream).arrayBuffer());
+  } else if (kind === 'j'){
+    json = new TextDecoder().decode(bytes);
+  } else throw new Error('Unknown link format');
+  return JSON.parse(json);
+}
+function clearPlanHash(){
+  try { history.replaceState(null, '', location.pathname + location.search); } catch(e){ location.hash = ''; }
+}
+$('shareLinkBtn').addEventListener('click', async () => {
+  const url = location.href.split('#')[0] + '#plan=' + await encodePlan(collectState());
+  try {
+    await navigator.clipboard.writeText(url);
+    $('autosaveNote').textContent = V21_TXT.linkCopied;
+  } catch(e){
+    $('shareLinkField').value = url;
+    $('shareLinkNote').textContent = V21_TXT.linkFailed;
+    $('shareLinkOverlay').style.display = 'flex';
+    $('shareLinkField').focus();
+    $('shareLinkField').select();
+  }
+});
+$('shareLinkClose').addEventListener('click', () => { $('shareLinkOverlay').style.display = 'none'; });
+
+let hadSavedPlanAtStart = false;
+async function openSharedPlanFromHash(){
+  const m = location.hash.match(/^#plan=([A-Za-z0-9_-]+)$/);
+  if (!m) return;
+  let data;
+  try { data = await decodePlan(m[1]); }
+  catch(e){ clearPlanHash(); $('autosaveNote').textContent = V21_TXT.sharedBad; return; }
+  const open = () => {
+    applyState(data);
+    clearPlanHash();
+    // shown after the autosave note that applyState triggers, so it isn't overwritten
+    setTimeout(() => { $('autosaveNote').textContent = V21_TXT.sharedOpened; }, 600);
+  };
+  if (!hadSavedPlanAtStart){ open(); return; }
+  v21Confirm($('sharedOpenTitle').textContent, $('sharedOpenBody').textContent, $('sharedOpenOk').textContent, open,
+    { onCancel: clearPlanHash });
+}
+window.addEventListener('hashchange', () => { hadSavedPlanAtStart = true; openSharedPlanFromHash(); });
+
+// ---------- Scenarios: up to 3 full snapshots of the plan, compared side by side ----------
+const MAX_SCENARIOS = 3;
+let scenarios = [];          // [{ id, name, savedAt, state }]
+let scenarioIdSeq = 1;
+function planSnapshot(){
+  const s = collectState();
+  delete s.scenarios;
+  delete s.moneyBasis;
+  return JSON.parse(JSON.stringify(s));
+}
+
+// Builds the same projection inputs recalc() builds, but from a saved state object instead of
+// the on-screen inputs, so a scenario is projected exactly as it would be if it were loaded.
+function projInputsFromState(st){
+  const f = st.fields || {};
+  const num = id => +f[id] || 0;
+  const currentAge = num('currentAge');
+  const withdrawalRate = num('withdrawalRate') / 100;
+  const retirementRatio = num('retirementRatio') / 100;
+  const amounts = st.amounts || {}, fixed = st.fixedUSD || {};
+  const fx = st.fxRate || fxRate;
+  const annualExpenses = amounts.annualExpenses || 0;
+  const annualSupport = annualExpenses * retirementRatio;
+  let ev = 1;
+  const incomePeriodsS = (st.incomePeriods || []).map(p => ({ amount: p.amount || 0, years: p.years || 0 }));
+  return {
+    currentAge,
+    targetAge: num('targetAge'),
+    retirementRatio,
+    annualIncome: amounts.annualIncome || 0,
+    incomeGrowthRate: num('incomeGrowthRate') / 100,
+    useStagedIncome: !!st.useStagedIncome && incomePeriodsS.length > 0,
+    incomePeriods: incomePeriodsS,
+    annualExpenses,
+    inflationRate: num('inflationRate') / 100,
+    thailandRate: num('wealthThailandRate') / 100,
+    usaRate: num('wealthUSARate') / 100,
+    sgRate: num('wealthSGRate') / 100,
+    thailandAmt: amounts.wealthThailand || 0,
+    usaAmt: (fixed.wealthUSA || 0) * fx,
+    sgAmt: (fixed.wealthSG || 0) * fx,
+    allocThailand: num('savingsAllocThailand') / 100,
+    allocUSA: num('savingsAllocUSA') / 100,
+    allocSG: num('savingsAllocSG') / 100,
+    targetPortfolio: withdrawalRate > 0 ? annualSupport / withdrawalRate : 0,
+    planUntilAge: Math.max(currentAge, +f.planUntilAge || 95),
+    sensitivity: (parseFloat(f.sensitivitySlider) || 0) / 100,
+    lifeEvents: (st.lifeEvents || []).map(e => ({ id: ev++, category: e.category, label: e.label || '', amount: e.amount || 0, age: e.age || 0 })),
+    additionalIncomeItems: (st.additionalIncome || []).map(it => ({ amount: it.amount || 0, startAge: it.startAge || currentAge, duration: it.duration || 10 })),
+    additionalExpenseItems: (st.additionalExpenses || []).map(it => ({ amount: it.amount || 0, startAge: it.startAge || currentAge, duration: it.duration || 10 })),
+  };
+}
+function projectState(st){
+  const p = projInputsFromState(st);
+  const proj = computeFullProjection(p, p.sensitivity);
+  const metRow = proj.rows.find(r => r.met);
+  const atTarget = proj.rows.find(r => r.age === p.targetAge);
+  return { p, rows: displayRows(proj.rows, p.inflationRate), retireAge: metRow ? metRow.age : null,
+           depletedAge: proj.depletedAge, balanceAtTarget: atTarget ? displayRows([atTarget], p.inflationRate)[0].end : null };
+}
+
+function scenarioSeries(){
+  const list = [{ key: 'current', name: V21_TXT.scnCurrent, colorVar: 'var(--chart-cmp-0)', state: planSnapshot() }];
+  scenarios.forEach((s, i) => list.push({ key: s.id, name: s.name, colorVar: `var(--chart-cmp-${i+1})`, state: s.state, scenario: s }));
+  return list.map(item => ({ ...item, proj: projectState(item.state) }));
+}
+
+let scnRenderedW = 0;
+function renderScenarios(){
+  const svg = $('scenarioSvg');
+  if (!svg) return;
+  const series = scenarioSeries();
+
+  // ---- Chart: one balance line per plan ----
+  const M = isMobileView();
+  const W = M ? (Math.round(svg.getBoundingClientRect().width) || 380) : 1000;
+  const H = M ? 230 : 260;
+  scnRenderedW = W;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('height', H);
+  const padL = M ? 46 : 70, padR = M ? 10 : 20, padT = 14, padB = 28;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const minAge = Math.min(...series.map(s => s.proj.p.currentAge));
+  const maxAge = Math.max(...series.map(s => s.proj.p.planUntilAge), minAge + 1);
+  const maxVal = Math.max(1, ...series.flatMap(s => s.proj.rows.map(r => r.end))) * 1.1;
+  const xAt = age => padL + ((age - minAge) / (maxAge - minAge)) * plotW;
+  const yAt = v => padT + plotH - (Math.max(0, v) / maxVal) * plotH;
+
+  let grid = '';
+  for (let t = 0; t <= 4; t++){
+    const v = maxVal / 4 * t, yy = yAt(v);
+    grid += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${W-padR}" y2="${yy.toFixed(1)}" stroke="var(--chart-gridline)" stroke-width="1"></line>
+      <text x="${padL-8}" y="${(yy+3.5).toFixed(1)}" text-anchor="end" font-size="10.5" fill="var(--chart-axislabel)">${fmtCompact(v)}</text>`;
+  }
+  const span = maxAge - minAge;
+  const step = [1,2,5,10,20].find(s => span / s <= (M ? 6 : 12)) || 20;
+  for (let a = Math.ceil(minAge / step) * step; a <= maxAge; a += step){
+    grid += `<text x="${xAt(a).toFixed(1)}" y="${H-8}" text-anchor="middle" font-size="10.5" fill="var(--chart-axislabel)">${a}</text>`;
+  }
+
+  let lines = '';
+  series.slice().reverse().forEach(s => {   // current plan drawn last, on top
+    const rows = s.proj.rows;
+    if (!rows.length) return;
+    const d = rows.map((r, i) => `${i ? 'L' : 'M'}${xAt(r.age).toFixed(1)},${yAt(r.end).toFixed(1)}`).join(' ');
+    const isCur = s.key === 'current';
+    lines += `<path d="${d}" fill="none" stroke="${s.colorVar}" stroke-width="${isCur ? 3 : 2.2}" stroke-linejoin="round" stroke-linecap="round"${isCur ? '' : ' stroke-dasharray="7,4"'}></path>`;
+    if (s.proj.retireAge !== null){
+      const r = rows.find(rr => rr.age === s.proj.retireAge);
+      if (r) lines += `<circle cx="${xAt(r.age).toFixed(1)}" cy="${yAt(r.end).toFixed(1)}" r="4.5" fill="${s.colorVar}" stroke="var(--card)" stroke-width="1.5"></circle>`;
+    }
+  });
+  svg.innerHTML = `${grid}<line x1="${padL}" y1="${padT+plotH}" x2="${W-padR}" y2="${padT+plotH}" stroke="var(--chart-axisline)"></line>${lines}`;
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', series.map(s => `${s.name}: ${V21_TXT.mRetire} ${s.proj.retireAge ?? V21_TXT.notReached}, ${V21_TXT.mRunsOut} ${s.proj.depletedAge ?? V21_TXT.never}`).join('; '));
+
+  // ---- Rows: name, key results, actions ----
+  const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  $('scnList').innerHTML = series.map(s => {
+    const pr = s.proj;
+    const isCur = s.key === 'current';
+    const nameEl = isCur
+      ? `<span class="scn-name-static">${esc(s.name)}</span>`
+      : `<input class="scn-name" data-id="${s.key}" value="${esc(s.name)}" maxlength="40" aria-label="${esc(s.name)}">`;
+    const btns = isCur ? '' : `<div class="scn-btns">
+        <button class="link-btn" data-act="load" data-id="${s.key}">${V21_TXT.scnLoad}</button>
+        <button class="link-btn" data-act="update" data-id="${s.key}">${V21_TXT.scnUpdate}</button>
+        <button class="link-btn danger" data-act="delete" data-id="${s.key}" aria-label="${V21_TXT.scnDelete}">✕</button>
+      </div>`;
+    return `<div class="scn-row${isCur ? ' current' : ''}">
+      <div class="scn-top"><span class="scn-swatch" style="background:${s.colorVar};"></span>${nameEl}${btns}</div>
+      <div class="scn-metrics">
+        <div><span>${V21_TXT.mTargetAge}</span><b>${pr.p.targetAge}</b></div>
+        <div><span>${V21_TXT.mRetire}</span><b>${pr.retireAge ?? V21_TXT.notReached}</b></div>
+        <div><span>${V21_TXT.mRunsOut}</span><b>${pr.depletedAge ?? V21_TXT.neverShort}</b></div>
+        <div><span>${V21_TXT.mBalance}</span><b>${pr.balanceAtTarget === null ? '–' : fmtMoney(pr.balanceAtTarget)}</b></div>
+      </div>
+    </div>`;
+  }).join('');
+  $('scnSaveBtn').classList.toggle('is-full', scenarios.length >= MAX_SCENARIOS);   // stays clickable so the 'max 3' note can explain
+}
+
+function refreshScenariosIfResized(){
+  if (!isMobileView()) return;
+  const svg = $('scenarioSvg');
+  const w = svg ? Math.round(svg.getBoundingClientRect().width) : 0;
+  if (w > 0 && w !== scnRenderedW) renderScenarios();
+}
+
+$('scnSaveBtn').addEventListener('click', () => {
+  if (scenarios.length >= MAX_SCENARIOS){ $('scnNote').textContent = V21_TXT.scnMax(MAX_SCENARIOS); return; }
+  let n = scenarios.length + 1;
+  while (scenarios.some(s => s.name === V21_TXT.scnDefaultName(n))) n++;
+  const s = { id: 's' + (scenarioIdSeq++), name: V21_TXT.scnDefaultName(n), savedAt: new Date().toISOString(), state: planSnapshot() };
+  scenarios.push(s);
+  $('scnNote').textContent = V21_TXT.scnSaved(s.name);
+  recalc();
+  const input = document.querySelector(`.scn-name[data-id="${s.id}"]`);
+  if (input){ input.focus(); input.select(); }
+});
+$('scnList').addEventListener('change', e => {
+  const input = e.target.closest('.scn-name');
+  if (!input) return;
+  const s = scenarios.find(x => x.id === input.dataset.id);
+  if (!s) return;
+  s.name = input.value.trim() || s.name;
+  recalc();
+});
+$('scnList').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+  const s = scenarios.find(x => x.id === btn.dataset.id);
+  if (!s) return;
+  if (btn.dataset.act === 'load'){
+    v21Confirm(V21_TXT.scnLoadTitle(s.name), V21_TXT.scnLoadBody, V21_TXT.scnLoadOk, () => {
+      applyState(JSON.parse(JSON.stringify(s.state)));
+      $('scnNote').textContent = V21_TXT.scnLoaded(s.name);
+    });
+  } else if (btn.dataset.act === 'update'){
+    v21Confirm(V21_TXT.scnUpdateTitle(s.name), V21_TXT.scnUpdateBody, V21_TXT.scnUpdateOk, () => {
+      s.state = planSnapshot();
+      s.savedAt = new Date().toISOString();
+      $('scnNote').textContent = V21_TXT.scnUpdated(s.name);
+      recalc();
+    });
+  } else if (btn.dataset.act === 'delete'){
+    v21Confirm(V21_TXT.scnDeleteTitle(s.name), V21_TXT.scnDeleteBody, V21_TXT.scnDeleteOk, () => {
+      scenarios = scenarios.filter(x => x !== s);
+      $('scnNote').textContent = '';
+      recalc();
+    }, { danger: true });
+  }
+});
+
+// Phones: measured-width charts redraw once their tab is visible or the width changes.
+function refreshMeasuredCharts(){
+  refreshSensitivityIfResized();
+  refreshScenariosIfResized();
+}
+
+// ---------- PDF / print report ----------
+// Built on demand into #printReport (the only thing visible when printing). Print CSS forces
+// the light palette, charts are drawn in desktop layout, and the page is A4 landscape so the
+// 1000-unit charts print at about 1:1.
+var forceDesktopLayout = false;   // var: isMobileView() can run before this block executes
+let reportReady = false;
+const REPORT_BY_KEY = 'firePlannerReportBy', REPORT_FOR_KEY = 'firePlannerReportFor';
+function lsGet(k){ try { return localStorage.getItem(k) || ''; } catch(e){ return ''; } }
+function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+
+function cloneSvgForReport(id){
+  const src = $(id);
+  if (!src) return '';
+  const c = src.cloneNode(true);
+  c.removeAttribute('id');
+  c.removeAttribute('style');
+  c.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+  c.setAttribute('width', '100%');
+  return c.outerHTML;
+}
+function cloneHtmlForReport(id){
+  const src = $(id);
+  if (!src) return '';
+  const c = src.cloneNode(true);
+  c.removeAttribute('id');
+  c.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+  c.querySelectorAll('button, input, .info-btn').forEach(el => el.remove());
+  return c.outerHTML;
+}
+
+function buildPrintReport(){
+  forceDesktopLayout = true;
+  recalc();
+
+  const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const by = lsGet(REPORT_BY_KEY).trim();
+  const forName = lsGet(REPORT_FOR_KEY).trim();
+  const today = new Date();
+  const dateStr = today.toLocaleDateString(document.documentElement.lang === 'th' ? 'th-TH' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const v = id => $(id).value;
+  const meta = [];
+  if (forName) meta.push(`<div><span>${V21_TXT.rptFor}</span><b>${esc(forName)}</b></div>`);
+  if (by) meta.push(`<div><span>${V21_TXT.rptBy}</span><b>${esc(by)}</b></div>`);
+  meta.push(`<div><span>${V21_TXT.rptDate}</span><b>${esc(dateStr)}</b></div>`);
+  const sens = parseFloat(v('sensitivitySlider')) || 0;
+
+  // Condensed table: every 5 years plus the first/last year, target age, run-out age and life events.
+  const rows = lastFullRows;
+  const targetAge = +v('targetAge');
+  const lastAge = rows.length ? rows[rows.length - 1].age : 0;
+  const keep = rows.filter(r => r.year % 5 === 0 || r.age === targetAge || r.age === lastAge || r.gift > 0);
+  const tableRows = keep.map(r => {
+    const incomeIn = r.income + (r.incomeExtra > 0 ? r.incomeExtra : 0);
+    const outflow = r.retiring ? r.withdrawal : (r.expenses + (r.expenseExtra > 0 ? r.expenseExtra : 0));
+    const cls = r.age === targetAge ? ' class="key"' : '';
+    return `<tr${cls}><td>${r.age}</td><td>${r.year}</td><td>${fmtMoney(r.begin)}</td><td>${fmtMoney(r.ret)}</td>
+      <td>${incomeIn > 0 ? fmtMoney(incomeIn) : '–'}</td><td>${outflow ? '-' + fmtMoney(Math.abs(outflow)) : '–'}</td>
+      <td>${r.gift > 0 ? '-' + fmtMoney(r.gift) : '–'}</td><td><b>${fmtMoney(r.end)}</b></td><td>${r.met ? V21_TXT.yes : V21_TXT.no}</td></tr>`;
+  }).join('');
+
+  $('printReport').innerHTML = `
+    <header class="pr-head">
+      <div>
+        <div class="pr-brand">FIRE Planner <span>v${APP_VERSION}</span></div>
+        <h1>${V21_TXT.rptTitle}</h1>
+      </div>
+      <div class="pr-meta">${meta.join('')}</div>
+    </header>
+    <p class="pr-note">${V21_TXT.rptBasis(currency, moneyBasis === 'today')}<br>${esc(V21_TXT.rptAssumptions({
+      currentAge: v('currentAge'), targetAge: v('targetAge'), planUntilAge: v('planUntilAge'),
+      inflation: v('inflationRate'), withdrawal: v('withdrawalRate'),
+      th: v('wealthThailandRate'), us: v('wealthUSARate'), sg: v('wealthSGRate'),
+      sens: (sens >= 0 ? '+' : '') + sens.toFixed(1) + '%' }))}</p>
+
+    <section class="pr-block">
+      <h2>${V21_TXT.rptSummary}</h2>
+      <div class="pr-status">${esc($('headerStatus').textContent)} · ${$('alertText').innerHTML}</div>
+      <div class="pr-readiness"><b>${esc($('readinessBadge').textContent)}</b><span>${esc($('readinessLabel').textContent)}</span></div>
+      <p class="pr-narrative">${$('plannerNarrative').innerHTML}</p>
+      ${cloneHtmlForReport('plannerStats')}
+      ${cloneHtmlForReport('overviewStats')}
+    </section>
+
+    <section class="pr-block pr-break">
+      <h2>${V21_TXT.rptRunway}</h2>
+      ${cloneSvgForReport('runwaySvg')}
+      ${cloneHtmlForReport('runwayLegend')}
+    </section>
+
+    <section class="pr-block pr-break">
+      <h2>${V21_TXT.rptSensitivity}</h2>
+      ${cloneSvgForReport('sensitivityChartSvg')}
+    </section>
+    <section class="pr-block">
+      <h2>${V21_TXT.rptByCountry}</h2>
+      ${cloneSvgForReport('appendixGrowthSvg')}
+    </section>
+
+    <section class="pr-block pr-break">
+      <h2>${V21_TXT.rptTable}</h2>
+      <table class="pr-table"><thead><tr>${V21_TXT.rptCols.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>
+      <p class="pr-disclaimer">${esc(V21_TXT.rptFooter(APP_VERSION, dateStr))}</p>
+    </section>`;
+
+  forceDesktopLayout = false;
+  recalc();             // put the on-screen charts back to the device's own layout
+  reportReady = true;
+}
+// Ctrl/Cmd+P or the browser's Print menu builds the report too (with the remembered names).
+window.addEventListener('beforeprint', () => { if (!reportReady) buildPrintReport(); });
+window.addEventListener('afterprint', () => { reportReady = false; });
+
+$('reportBtn').addEventListener('click', () => {
+  $('reportFor').value = lsGet(REPORT_FOR_KEY);
+  $('reportBy').value = lsGet(REPORT_BY_KEY);
+  $('reportOverlay').style.display = 'flex';
+});
+$('reportCancel').addEventListener('click', () => { $('reportOverlay').style.display = 'none'; });
+$('reportPrint').addEventListener('click', () => {
+  lsSet(REPORT_FOR_KEY, $('reportFor').value.trim());
+  lsSet(REPORT_BY_KEY, $('reportBy').value.trim());
+  $('reportOverlay').style.display = 'none';
+  buildPrintReport();
+  window.print();   // called directly in the click so mobile browsers keep the user gesture
+});
+
+// ---------- Version label ----------
+document.querySelectorAll('.app-version').forEach(el => { el.textContent = 'v' + APP_VERSION; });
+
 // ---------- init ----------
 renderAmountInputs();
 renderFixedWealthInputs();
@@ -3911,11 +4635,10 @@ incomeList.render();
 expenseItemsList.render();
 normalizeSavingsAlloc();
 initInfoToggles();
-if (!loadLocal()){
-  recalc();
-} else {
-  recalc();
-}
+hadSavedPlanAtStart = loadLocal();
+updateBasisUI();
+recalc();
+openSharedPlanFromHash();   // a #plan=… link opens that plan (asks first if this browser already has one)
 
 // scroll spy (desktop sidebar only — unaffected by mobile changes below)
 const navLinks = document.querySelectorAll('.nav a');
