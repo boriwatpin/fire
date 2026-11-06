@@ -1,7 +1,7 @@
 // FIRE Planner service worker: makes the app installable and usable offline.
 // SW_VERSION must match APP_VERSION in the HTML (deploy.sh checks this). Changing it is what
 // tells installed copies that a new version exists.
-const SW_VERSION = '2.6';
+const SW_VERSION = '2.6.1';
 const CACHE = 'fire-planner-' + SW_VERSION;
 const SHELL = ['./', './index.html', './fire_estimator_TH.html', './manifest.webmanifest', './manifest-th.webmanifest',
                './icon-180.png', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
